@@ -256,7 +256,7 @@ function statusHTML(value) {
 
 /* Backend response format: {success:true, services:[...]} */
 async function api(action, fields={}) {
- if (API_URL.includes("https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec")) {
+ if (API_URL.includes("PASTE_YOUR")) {
   throw new Error("Shyira URL ya Apps Script Web App muri API_URL.");
  }
  const payload = {action, ...fields};

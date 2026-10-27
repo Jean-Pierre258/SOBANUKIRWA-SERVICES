@@ -4,998 +4,527 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin Dashboard | SOBANUKIRWA SERVICES</title>
-<script src="config.js"></script>
-
+<title>SOBANUKIRWA SERVICES — Admin</title>
 <style>
 :root {
-  --navy:#102d51;
-  --blue:#1d5da8;
-  --gold:#f3bd32;
-  --bg:#f4f7fb;
-  --white:#fff;
-  --text:#192638;
-  --muted:#748096;
-  --line:#e4eaf2;
-  --green:#14845b;
-  --red:#c43131;
-  --orange:#b86b08;
+  --navy:#102c52;
+  --blue:#2463a8;
+  --light:#eaf3ff;
+  --bg:#f4f7fc;
+  --ink:#172b4d;
+  --muted:#718096;
+  --border:#e1e9f3;
+  --green:#16865b;
+  --red:#c53d4b;
 }
-* {box-sizing:border-box}
-body {
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+header{
+  background:linear-gradient(120deg,#102746,#174477,#2368a7);
+  color:white;padding:18px 24px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;flex-wrap:wrap
 }
-button,input,select,textarea {font:inherit}
-button {cursor:pointer}
-.layout {display:flex;min-height:100vh}
-.sidebar {
-  width:250px;
-  flex-shrink:0;
-  background:var(--navy);
-  color:white;
-  padding:24px 15px;
-}
-.brand {
-  font-size:19px;
-  font-weight:800;
-  padding:0 10px 25px;
-  border-bottom:1px solid #ffffff24;
-}
-.brand span {color:var(--gold)}
-.admin-label {
-  color:#c5d3e6;
-  font-size:12px;
-  margin:20px 10px 10px;
-}
-.nav-btn {
-  display:block;
-  width:100%;
-  border:0;
-  border-radius:9px;
-  background:transparent;
-  color:#e5edf8;
-  padding:12px;
-  text-align:left;
-  margin:4px 0;
-}
-.nav-btn:hover,.nav-btn.active {
-  background:#ffffff18;
-  color:white;
-}
-.nav-btn.active {border-left:3px solid var(--gold)}
-.main {flex:1;min-width:0}
-.topbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  padding:18px 25px;
-  background:white;
-  border-bottom:1px solid var(--line);
-}
-.topbar h1 {font-size:22px;margin:0}
-.top-actions {display:flex;gap:8px;align-items:center}
-.content {padding:25px;max-width:1500px;margin:auto}
-.btn {
-  border:0;
-  border-radius:8px;
-  background:var(--blue);
-  color:white;
-  padding:10px 14px;
-  font-weight:700;
-}
-.btn.secondary {background:#eaf0f8;color:var(--navy)}
-.btn.gold {background:var(--gold);color:var(--navy)}
-.btn.danger {background:#ffeded;color:var(--red)}
-.btn.small {padding:7px 9px;font-size:12px}
-.cards {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:16px;
-  margin-bottom:22px;
-}
-.card {
-  background:white;
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:20px;
-  box-shadow:0 3px 12px #102d5108;
-}
-.metric-label {font-size:13px;color:var(--muted)}
-.metric-value {font-size:29px;font-weight:800;margin:12px 0}
-.metric-icon {font-size:24px}
-.panel {
-  background:white;
-  border:1px solid var(--line);
-  border-radius:13px;
-  padding:20px;
-  margin-bottom:20px;
-}
-.panel h2 {font-size:18px;margin:0 0 17px}
-.grid-two {
-  display:grid;
-  grid-template-columns:1.2fr 1fr;
-  gap:20px;
-}
-.section {display:none}
-.section.active {display:block}
-.filters {
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:15px;
-}
-.filters input,.filters select,
-.form-control {
-  padding:10px 12px;
-  border:1px solid #dce3ed;
-  border-radius:8px;
-  background:white;
-}
-.filters input {flex:1;min-width:180px}
-.table-wrap {overflow-x:auto}
-table {width:100%;border-collapse:collapse;min-width:650px}
-th,td {
-  padding:12px 10px;
-  text-align:left;
-  border-bottom:1px solid var(--line);
-  font-size:13px;
-}
-th {background:#f7f9fc;color:#526077}
-.status {
-  display:inline-block;
-  border-radius:20px;
-  padding:5px 9px;
-  font-size:11px;
-  font-weight:700;
-  background:#edf1f7;
-}
-.status.approved,.status.completed,.status.active {color:var(--green);background:#e9f8f0}
-.status.pending,.status.under_review {color:var(--orange);background:#fff4df}
-.status.rejected,.status.cancelled,.status.suspended {color:var(--red);background:#fff0f0}
-.bar-list {display:grid;gap:16px}
-.bar-row {
-  display:grid;
-  grid-template-columns:115px 1fr 45px;
-  align-items:center;
-  gap:10px;
-  font-size:13px;
-}
-.bar-track {height:10px;background:#edf1f7;border-radius:20px;overflow:hidden}
-.bar-fill {height:100%;background:var(--blue);border-radius:20px;width:0}
-.activity-item {padding:12px 0;border-bottom:1px solid var(--line)}
-.activity-item:last-child {border-bottom:0}
-.muted {color:var(--muted);font-size:13px;line-height:1.5}
-.notice {
-  display:none;
-  padding:13px 15px;
-  border-radius:9px;
-  margin-bottom:15px;
-  overflow-wrap:anywhere;
-}
-.notice.show {display:block}
-.notice.error {background:#fff0f0;color:var(--red)}
-.notice.success {background:#eaf8f0;color:var(--green)}
-.notice.info {background:#edf5ff;color:var(--blue)}
-.login-wrap {
-  max-width:420px;
-  margin:70px auto;
-  padding:20px;
-}
-.login-card {
-  background:white;
-  padding:28px;
-  border:1px solid var(--line);
-  border-radius:16px;
-  box-shadow:0 10px 35px #102d5112;
-}
-.login-card h1 {font-size:23px;color:var(--navy)}
-.login-card label {display:block;margin:15px 0 6px;font-size:13px;font-weight:700}
-.login-card input {width:100%;padding:12px;border:1px solid #dce3ed;border-radius:8px}
-.login-card .btn {width:100%;margin-top:18px}
-.empty {padding:25px;text-align:center;color:var(--muted)}
-.hidden {display:none!important}
-.mobile-menu {display:none}
-.chart-placeholder {
-  height:180px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  color:var(--muted);
-  background:repeating-linear-gradient(
-    to bottom,#fff 0,#fff 44px,#edf1f7 45px
-  );
-  border-radius:8px;
-}
-footer {padding:15px 25px;color:var(--muted);font-size:12px}
-@media(max-width:1100px) {
-  .cards {grid-template-columns:repeat(2,minmax(0,1fr))}
-  .grid-two {grid-template-columns:1fr}
-}
-@media(max-width:720px) {
-  .sidebar {
-    display:none;
-    position:fixed;
-    z-index:10;
-    inset:0 auto 0 0;
-    width:260px;
-  }
-  .sidebar.open {display:block}
-  .mobile-menu {display:inline-block}
-  .topbar {padding:15px}
-  .topbar h1 {font-size:18px}
-  .content {padding:15px}
-  .cards {gap:10px}
-  .card {padding:14px}
-  .metric-value {font-size:23px}
-}
-@media(max-width:420px) {
-  .cards {grid-template-columns:1fr 1fr}
-  .metric-value {font-size:20px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{background:white;color:var(--navy);border-radius:12px;padding:12px;font-weight:900}
+.brand h1{font-size:17px;margin:0}
+.brand p{font-size:12px;color:#d9e9ff;margin:5px 0 0}
+.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:bold}
+.primary{background:var(--blue);color:white}
+.lightbtn{background:white;color:var(--navy)}
+.danger{background:#fff0f1;color:var(--red)}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 75px)}
+aside{background:white;border-right:1px solid var(--border);padding:20px 12px}
+.nav{display:block;width:100%;text-align:left;background:transparent;color:#53657d;padding:13px;border-radius:10px;margin:4px 0;border:0;font-weight:bold}
+.nav.active,.nav:hover{background:var(--light);color:#174c86}
+main{padding:25px;min-width:0}
+.pagehead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h2{margin:0;font-size:25px}
+.muted{color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.stat,.panel{background:white;border:1px solid var(--border);border-radius:15px;box-shadow:0 5px 18px #102c5209}
+.stat{padding:19px}
+.stat span{display:block;color:var(--muted);font-size:13px}
+.stat strong{display:block;font-size:29px;margin-top:12px}
+.panel{margin-bottom:20px;overflow:hidden}
+.panelhead{padding:17px 19px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.panelhead h3{margin:0;font-size:16px}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.field{padding:10px 12px;border:1px solid #d6e0ed;border-radius:9px;background:white;min-width:130px;max-width:100%;color:var(--ink)}
+.tablewrap{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:650px}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid #edf1f6;font-size:13px}
+th{font-size:11px;color:#77879b;text-transform:uppercase;background:#fbfcfe}
+.status{display:inline-block;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:bold;background:#edf2f7;color:#52647a;text-transform:capitalize}
+.status.approved,.status.active,.status.completed{background:#e5f8ee;color:#087647}
+.status.pending,.status.accepted,.status.in_progress{background:#fff4dc;color:#946315}
+.status.rejected,.status.suspended,.status.cancelled,.status.inactive{background:#ffedef;color:#b52d3b}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.smallbtn{border:0;border-radius:7px;padding:7px 9px;background:#eaf3ff;color:#205b97;font-weight:bold;font-size:11px}
+.smallbtn.green{background:#e5f8ee;color:#087647}
+.smallbtn.red{background:#ffedef;color:#b52d3b}
+.empty,.loading{padding:27px;text-align:center;color:var(--muted)}
+footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-align:center;padding:20px;font-size:12px}
+.loginpage{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(140deg,#edf5ff,#f7f9ff)}
+.loginbox{width:min(420px,100%);background:white;padding:30px;border-radius:20px;border:1px solid var(--border);box-shadow:0 16px 45px #102c5218}
+.loginbox h2{margin:24px 0 8px}
+.loginbox label,.modal label{display:block;font-size:12px;font-weight:bold;margin:14px 0 6px}
+.loginbox .field{width:100%}
+.loginbox .primary{width:100%;margin-top:18px;padding:12px}
+.message{font-size:13px;padding:11px;border-radius:8px;margin-top:12px}
+.error{background:#ffedef;color:#b52d3b}
+.success{background:#e5f8ee;color:#087647}
+.modalbg{position:fixed;inset:0;background:#0c1e35aa;display:grid;place-items:center;padding:20px;z-index:10}
+.modal{background:white;width:min(520px,100%);padding:23px;border-radius:17px;max-height:90vh;overflow:auto}
+.modal h3{margin-top:0}
+.modal .field{width:100%}
+.modal textarea{min-height:90px}
+.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+#toast{position:fixed;right:18px;bottom:18px;background:#102c52;color:white;padding:14px 18px;border-radius:10px;z-index:30;max-width:360px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){
+ .layout{display:block}aside{display:flex;overflow:auto;padding:8px;border-right:0}
+ .nav{white-space:nowrap;width:auto;margin:0 3px;padding:11px}
+ main{padding:14px}.stats{gap:9px}.stat{padding:13px}
+ .stat strong{font-size:24px}header{padding:14px}
 }
 </style>
 </head>
-
 <body>
 
-<div id="loginView" class="login-wrap">
-  <div class="login-card">
-    <div class="brand" style="padding:0 0 15px;color:#102d51;border-bottom:1px solid #e4eaf2">
-      SOBANUKIRWA <span>SERVICES</span>
-    </div>
-
-    <h1>Admin Dashboard</h1>
-    <p class="muted">Sign in using your authorized administrator account.</p>
-
-    <div id="loginNotice" class="notice"></div>
-
-    <form id="loginForm">
-      <label for="adminEmail">Admin email</label>
-      <input id="adminEmail" type="email" autocomplete="username" required>
-
-      <label for="adminPassword">Password</label>
-      <input id="adminPassword" type="password" autocomplete="current-password" required>
-
-      <button class="btn" type="submit">Sign in</button>
-    </form>
-
-    <p class="muted">
-      This screen requires a backend authentication action.
-      Do not use an ordinary customer account as an administrator.
-    </p>
+<!-- ADMIN LOGIN -->
+<section id="loginPage" class="loginpage">
+ <form id="loginForm" class="loginbox">
+  <div class="brand">
+   <div class="logo">S</div>
+   <div>
+    <h1 style="font-size:16px">SOBANUKIRWA SERVICES</h1>
+    <p class="muted">Administration portal</p>
+   </div>
   </div>
+  <h2>Admin sign in</h2>
+  <p class="muted">Injira ukoresheje konti ya administrator yemewe.</p>
+  <div id="loginMessage"></div>
+  <label for="email">Email address</label>
+  <input class="field" id="email" type="email" autocomplete="username" required>
+  <label for="password">Password</label>
+  <input class="field" id="password" type="password" autocomplete="current-password" required>
+  <button class="btn primary" id="loginBtn" type="submit">Sign in</button>
+ </form>
+</section>
+
+<!-- ADMIN APPLICATION -->
+<div id="adminApp" class="hidden">
+<header>
+ <div class="brand">
+  <div class="logo">S</div>
+  <div>
+   <h1>SOBANUKIRWA SERVICES</h1>
+   <p>Admin control centre</p>
+  </div>
+ </div>
+ <div class="tools">
+  <span id="adminName" class="muted" style="color:white;align-self:center"></span>
+  <button class="btn lightbtn" id="refreshBtn">↻ Refresh</button>
+  <button class="btn lightbtn" id="logoutBtn">Log out</button>
+ </div>
+</header>
+
+<div class="layout">
+<aside>
+ <button class="nav active" data-page="dashboard">▦ Dashboard</button>
+ <button class="nav" data-page="services">◇ Services</button>
+ <button class="nav" data-page="requests">▤ Requests</button>
+ <button class="nav" data-page="users">♙ Users</button>
+ <button class="nav" data-page="announcements">✉ Announcements</button>
+</aside>
+
+<main>
+<section id="page-dashboard">
+ <div class="pagehead">
+  <div><h2>Dashboard</h2><p class="muted">Platform overview and activity.</p></div>
+  <button class="btn primary" id="reloadDashboard">Refresh data</button>
+ </div>
+ <div class="stats">
+  <div class="stat"><span>Total users</span><strong id="totalUsers">—</strong></div>
+  <div class="stat"><span>Total services</span><strong id="totalServices">—</strong></div>
+  <div class="stat"><span>Pending services</span><strong id="pendingServicesCount">—</strong></div>
+  <div class="stat"><span>Total requests</span><strong id="totalRequests">—</strong></div>
+ </div>
+ <div class="panel">
+  <div class="panelhead"><h3>Services awaiting approval</h3><button class="btn lightbtn" data-goto="services">View services</button></div>
+  <div id="dashboardPending" class="tablewrap"><div class="loading">Loading…</div></div>
+ </div>
+ <div class="panel">
+  <div class="panelhead"><h3>Recent customer requests</h3><button class="btn lightbtn" data-goto="requests">View requests</button></div>
+  <div id="dashboardRequests" class="tablewrap"><div class="loading">Loading…</div></div>
+ </div>
+</section>
+
+<section id="page-services" class="hidden">
+ <div class="pagehead"><div><h2>Services</h2><p class="muted">Review and manage service listings.</p></div>
+ <button class="btn primary" id="addServiceBtn">+ Add service</button></div>
+ <div class="panel">
+  <div class="panelhead"><h3>All services</h3><div class="tools">
+   <input class="field" id="serviceSearch" placeholder="Search services…">
+   <select class="field" id="serviceFilter"><option value="">All statuses</option><option>PENDING</option><option>APPROVED</option><option>REJECTED</option><option>INACTIVE</option></select>
+  </div></div>
+  <div id="servicesTable" class="tablewrap"><div class="loading">Loading…</div></div>
+ </div>
+</section>
+
+<section id="page-requests" class="hidden">
+ <div class="pagehead"><div><h2>Customer requests</h2><p class="muted">Manage service requests and progress.</p></div></div>
+ <div class="panel">
+  <div class="panelhead"><h3>All requests</h3><div class="tools">
+   <input class="field" id="requestSearch" placeholder="Search requests…">
+   <select class="field" id="requestFilter"><option value="">All statuses</option><option>PENDING</option><option>ACCEPTED</option><option>IN_PROGRESS</option><option>COMPLETED</option><option>REJECTED</option><option>CANCELLED</option></select>
+  </div></div>
+  <div id="requestsTable" class="tablewrap"><div class="loading">Loading…</div></div>
+ </div>
+</section>
+
+<section id="page-users" class="hidden">
+ <div class="pagehead"><div><h2>Users</h2><p class="muted">Manage user accounts and access.</p></div></div>
+ <div class="panel">
+  <div class="panelhead"><h3>Registered accounts</h3><div class="tools">
+   <input class="field" id="userSearch" placeholder="Search users…">
+   <select class="field" id="userFilter"><option value="">All statuses</option><option>ACTIVE</option><option>INACTIVE</option><option>SUSPENDED</option></select>
+  </div></div>
+  <div id="usersTable" class="tablewrap"><div class="loading">Loading…</div></div>
+ </div>
+</section>
+
+<section id="page-announcements" class="hidden">
+ <div class="pagehead"><div><h2>Announcements</h2><p class="muted">Send a message to all active users.</p></div></div>
+ <div class="panel"><div class="panelhead"><h3>Create announcement</h3></div>
+  <div style="padding:20px;max-width:700px">
+   <form id="announcementForm">
+    <label>Announcement title</label><input class="field" style="width:100%" name="title" required>
+    <label style="display:block;margin:15px 0 6px;font-weight:bold;font-size:12px">Message</label>
+    <textarea class="field" style="width:100%;min-height:130px" name="message" required></textarea>
+    <button class="btn primary" style="margin-top:15px" type="submit">Send announcement</button>
+   </form>
+  </div>
+ </div>
+</section>
+</main>
+</div>
+<footer>© <span id="year"></span> SOBANUKIRWA SERVICES · Administration portal</footer>
 </div>
 
-<div id="dashboardView" class="layout hidden">
-
-  <aside id="sidebar" class="sidebar">
-    <div class="brand">SOBANUKIRWA <span>SERVICES</span></div>
-    <div class="admin-label">ADMINISTRATION</div>
-
-    <button class="nav-btn active" data-section="overview">📊 Overview</button>
-    <button class="nav-btn" data-section="users">👥 Users</button>
-    <button class="nav-btn" data-section="services">🛠️ Services</button>
-    <button class="nav-btn" data-section="requests">📩 Requests</button>
-    <button class="nav-btn" data-section="deliveries">📂 Deliveries</button>
-    <button class="nav-btn" data-section="messages">💬 Messages</button>
-    <button class="nav-btn" data-section="notifications">🔔 Notifications</button>
-    <button class="nav-btn" data-section="languages">🌐 Languages</button>
-    <button class="nav-btn" data-section="reports">📈 Reports</button>
-    <button class="nav-btn" data-section="settings">⚙️ Settings</button>
-
-    <div style="margin-top:30px">
-      <button class="nav-btn" onclick="logout()">↪ Sign out</button>
-      <a href="index.html" style="display:block;padding:12px;color:#e5edf8;text-decoration:none">
-        ← Visit website
-      </a>
-    </div>
-  </aside>
-
-  <div class="main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:12px">
-        <button class="btn secondary mobile-menu" onclick="toggleSidebar()">☰</button>
-        <div>
-          <h1 id="pageTitle">Overview</h1>
-          <div id="adminIdentity" class="muted">Administrator</div>
-        </div>
-      </div>
-
-      <div class="top-actions">
-        <button class="btn secondary" onclick="refreshCurrent()">↻ Refresh</button>
-        <button class="btn gold" onclick="logout()">Sign out</button>
-      </div>
-    </header>
-
-    <main class="content">
-      <div id="globalNotice" class="notice"></div>
-
-      <!-- OVERVIEW -->
-      <section id="section-overview" class="section active">
-        <div class="cards">
-          <div class="card">
-            <div class="metric-icon">👥</div>
-            <div class="metric-label">Registered users</div>
-            <div id="metricUsers" class="metric-value">—</div>
-            <div class="muted">Accounts in the system</div>
-          </div>
-
-          <div class="card">
-            <div class="metric-icon">🛠️</div>
-            <div class="metric-label">Published services</div>
-            <div id="metricServices" class="metric-value">—</div>
-            <div class="muted">Approved services</div>
-          </div>
-
-          <div class="card">
-            <div class="metric-icon">📩</div>
-            <div class="metric-label">Total requests</div>
-            <div id="metricRequests" class="metric-value">—</div>
-            <div class="muted">Customer requests</div>
-          </div>
-
-          <div class="card">
-            <div class="metric-icon">⏳</div>
-            <div class="metric-label">Pending approval</div>
-            <div id="metricPending" class="metric-value">—</div>
-            <div class="muted">Items awaiting review</div>
-          </div>
-        </div>
-
-        <div class="grid-two">
-          <div class="panel">
-            <h2>Request status summary</h2>
-            <div id="statusBars" class="bar-list">
-              <div class="empty">Load dashboard data to display statistics.</div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h2>System activity</h2>
-            <div id="activityList" class="muted">
-              Activity records will appear here when the backend supports them.
-            </div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <h2>Administrator reminders</h2>
-          <p class="muted">
-            Review pending services, monitor new customer requests, and ensure
-            users can only access records they are authorized to view.
-          </p>
-        </div>
-      </section>
-
-      <!-- USERS -->
-      <section id="section-users" class="section">
-        <div class="panel">
-          <h2>User management</h2>
-          <p class="muted">
-            Review registered users and provider accounts. Account actions
-            must be enforced by the backend.
-          </p>
-
-          <div class="filters">
-            <input id="userSearch" placeholder="Search by email or name">
-            <select id="userRoleFilter">
-              <option value="">All roles</option>
-              <option value="customer">Customer</option>
-              <option value="provider">Provider</option>
-              <option value="admin">Admin</option>
-            </select>
-            <button class="btn" onclick="loadUsers()">Load users</button>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th></tr>
-              </thead>
-              <tbody id="usersBody">
-                <tr><td colspan="5" class="empty">Load users to begin.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- SERVICES -->
-      <section id="section-services" class="section">
-        <div class="panel">
-          <h2>Service approval</h2>
-          <p class="muted">Approve services only after reviewing their content.</p>
-
-          <div class="filters">
-            <input id="serviceSearch" placeholder="Search services">
-            <select id="serviceStatusFilter">
-              <option value="">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-            </select>
-            <button class="btn" onclick="loadServices()">Load services</button>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Service</th><th>Provider</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr>
-              </thead>
-              <tbody id="servicesBody">
-                <tr><td colspan="6" class="empty">Load services to begin.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- REQUESTS -->
-      <section id="section-requests" class="section">
-        <div class="panel">
-          <h2>Customer requests</h2>
-          <div class="filters">
-            <input id="requestSearch" placeholder="Search request ID or customer">
-            <select id="requestStatusFilter">
-              <option value="">All statuses</option>
-              <option value="pending">Pending</option>
-              <option value="in_progress">In progress</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-            <button class="btn" onclick="loadRequests()">Load requests</button>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Request ID</th><th>Customer</th><th>Service</th><th>Status</th><th>Date</th><th>Action</th></tr>
-              </thead>
-              <tbody id="requestsBody">
-                <tr><td colspan="6" class="empty">Load requests to begin.</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- DELIVERIES -->
-      <section id="section-deliveries" class="section">
-        <div class="panel">
-          <h2>Deliveries</h2>
-          <p class="muted">
-            This section needs a secure private-file storage backend before
-            customer documents can be uploaded or downloaded.
-          </p>
-          <div id="deliveriesInfo" class="notice info show">
-            File delivery is not connected yet. Do not upload confidential files
-            until private storage and authorization rules are implemented.
-          </div>
-        </div>
-      </section>
-
-      <!-- MESSAGES -->
-      <section id="section-messages" class="section">
-        <div class="panel">
-          <h2>Messages</h2>
-          <p class="muted">
-            Private customer-provider chat requires message storage,
-            participant authorization, and unread-message tracking in the backend.
-          </p>
-          <div class="notice info show">
-            Chat interface is prepared for integration; messaging is not active yet.
-          </div>
-        </div>
-      </section>
-
-      <!-- NOTIFICATIONS -->
-      <section id="section-notifications" class="section">
-        <div class="panel">
-          <h2>Announcements</h2>
-          <p class="muted">
-            Send announcements only after the backend supports an authenticated,
-            authorized notification action.
-          </p>
-
-          <form id="announcementForm">
-            <label class="muted" for="announcement">Announcement text</label>
-            <textarea id="announcement" class="form-control" rows="4"
-              maxlength="2000" style="width:100%;margin:8px 0" required></textarea>
-
-            <label class="muted" for="announcementAudience">Audience</label>
-            <select id="announcementAudience" class="form-control" style="margin:8px 0">
-              <option value="all">All users</option>
-              <option value="customers">Customers</option>
-              <option value="providers">Providers</option>
-            </select>
-
-            <button type="submit" class="btn">Submit announcement</button>
-          </form>
-
-          <div id="announcementNotice" class="notice"></div>
-        </div>
-      </section>
-
-      <!-- LANGUAGES -->
-      <section id="section-languages" class="section">
-        <div class="panel">
-          <h2>Language management</h2>
-          <p class="muted">Current frontend language options:</p>
-          <div class="bar-list">
-            <div class="activity-item">🇷🇼 Kinyarwanda — rw</div>
-            <div class="activity-item">🇬🇧 English — en</div>
-            <div class="activity-item">🇫🇷 Français — fr</div>
-          </div>
-          <div class="notice info show">
-            Adding languages dynamically requires backend translation records
-            and a frontend translation loader.
-          </div>
-        </div>
-      </section>
-
-      <!-- REPORTS -->
-      <section id="section-reports" class="section">
-        <div class="panel">
-          <h2>Reports and analytics</h2>
-          <p class="muted">
-            Reports use data returned by the backend. Visitor counts and online
-            user estimates are only reliable when tracking is implemented.
-          </p>
-          <button class="btn" onclick="loadDashboard()">Refresh report data</button>
-          <button class="btn secondary" onclick="exportVisibleRequests()">Export loaded requests CSV</button>
-        </div>
-
-        <div class="panel">
-          <h2>Request statuses</h2>
-          <div id="reportBars" class="bar-list">
-            <div class="empty">No report data loaded.</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SETTINGS -->
-      <section id="section-settings" class="section">
-        <div class="panel">
-          <h2>Website settings</h2>
-          <p class="muted">
-            Administrative settings must be stored and validated by the backend.
-          </p>
-
-          <div class="activity-item">
-            <strong>Service approval</strong>
-            <p class="muted">New services should remain pending until approved.</p>
-          </div>
-          <div class="activity-item">
-            <strong>Account security</strong>
-            <p class="muted">Never allow public registration to assign the Admin role.</p>
-          </div>
-          <div class="activity-item">
-            <strong>Private files</strong>
-            <p class="muted">Deliverables should be accessible only to authorized users.</p>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>SOBANUKIRWA SERVICES · Administration</footer>
-  </div>
-</div>
+<div id="modalHost"></div><div id="toast"></div>
 
 <script>
-"use strict";
+/* IMPORTANT: replace with your deployed Apps Script /exec URL */
+const API_URL = "https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
+const SESSION_KEY = "sobanukirwa_admin_session";
 
-const API_URL = (window.SOBANUKIRWA_CONFIG || {}).API_URL || "";
-let adminToken = sessionStorage.getItem("ss_admin_session") || "";
-let loadedRequests = [];
-let loadedServices = [];
-let loadedUsers = [];
+let session = null;
+let services = [];
+let requests = [];
+let users = [];
 
-const el = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
-  })[ch]);
+function esc(value) {
+ return String(value ?? "").replace(/[&<>"']/g, ch => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[ch]));
+}
+function pick(obj, keys, fallback="—") {
+ for (const key of keys) {
+  if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
+ }
+ return fallback;
+}
+function arrayFrom(result, key) {
+ if (Array.isArray(result)) return result;
+ return result && Array.isArray(result[key]) ? result[key] : [];
+}
+function toast(message) {
+ $("toast").textContent = message;
+ $("toast").classList.remove("hidden");
+ setTimeout(() => $("toast").classList.add("hidden"), 4000);
+}
+function statusHTML(value) {
+ const s = String(value || "UNKNOWN").toLowerCase();
+ return `<span class="status ${esc(s)}">${esc(s.replaceAll("_"," "))}</span>`;
 }
 
-function notice(id, message, type="info") {
-  const box = el(id);
-  box.textContent = message;
-  box.className = "notice show " + type;
+/* Backend response format: {success:true, services:[...]} */
+async function api(action, fields={}) {
+ if (API_URL.includes("https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec")) {
+  throw new Error("Shyira URL ya Apps Script Web App muri API_URL.");
+ }
+ const payload = {action, ...fields};
+ if (session && session.token) payload.token = session.token;
+
+ const response = await fetch(API_URL, {
+  method:"POST",
+  headers:{"Content-Type":"text/plain;charset=utf-8"},
+  body:JSON.stringify(payload),
+  redirect:"follow"
+ });
+ const text = await response.text();
+ let result;
+ try { result = JSON.parse(text); }
+ catch {
+  throw new Error("Backend ntiyagaruye JSON. Reba Apps Script deployment.");
+ }
+ if (!response.ok || result.success === false || result.error) {
+  throw new Error(result.message || result.error || "Request yanze.");
+ }
+ return result;
 }
 
-async function api(action, payload={}) {
-  if (!API_URL || !API_URL.endsWith("/exec")) {
-    throw new Error("Check public/config.js: set your deployed Apps Script /exec URL.");
-  }
-
-  const response = await fetch(API_URL, {
-    method:"POST",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({
-      action,
-      token:adminToken,
-      ...payload
-    })
-  });
-
-  if (!response.ok) throw new Error("API HTTP " + response.status);
-
-  const result = await response.json();
-  if (!result.ok) throw new Error(result.error || "API request failed.");
-
-  return result.data;
+function showPage(name) {
+ document.querySelectorAll("main section").forEach(el => el.classList.add("hidden"));
+ $("page-"+name).classList.remove("hidden");
+ document.querySelectorAll(".nav").forEach(el => el.classList.toggle("active",el.dataset.page===name));
 }
-
-/* AUTHENTICATION
-   Backend must implement adminLogin and verify the Admin role server-side.
-   Never rely on a role or token supplied only by the browser.
-*/
-el("loginForm").addEventListener("submit", async event => {
-  event.preventDefault();
-
-  try {
-    const result = await api("adminLogin", {
-      email:el("adminEmail").value.trim(),
-      password:el("adminPassword").value
-    });
-
-    if (!result || !result.token || !result.user ||
-        result.user.role !== "admin") {
-      throw new Error("This account is not authorized as an administrator.");
-    }
-
-    adminToken = result.token;
-    sessionStorage.setItem("ss_admin_session", adminToken);
-    showDashboard(result.user);
-    await loadDashboard();
-  } catch (error) {
-    notice("loginNotice", error.message, "error");
-  }
+document.addEventListener("click", e => {
+ const nav = e.target.closest("[data-page]");
+ if (nav) showPage(nav.dataset.page);
+ const goto = e.target.closest("[data-goto]");
+ if (goto) showPage(goto.dataset.goto);
+ const action = e.target.closest("[data-action]");
+ if (action) handleAction(action).catch(err => toast(err.message));
 });
 
-function showDashboard(user) {
-  el("loginView").classList.add("hidden");
-  el("dashboardView").classList.remove("hidden");
-  el("adminIdentity").textContent = user.email || "Administrator";
+function renderTable(id, headers, rows, emptyText="No records found.") {
+ $(id).innerHTML = rows.length
+  ? `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table>`
+  : `<div class="empty">${esc(emptyText)}</div>`;
 }
 
-async function logout() {
-  try {
-    if (adminToken) await api("logout");
-  } catch (error) {
-    // Clear the browser session even if the server logout request fails.
-  }
-
-  adminToken = "";
-  sessionStorage.removeItem("ss_admin_session");
-  el("dashboardView").classList.add("hidden");
-  el("loginView").classList.remove("hidden");
-  el("adminPassword").value = "";
+function serviceRow(s, compact=false) {
+ const id = pick(s,["service_id","id"],"");
+ const title = pick(s,["title","service_name","name"],"Untitled service");
+ const category = pick(s,["category"],"—");
+ const provider = pick(s,["provider_id","provider_name"],"—");
+ const status = String(pick(s,["status"],"PENDING")).toUpperCase();
+ const actions = compact
+  ? `<button class="smallbtn green" data-action="service-status" data-id="${esc(id)}" data-status="APPROVED">Approve</button>`
+  : `<div class="actions">
+      ${status!=="APPROVED"?`<button class="smallbtn green" data-action="service-status" data-id="${esc(id)}" data-status="APPROVED">Approve</button>`:""}
+      <button class="smallbtn" data-action="service-edit" data-id="${esc(id)}">Edit</button>
+      <button class="smallbtn red" data-action="service-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
+     </div>`;
+ return `<tr><td><b>${esc(title)}</b><div class="muted">${esc(id)}</div></td><td>${esc(category)}</td><td>${esc(provider)}</td><td>${statusHTML(status)}</td><td>${actions}</td></tr>`;
+}
+function requestRow(r, compact=false) {
+ const id = pick(r,["order_id","request_id","id"],"");
+ const service = services.find(s=>String(s.service_id)===String(r.service_id));
+ const title = service ? service.title : `Service ${pick(r,["service_id"],"")}`;
+ const customer = users.find(u=>String(u.user_id)===String(r.requester_id));
+ const customerName = customer ? customer.full_name : pick(r,["requester_id"],"—");
+ const date = pick(r,["created_at"],"—");
+ const status = String(pick(r,["status"],"PENDING")).toUpperCase();
+ const actions = compact
+  ? `<button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>`
+  : `<div class="actions">
+      <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="ACCEPTED">Accept</button>
+      <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>
+      <button class="smallbtn green" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
+      <button class="smallbtn red" data-action="request-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
+     </div>`;
+ return `<tr><td><b>${esc(title)}</b><div class="muted">${esc(id)}</div></td><td>${esc(customerName)}</td><td>${esc(date)}</td><td>${statusHTML(status)}</td><td>${actions}</td></tr>`;
+}
+function userRow(u) {
+ const id = pick(u,["user_id"],"");
+ const name = pick(u,["full_name"],"—");
+ const email = pick(u,["email"],"—");
+ const role = pick(u,["role"],"USER");
+ const status = String(pick(u,["status"],"ACTIVE")).toUpperCase();
+ const button = status==="ACTIVE"
+  ? `<button class="smallbtn red" data-action="user-status" data-id="${esc(id)}" data-status="SUSPENDED">Suspend</button>`
+  : `<button class="smallbtn green" data-action="user-status" data-id="${esc(id)}" data-status="ACTIVE">Activate</button>`;
+ return `<tr><td><b>${esc(name)}</b><div class="muted">${esc(id)}</div></td><td>${esc(email)}</td><td>${esc(role)}</td><td>${statusHTML(status)}</td><td>${button}</td></tr>`;
 }
 
-function toggleSidebar() {
-  el("sidebar").classList.toggle("open");
+function renderServices() {
+ const q=$("serviceSearch").value.toLowerCase();
+ const status=$("serviceFilter").value.toUpperCase();
+ const rows=services.filter(s=>
+  (!q||[s.title,s.category,s.description,s.location,s.provider_id].some(v=>String(v||"").toLowerCase().includes(q))) &&
+  (!status||String(s.status||"").toUpperCase()===status)
+ );
+ renderTable("servicesTable",["Service","Category","Provider ID","Status","Actions"],rows.map(s=>serviceRow(s)));
+ const pending=services.filter(s=>String(s.status||"").toUpperCase()==="PENDING");
+ renderTable("dashboardPending",["Service","Category","Provider ID","Status","Action"],pending.slice(0,5).map(s=>serviceRow(s,true)),"No pending services.");
+ $("totalServices").textContent=services.length;
+ $("pendingServicesCount").textContent=pending.length;
 }
-
-const titles = {
-  overview:"Overview",
-  users:"User Management",
-  services:"Service Approval",
-  requests:"Customer Requests",
-  deliveries:"Deliveries",
-  messages:"Messages",
-  notifications:"Notifications",
-  languages:"Languages",
-  reports:"Reports & Analytics",
-  settings:"Settings"
-};
-
-document.querySelectorAll(".nav-btn[data-section]").forEach(button => {
-  button.addEventListener("click", () => {
-    const name = button.dataset.section;
-
-    document.querySelectorAll(".nav-btn[data-section]").forEach(item =>
-      item.classList.toggle("active", item === button)
-    );
-
-    document.querySelectorAll(".section").forEach(section =>
-      section.classList.toggle("active", section.id === "section-" + name)
-    );
-
-    el("pageTitle").textContent = titles[name] || name;
-
-    if (window.innerWidth <= 720) el("sidebar").classList.remove("open");
-
-    if (name === "users") loadUsers();
-    if (name === "services") loadServices();
-    if (name === "requests") loadRequests();
-    if (name === "overview" || name === "reports") loadDashboard();
-  });
-});
-
-async function loadDashboard() {
-  try {
-    const data = await api("getDashboard");
-
-    const metrics = data.metrics || data.dashboard || data;
-
-    el("metricUsers").textContent = metrics.totalUsers ?? metrics.users ?? 0;
-    el("metricServices").textContent = metrics.approvedServices ?? metrics.services ?? 0;
-    el("metricRequests").textContent = metrics.totalRequests ?? metrics.requests ?? 0;
-    el("metricPending").textContent = metrics.pendingApprovals ?? metrics.pending ?? 0;
-
-    const statuses = data.requestStatuses || data.statusCounts || {};
-
-    const rows = Object.entries(statuses);
-    const max = Math.max(1, ...rows.map(([,value]) => Number(value) || 0));
-
-    const markup = rows.length ? rows.map(([name,value]) => `
-      <div class="bar-row">
-        <span>${escapeHtml(name.replaceAll("_"," "))}</span>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${Math.max(0,Math.min(100,(Number(value)||0)/max*100))}%"></div>
-        </div>
-        <strong>${Number(value)||0}</strong>
-      </div>
-    `).join("") : '<div class="empty">No request status breakdown returned by the API.</div>';
-
-    el("statusBars").innerHTML = markup;
-    el("reportBars").innerHTML = markup;
-
-    const activities = data.recentActivity || data.activity || [];
-    el("activityList").innerHTML = Array.isArray(activities) && activities.length
-      ? activities.map(item => `
-          <div class="activity-item">
-            <strong>${escapeHtml(item.action || item.message || "Activity")}</strong>
-            <div class="muted">${escapeHtml(item.createdAt || item.created_at || "")}</div>
-          </div>
-        `).join("")
-      : '<div class="empty">No activity records returned by the API.</div>';
-
-    notice("globalNotice","Dashboard data refreshed.","success");
-  } catch (error) {
-    notice("globalNotice",error.message,"error");
-  }
+function renderRequests() {
+ const q=$("requestSearch").value.toLowerCase();
+ const status=$("requestFilter").value.toUpperCase();
+ const rows=requests.filter(r=>{
+  const s=services.find(x=>String(x.service_id)===String(r.service_id));
+  const u=users.find(x=>String(x.user_id)===String(r.requester_id));
+  return (!q||[r.order_id,r.requester_id,r.service_id,r.message,s?.title,u?.full_name].some(v=>String(v||"").toLowerCase().includes(q)))&&
+  (!status||String(r.status||"").toUpperCase()===status);
+ });
+ renderTable("requestsTable",["Service / Request","Requester","Created","Status","Update status"],rows.map(r=>requestRow(r)));
+ renderTable("dashboardRequests",["Service / Request","Requester","Created","Status","Action"],requests.slice(0,5).map(r=>requestRow(r,true)),"No customer requests.");
+ $("totalRequests").textContent=requests.length;
 }
-
-async function loadUsers() {
-  try {
-    const data = await api("listUsers");
-    loadedUsers = data.users || [];
-
-    const query = el("userSearch").value.trim().toLowerCase();
-    const role = el("userRoleFilter").value;
-
-    const filtered = loadedUsers.filter(user =>
-      (!role || user.role === role) &&
-      [user.fullName,user.full_name,user.email]
-        .some(value => String(value || "").toLowerCase().includes(query))
-    );
-
-    el("usersBody").innerHTML = filtered.length ? filtered.map(user => `
-      <tr>
-        <td>${escapeHtml(user.fullName || user.full_name || "")}</td>
-        <td>${escapeHtml(user.email || "")}</td>
-        <td>${escapeHtml(user.role || "")}</td>
-        <td><span class="status ${escapeHtml(user.status || "active")}">${escapeHtml(user.status || "active")}</span></td>
-        <td>${escapeHtml(user.createdAt || user.created_at || "")}</td>
-      </tr>
-    `).join("") : '<tr><td colspan="5" class="empty">No matching users.</td></tr>';
-  } catch (error) {
-    notice("globalNotice","Users: " + error.message,"error");
-  }
+function renderUsers() {
+ const q=$("userSearch").value.toLowerCase();
+ const status=$("userFilter").value.toUpperCase();
+ const rows=users.filter(u=>
+  (!q||[u.full_name,u.email,u.role,u.user_id].some(v=>String(v||"").toLowerCase().includes(q)))&&
+  (!status||String(u.status||"").toUpperCase()===status)
+ );
+ renderTable("usersTable",["Name","Email","Role","Status","Action"],rows.map(userRow));
+ $("totalUsers").textContent=users.length;
 }
 
 async function loadServices() {
-  try {
-    const data = await api("adminListServices");
-    loadedServices = data.services || [];
-
-    const query = el("serviceSearch").value.trim().toLowerCase();
-    const status = el("serviceStatusFilter").value;
-
-    const filtered = loadedServices.filter(service =>
-      (!status || service.status === status) &&
-      [service.name,service.serviceId,service.providerName,service.categoryId]
-        .some(value => String(value || "").toLowerCase().includes(query))
-    );
-
-    el("servicesBody").innerHTML = filtered.length ? filtered.map(service => `
-      <tr>
-        <td>${escapeHtml(service.name || service.serviceId || "")}</td>
-        <td>${escapeHtml(service.providerName || service.providerId || "")}</td>
-        <td>${escapeHtml(service.categoryId || "")}</td>
-        <td>${escapeHtml(service.price ?? 0)} ${escapeHtml(service.currency || "RWF")}</td>
-        <td><span class="status ${escapeHtml(service.status || "pending")}">${escapeHtml(service.status || "pending")}</span></td>
-        <td>
-          <button class="btn small" onclick="setServiceStatus('${escapeHtml(service.serviceId)}','approved')">Approve</button>
-          <button class="btn danger small" onclick="setServiceStatus('${escapeHtml(service.serviceId)}','rejected')">Reject</button>
-        </td>
-      </tr>
-    `).join("") : '<tr><td colspan="6" class="empty">No matching services.</td></tr>';
-  } catch (error) {
-    notice("globalNotice","Services: " + error.message,"error");
-  }
+ const result=await api("listServices");
+ services=arrayFrom(result,"services");
+ renderServices();
 }
-
-async function setServiceStatus(serviceId,status) {
-  if (!confirm(`Set service ${serviceId} to ${status}?`)) return;
-
-  try {
-    await api("adminUpdateServiceStatus",{serviceId,status});
-    notice("globalNotice","Service status updated.","success");
-    await loadServices();
-    await loadDashboard();
-  } catch (error) {
-    notice("globalNotice","Service status update failed: " + error.message,"error");
-  }
-}
-
 async function loadRequests() {
-  try {
-    const data = await api("listRequests");
-    loadedRequests = data.requests || [];
-
-    const query = el("requestSearch").value.trim().toLowerCase();
-    const status = el("requestStatusFilter").value;
-
-    const filtered = loadedRequests.filter(request =>
-      (!status || request.status === status) &&
-      [request.orderId,request.customerName,request.email,request.serviceId]
-        .some(value => String(value || "").toLowerCase().includes(query))
-    );
-
-    el("requestsBody").innerHTML = filtered.length ? filtered.map(request => `
-      <tr>
-        <td>${escapeHtml(request.orderId || "")}</td>
-        <td>${escapeHtml(request.customerName || request.email || "")}</td>
-        <td>${escapeHtml(request.serviceName || request.serviceId || "")}</td>
-        <td><span class="status ${escapeHtml(request.status || "pending")}">${escapeHtml(request.status || "pending")}</span></td>
-        <td>${escapeHtml(request.createdAt || request.created_at || "")}</td>
-        <td>
-          <select id="status-${escapeHtml(request.orderId)}">
-            <option value="pending">Pending</option>
-            <option value="in_progress">In progress</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-          <button class="btn small" onclick="updateRequest('${escapeHtml(request.orderId)}')">Save</button>
-        </td>
-      </tr>
-    `).join("") : '<tr><td colspan="6" class="empty">No matching requests.</td></tr>';
-
-    filtered.forEach(request => {
-      const select = el("status-" + request.orderId);
-      if (select) select.value = request.status || "pending";
-    });
-  } catch (error) {
-    notice("globalNotice","Requests: " + error.message,"error");
-  }
+ const result=await api("listRequests");
+ requests=arrayFrom(result,"requests");
+ renderRequests();
+}
+async function loadUsers() {
+ const result=await api("listUsers");
+ users=arrayFrom(result,"users");
+ renderUsers();
+}
+async function loadDashboard() {
+ const result=await api("getDashboard");
+ const d=result.dashboard||{};
+ $("totalUsers").textContent=d.total_users??users.length;
+ $("totalServices").textContent=d.total_services??services.length;
+ $("pendingServicesCount").textContent=d.pending_services??services.filter(s=>String(s.status).toUpperCase()==="PENDING").length;
+ $("totalRequests").textContent=d.total_requests??requests.length;
+}
+async function refreshAll() {
+ try {
+  await Promise.all([loadServices(),loadRequests(),loadUsers()]);
+  await loadDashboard();
+ } catch(e) { toast(e.message); }
 }
 
-async function updateRequest(orderId) {
-  const select = el("status-" + orderId);
-  if (!select) return;
-
-  try {
-    await api("updateRequestStatus",{orderId,status:select.value});
-    notice("globalNotice","Request status updated.","success");
-    await loadRequests();
-    await loadDashboard();
-  } catch (error) {
-    notice("globalNotice","Request update failed: " + error.message,"error");
-  }
+/* Every action below maps to a route in the supplied Code.gs. */
+async function handleAction(button) {
+ const action=button.dataset.action, id=button.dataset.id, status=button.dataset.status;
+ if(action==="service-status") {
+  await api("approveService",{service_id:id,status});
+  toast("Service status updated.");
+  await refreshAll();
+ }
+ if(action==="request-status") {
+  await api("updateRequestStatus",{order_id:id,status});
+  toast("Request status updated.");
+  await refreshAll();
+ }
+ if(action==="user-status") {
+  await api("updateUserStatus",{user_id:id,status});
+  toast("User status updated.");
+  await refreshAll();
+ }
+ if(action==="service-edit") {
+  const s=services.find(x=>String(x.service_id)===String(id));
+  if(!s) throw new Error("Service not found.");
+  openModal("Edit service",`
+   <label>Title</label><input class="field" name="title" required value="${esc(s.title||"")}">
+   <label>Category</label><input class="field" name="category" required value="${esc(s.category||"")}">
+   <label>Description</label><textarea class="field" name="description">${esc(s.description||"")}</textarea>
+   <label>Price (RWF)</label><input class="field" name="price" type="number" min="0" step="any" value="${esc(s.price||0)}">
+   <label>Location</label><input class="field" name="location" value="${esc(s.location||"")}">
+  `,async data=>{await api("updateService",{service_id:id,...data});});
+ }
+}
+function openModal(title,fields,onSave) {
+ $("modalHost").innerHTML=`<div class="modalbg" id="modalBackdrop"><form class="modal" id="modalForm"><h3>${esc(title)}</h3>${fields}<div class="modalactions"><button type="button" class="btn lightbtn" id="modalCancel">Cancel</button><button class="btn primary">Save</button></div></form></div>`;
+ $("modalCancel").onclick=()=>$("modalHost").innerHTML="";
+ $("modalForm").onsubmit=async e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(e.target).entries());
+  try{await onSave(data);$("modalHost").innerHTML="";toast("Saved successfully.");await refreshAll()}
+  catch(err){toast(err.message)}
+ };
 }
 
-el("announcementForm").addEventListener("submit",async event => {
-  event.preventDefault();
+$("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ $("loginMessage").innerHTML="";
+ $("loginBtn").disabled=true;
+ $("loginBtn").textContent="Signing in…";
+ try{
+  const result=await api("login",{email:$("email").value.trim(),password:$("password").value});
+  const user=result.user||{};
+  if(String(user.role||"").toUpperCase()!=="ADMIN")throw new Error("Iyi konti ntabwo ifite uburenganzira bwa ADMIN.");
+  session={token:result.token,user};
+  sessionStorage.setItem(SESSION_KEY,JSON.stringify(session));
+  startApp();
+ }catch(err){
+  $("loginMessage").innerHTML=`<div class="message error">${esc(err.message)}</div>`;
+ }finally{
+  $("loginBtn").disabled=false;
+  $("loginBtn").textContent="Sign in";
+ }
+});
+function startApp(){
+ if(!session)return;
+ $("loginPage").classList.add("hidden");
+ $("adminApp").classList.remove("hidden");
+ $("adminName").textContent=pick(session.user,["full_name","email"],"Administrator");
+ $("year").textContent=new Date().getFullYear();
+ refreshAll();
+}
+$("logoutBtn").onclick=async()=>{
+ try{await api("logout")}catch(e){}
+ session=null;sessionStorage.removeItem(SESSION_KEY);
+ $("adminApp").classList.add("hidden");
+ $("loginPage").classList.remove("hidden");
+ $("password").value="";
+};
+$("refreshBtn").onclick=refreshAll;
+$("reloadDashboard").onclick=refreshAll;
+["serviceSearch","serviceFilter"].forEach(id=>$(id).addEventListener("input",renderServices));
+["requestSearch","requestFilter"].forEach(id=>$(id).addEventListener("input",renderRequests));
+["userSearch","userFilter"].forEach(id=>$(id).addEventListener("input",renderUsers));
 
-  try {
-    await api("createAnnouncement",{
-      message:el("announcement").value.trim(),
-      audience:el("announcementAudience").value
-    });
+$("addServiceBtn").onclick=()=>openModal("Add service",`
+ <label>Title</label><input class="field" name="title" required>
+ <label>Category</label><input class="field" name="category" required>
+ <label>Description</label><textarea class="field" name="description" required></textarea>
+ <label>Price (RWF)</label><input class="field" name="price" type="number" min="0" step="any" value="0">
+ <label>Location</label><input class="field" name="location">
+`,async data=>{await api("createService",data)});
 
-    el("announcement").value = "";
-    notice("announcementNotice","Announcement submitted.","success");
-  } catch (error) {
-    notice("announcementNotice",
-      "Announcement not sent: " + error.message,"error");
-  }
+$("announcementForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const data=Object.fromEntries(new FormData(e.target).entries());
+ try{const result=await api("createAnnouncement",data);toast(result.message||"Announcement sent.");e.target.reset()}
+ catch(err){toast(err.message)}
 });
 
-function exportVisibleRequests() {
-  if (!loadedRequests.length) {
-    notice("globalNotice","Load requests before exporting.","info");
-    return;
-  }
-
-  const columns = ["orderId","customerName","email","serviceId","status","createdAt"];
-  const csvCell = value => '"' + String(value ?? "").replace(/"/g,'""') + '"';
-
-  const lines = [
-    columns.join(","),
-    ...loadedRequests.map(row => columns.map(col => csvCell(row[col])).join(","))
-  ];
-
-  const blob = new Blob(["\uFEFF" + lines.join("\r\n")],{
-    type:"text/csv;charset=utf-8;"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "sobanukirwa-requests.csv";
-  link.click();
-  URL.revokeObjectURL(url);
+try{
+ const saved=sessionStorage.getItem(SESSION_KEY);
+ if(saved)session=JSON.parse(saved);
+}catch(e){session=null}
+$("year").textContent=new Date().getFullYear();
+if(session){
+ // Verify that the saved session is still valid and belongs to an admin.
+ api("me").then(r=>{
+  if(String((r.user||{}).role||"").toUpperCase()!=="ADMIN")throw new Error("Not an admin");
+  session.user=r.user;
+  startApp();
+ }).catch(()=>{
+  session=null;sessionStorage.removeItem(SESSION_KEY);
+  $("loginPage").classList.remove("hidden");
+  $("adminApp").classList.add("hidden");
+ });
 }
-
-async function refreshCurrent() {
-  const active = document.querySelector(".section.active");
-  if (!active) return;
-
-  const section = active.id.replace("section-","");
-  if (section === "overview" || section === "reports") return loadDashboard();
-  if (section === "users") return loadUsers();
-  if (section === "services") return loadServices();
-  if (section === "requests") return loadRequests();
-}
-
-el("userSearch").addEventListener("input",() => {
-  if (loadedUsers.length) renderUsersFromCache();
-});
-
-function renderUsersFromCache() {
-  const query = el("userSearch").value.trim().toLowerCase();
-  const role = el("userRoleFilter").value;
-
-  const filtered = loadedUsers.filter(user =>
-    (!role || user.role === role) &&
-    [user.fullName,user.full_name,user.email]
-      .some(value => String(value || "").toLowerCase().includes(query))
-  );
-
-  el("usersBody").innerHTML = filtered.length ? filtered.map(user => `
-    <tr>
-      <td>${escapeHtml(user.fullName || user.full_name || "")}</td>
-      <td>${escapeHtml(user.email || "")}</td>
-      <td>${escapeHtml(user.role || "")}</td>
-      <td>${escapeHtml(user.status || "")}</td>
-      <td>${escapeHtml(user.createdAt || user.created_at || "")}</td>
-    </tr>
-  `).join("") : '<tr><td colspan="5" class="empty">No matching users.</td></tr>';
-}
-
-el("userRoleFilter").addEventListener("change",renderUsersFromCache);
-el("serviceSearch").addEventListener("input",loadServices);
-el("serviceStatusFilter").addEventListener("change",loadServices);
-el("requestSearch").addEventListener("input",loadRequests);
-el("requestStatusFilter").addEventListener("change",loadRequests);
-
-/* Do not treat an old browser token as proof of Admin access.
-   The server must validate it before returning protected data. */
-async function restoreAdminSession() {
-  if (!adminToken) return;
-
-  try {
-    const result = await api("me");
-    if (!result || result.role !== "admin") throw new Error("Not an admin");
-
-    showDashboard(result);
-    await loadDashboard();
-  } catch (error) {
-    adminToken = "";
-    sessionStorage.removeItem("ss_admin_session");
-  }
-}
-
-restoreAdminSession();
 </script>
 </body>
 </html>

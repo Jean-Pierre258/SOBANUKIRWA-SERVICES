@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="rw">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="SOBANUKIRWA SERVICES — serivisi za online ahantu hamwe.">
+  <title>SOBANUKIRWA SERVICES</title>
+  <style>
+    :root{--blue:#123b70;--gold:#f4bd32;--ink:#182334;--muted:#637083;--bg:#f4f7fb;--white:#fff}
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg)}
+    header{background:var(--white);border-bottom:1px solid #e5eaf1;position:sticky;top:0;z-index:2}
+    .nav{max-width:1150px;margin:auto;padding:16px 22px;display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .brand{font-size:21px;font-weight:800;color:var(--blue)}.brand span{color:var(--gold)}
+    select,input,button{font:inherit;border-radius:10px;padding:11px 13px;border:1px solid #d5dce6}
+    button,.btn{background:var(--blue);color:white;border:0;cursor:pointer;font-weight:700;text-decoration:none;display:inline-block}
+    .hero{background:linear-gradient(120deg,#123b70,#1c5b9d);color:white;padding:58px 22px}
+    .hero-inner{max-width:1150px;margin:auto;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
+    h1{font-size:clamp(32px,5vw,52px);margin:0 0 16px;line-height:1.08}.hero p{font-size:18px;line-height:1.6;color:#e4eefb}
+    .searchbox{background:white;padding:16px;border-radius:16px;display:flex;gap:8px;box-shadow:0 14px 36px #001b3b33}.searchbox input{flex:1;min-width:0}
+    .hero-card{background:#ffffff16;border:1px solid #ffffff38;border-radius:20px;padding:24px}.hero-card strong{font-size:34px;color:var(--gold)}
+    main{max-width:1150px;margin:auto;padding:34px 22px 60px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    h2{color:var(--blue);margin:0 0 8px}.muted{color:var(--muted);line-height:1.5}
+    .filters{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0}
+    .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .card{background:white;border:1px solid #e4eaf2;border-radius:16px;padding:20px;box-shadow:0 5px 16px #123b7008}
+    .icon{font-size:28px}.card h3{margin:12px 0 8px;color:var(--blue)}.price{font-weight:800;margin:16px 0;color:#172f4c}
+    .card button{width:100%}.notice{padding:14px 16px;background:#fff8e4;border:1px solid #f3dda0;border-radius:12px;margin-top:20px}
+    footer{background:#102d51;color:#e6edf7;padding:28px 22px}.footer-inner{max-width:1150px;margin:auto;display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    .modal{display:none;position:fixed;inset:0;background:#07182dcc;z-index:5;padding:18px;overflow:auto}.modal-box{background:white;max-width:620px;margin:5vh auto;border-radius:18px;padding:24px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.form-grid label{font-size:13px;font-weight:700;color:#41516a}.form-grid input,.form-grid select,.form-grid textarea{width:100%;margin-top:6px}.form-grid .full{grid-column:1/-1}
+    .close{float:right;background:#e8edf4;color:#172f4c}.status{font-size:12px;background:#eaf2ff;color:#123b70;border-radius:20px;padding:5px 9px;display:inline-block}
+    @media(max-width:800px){.hero-inner{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:560px){.grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:auto}.searchbox{flex-direction:column}.nav{align-items:flex-start}}
+  </style>
+</head>
+<body>
+<header><div class="nav">
+  <div class="brand">SOBANUKIRWA <span>SERVICES</span></div>
+  <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+    <select id="language" aria-label="Choose language">
+      <option value="rw">🇷🇼 Kinyarwanda</option><option value="en">🇬🇧 English</option><option value="fr">🇫🇷 Français</option>
+    </select>
+    <button id="providerBtn" type="button" onclick="providerInfo()">+ <span data-i18n="offer">Tanga serivisi</span></button>
+  </div>
+</div></header>
+<section class="hero"><div class="hero-inner">
+  <div>
+    <span class="status" data-i18n="badge">Isoko rya serivisi zo kuri internet</span>
+    <h1 data-i18n="headline">Serivisi ukeneye, ahantu hamwe.</h1>
+    <p data-i18n="subhead">Shaka inzobere, saba serivisi, kandi ukurikirane ubusabe bwawe mu buryo bworoshye.</p>
+    <div class="searchbox"><input id="search" placeholder="Shakisha serivisi..." data-placeholder="search"><button onclick="renderServices()" data-i18n="searchBtn">Shakisha</button></div>
+  </div>
+  <div class="hero-card"><strong>20+</strong><h3 data-i18n="heroCardTitle">Ibyiciro bya serivisi</h3><p data-i18n="heroCardText">Documents, technology, design, business, education n'ibindi byinshi.</p><p>🌐 RW · EN · FR</p></div>
+</div></section>
+<main>
+  <div class="section-head"><div><h2 data-i18n="servicesTitle">Serivisi zacu</h2><p class="muted" data-i18n="servicesText">Hitamo serivisi ukeneye. Serivisi nshya zongerwa n'abatanga serivisi, nyuma yo kwemezwa na Admin.</p></div>
+    <span class="status" data-i18n="approval">Serivisi zemezwa na Admin</span>
+  </div>
+  <div class="filters"><select id="category" onchange="renderServices()"><option value="all" data-i18n="allCategories">Ibyiciro byose</option></select></div>
+  <div id="services" class="grid"></div>
+  <div class="notice"><b data-i18n="noticeTitle">Urashaka gutanga serivisi?</b> <span data-i18n="noticeText">Iyandikishe nk'utanga serivisi, wongere serivisi yawe, utegereze ko Admin ayisuzuma.</span> <button onclick="providerInfo()" data-i18n="startBtn">Tangira</button></div>
+</main>
+<footer><div class="footer-inner"><div><b>SOBANUKIRWA SERVICES</b><p data-i18n="footerTag">Serivisi zawe, mu buryo bworoshye.</p></div><div data-i18n="footerNote">MVP starter — huza backend mbere yo kwakira ubusabe nyabwo.</div></div></footer>
+
+<div id="requestModal" class="modal"><div class="modal-box">
+  <button class="close" onclick="closeModal('requestModal')">✕</button><h2 data-i18n="requestTitle">Saba serivisi</h2><p id="chosenService" class="muted"></p>
+  <form id="requestForm"><input type="hidden" id="serviceId">
+    <div class="form-grid">
+      <label><span data-i18n="fullName">Amazina yose</span><input name="name" required maxlength="120"></label>
+      <label><span data-i18n="email">Email</span><input name="email" type="email" required maxlength="160"></label>
+      <label><span data-i18n="phone">Telefoni (si ngombwa)</span><input name="phone" maxlength="40"></label>
+      <label><span data-i18n="preferredLanguage">Ururimi ukunda</span><select name="language"><option value="rw">Kinyarwanda</option><option value="en">English</option><option value="fr">Français</option></select></label>
+      <label class="full"><span data-i18n="details">Sobanura ibyo ukeneye</span><textarea name="details" rows="4" required maxlength="3000" style="width:100%;margin-top:6px"></textarea></label>
+      <div class="full"><button type="submit" data-i18n="sendRequest">Ohereza ubusabe</button></div>
+    </div>
+  </form><p id="formMessage" class="muted"></p>
+</div></div>
+<script>
+const translations = {
+ rw:{offer:"Tanga serivisi",badge:"Isoko rya serivisi zo kuri internet",headline:"Serivisi ukeneye, ahantu hamwe.",subhead:"Shaka inzobere, saba serivisi, kandi ukurikirane ubusabe bwawe mu buryo bworoshye.",search:"Shakisha serivisi...",searchBtn:"Shakisha",heroCardTitle:"Ibyiciro bya serivisi",heroCardText:"Documents, technology, design, business, education n'ibindi byinshi.",servicesTitle:"Serivisi zacu",servicesText:"Hitamo serivisi ukeneye. Serivisi nshya zongerwa n'abatanga serivisi, nyuma yo kwemezwa na Admin.",approval:"Serivisi zemezwa na Admin",allCategories:"Ibyiciro byose",noticeTitle:"Urashaka gutanga serivisi?",noticeText:"Iyandikishe nk'utanga serivisi, wongere serivisi yawe, utegereze ko Admin ayisuzuma.",startBtn:"Tangira",footerTag:"Serivisi zawe, mu buryo bworoshye.",footerNote:"MVP starter — huza backend mbere yo kwakira ubusabe nyabwo.",requestTitle:"Saba serivisi",fullName:"Amazina yose",email:"Email",phone:"Telefoni (si ngombwa)",preferredLanguage:"Ururimi ukunda",details:"Sobanura ibyo ukeneye",sendRequest:"Ohereza ubusabe",request:"Saba iyi serivisi",from:"Kuva",free:"Igiciro kizamenyeshwa",providerMsg:"Abatanga serivisi bazajya biyandikisha, bongere serivisi, hanyuma Admin ayemeze. Iyi ni preview; konti n'ubusabe nyabyo bizakora nyuma yo guhuza backend.",submitted:"Ifishi yakozwe neza muri demo. Huza Google Apps Script backend kugira ngo ubusabe bubikwe muri database."},
+ en:{offer:"Offer a service",badge:"Online services marketplace",headline:"The services you need, all in one place.",subhead:"Find professionals, request a service, and track your order easily.",search:"Search services...",searchBtn:"Search",heroCardTitle:"Service categories",heroCardText:"Documents, technology, design, business, education and more.",servicesTitle:"Our services",servicesText:"Choose what you need. Providers can submit new services for Admin approval.",approval:"Services reviewed by Admin",allCategories:"All categories",noticeTitle:"Want to offer a service?",noticeText:"Register as a provider, submit your service, and wait for Admin review.",startBtn:"Get started",footerTag:"Your services, made simple.",footerNote:"MVP starter — connect the backend before accepting real requests.",requestTitle:"Request a service",fullName:"Full name",email:"Email",phone:"Phone (optional)",preferredLanguage:"Preferred language",details:"Describe what you need",sendRequest:"Submit request",request:"Request this service",from:"From",free:"Price to be confirmed",providerMsg:"Providers will register and submit services for Admin approval. This is a preview; real accounts and requests will work after backend integration.",submitted:"Demo form submitted. Connect the Google Apps Script backend to save requests to the database."},
+ fr:{offer:"Proposer un service",badge:"Plateforme de services en ligne",headline:"Les services dont vous avez besoin, au même endroit.",subhead:"Trouvez des professionnels, demandez un service et suivez votre demande facilement.",search:"Rechercher un service...",searchBtn:"Rechercher",heroCardTitle:"Catégories de services",heroCardText:"Documents, technologie, design, affaires, éducation et plus.",servicesTitle:"Nos services",servicesText:"Choisissez un service. Les prestataires peuvent proposer de nouveaux services soumis à l'approbation de l'administrateur.",approval:"Services vérifiés par l'administrateur",allCategories:"Toutes les catégories",noticeTitle:"Vous souhaitez proposer un service ?",noticeText:"Inscrivez-vous comme prestataire et attendez la validation de l'administrateur.",startBtn:"Commencer",footerTag:"Vos services, en toute simplicité.",footerNote:"Version de démarrage — connectez le backend avant d'accepter de vraies demandes.",requestTitle:"Demander un service",fullName:"Nom complet",email:"E-mail",phone:"Téléphone (facultatif)",preferredLanguage:"Langue préférée",details:"Décrivez votre besoin",sendRequest:"Envoyer la demande",request:"Demander ce service",from:"À partir de",free:"Prix à confirmer",providerMsg:"Les prestataires pourront s'inscrire et soumettre leurs services à l'approbation de l'administrateur. Ceci est un aperçu; le backend doit être connecté.",submitted:"Formulaire de démonstration envoyé. Connectez Google Apps Script pour enregistrer la demande."}
+};
+const categories = [
+ ["documents","📄","Documents & Writing","Inyandiko n'ubwanditsi","Documents et rédaction"],
+ ["jobs","💼","Jobs & Careers","Akazi n'umwuga","Emploi et carrière"],
+ ["education","🎓","Education & Student Support","Uburezi n'abanyeshuri","Éducation et soutien scolaire"],
+ ["business","🏢","Business & Entrepreneurship","Ubucuruzi n'ibikorwa byo kwihangira imirimo","Entreprise et entrepreneuriat"],
+ ["data","📊","Data Analysis & Statistics","Isesengura ry'amakuru na statistics","Analyse de données et statistiques"],
+ ["design","🎨","Graphic Design & Branding","Igishushanyo n'ibirango","Design graphique et identité visuelle"],
+ ["web","💻","Websites & Software","Imbuga za internet na software","Sites web et logiciels"],
+ ["translation","🌐","Translation & Languages","Ubusemuzi n'indimi","Traduction et langues"],
+ ["marketing","📣","Digital Marketing","Kwamamaza kuri internet","Marketing numérique"],
+ ["video","🎬","Video, Photo & Audio","Video, amafoto n'amajwi","Vidéo, photo et audio"],
+ ["applications","📝","Online Application Assistance","Ubufasha mu busabe bwo kuri internet","Aide aux demandes en ligne"],
+ ["it","🖥️","Computer & IT Support","Ubufasha bwa mudasobwa na IT","Assistance informatique"],
+ ["accounting","🧾","Accounting & Administration","Ibaruramari n'ubuyobozi","Comptabilité et administration"],
+ ["pdf","📑","PDF & Digital Tools","PDF n'ibikoresho bya digital","PDF et outils numériques"],
+ ["health","🏥","Health Facility Reporting","Raporo z'ibigo n'ubuzima","Rapports des établissements de santé"],
+ ["travel","✈️","Travel & Hospitality","Ingendo n'amahoteli","Voyage et hôtellerie"],
+ ["realestate","🏠","Real Estate & Construction","Imitungo n'ubwubatsi","Immobilier et construction"],
+ ["ecommerce","🛒","E-commerce & Online Business","Ubucuruzi bwo kuri internet","Commerce en ligne"],
+ ["personal","✨","Personal & Everyday Services","Serivisi bwite za buri munsi","Services personnels et quotidiens"],
+ ["training","📚","Training & Consultation","Amahugurwa n'ubujyanama","Formation et conseil"]
+];
+const services = [
+ {id:"SS001",c:"documents",icon:"📄",n:{rw:"Gukora CV",en:"CV Creation",fr:"Création de CV"},d:{rw:"CV iteguye mu buryo bw'umwuga.",en:"A professionally formatted CV.",fr:"Un CV professionnel et bien présenté."},price:"From 5,000 RWF"},
+ {id:"SS002",c:"documents",icon:"✉️",n:{rw:"Application Letter",en:"Application Letter",fr:"Lettre de candidature"},d:{rw:"Ibaruwa yo gusaba akazi cyangwa amahirwe.",en:"A tailored job or opportunity application letter.",fr:"Une lettre adaptée à une candidature."},price:"From 3,000 RWF"},
+ {id:"SS003",c:"data",icon:"📊",n:{rw:"Isesengura ry'amakuru",en:"Data Analysis",fr:"Analyse de données"},d:{rw:"Isesengura, imbonerahamwe na charts.",en:"Analysis, tables, charts and clear findings.",fr:"Analyses, tableaux, graphiques et résultats."},price:"Quote"},
+ {id:"SS004",c:"design",icon:"🎨",n:{rw:"Flyer na Poster",en:"Flyer & Poster Design",fr:"Création de flyers et affiches"},d:{rw:"Igishushanyo cyo kwamamaza cyangwa gutangaza amakuru.",en:"Promotional and announcement designs.",fr:"Visuels promotionnels et annonces."},price:"From 5,000 RWF"},
+ {id:"SS005",c:"web",icon:"💻",n:{rw:"Gukora Website",en:"Website Development",fr:"Création de site web"},d:{rw:"Website y'ubucuruzi, portfolio cyangwa urubuga rwihariye.",en:"Business, portfolio or custom websites.",fr:"Sites d'entreprise, portfolios ou sites personnalisés."},price:"Quote"},
+ {id:"SS006",c:"education",icon:"📚",n:{rw:"PowerPoint Presentation",en:"PowerPoint Presentation",fr:"Présentation PowerPoint"},d:{rw:"Presentation iteguye neza kandi isobanutse.",en:"Clear, polished presentation slides.",fr:"Diapositives claires et professionnelles."},price:"From 5,000 RWF"},
+ {id:"SS007",c:"business",icon:"📈",n:{rw:"Business Plan",en:"Business Plan",fr:"Plan d'affaires"},d:{rw:"Gahunda y'ubucuruzi irimo intego n'imibare y'ibanze.",en:"A structured plan with goals and basic projections.",fr:"Un plan structuré avec objectifs et projections."},price:"Quote"},
+ {id:"SS008",c:"translation",icon:"🌐",n:{rw:"Translation",en:"Translation",fr:"Traduction"},d:{rw:"Ubusemuzi hagati y'indimi zishyigikiwe.",en:"Translation between supported languages.",fr:"Traduction entre les langues prises en charge."},price:"Quote"},
+ {id:"SS009",c:"marketing",icon:"📣",n:{rw:"Social Media Content",en:"Social Media Content",fr:"Contenu pour réseaux sociaux"},d:{rw:"Posts, captions na gahunda y'ibikubiyemo.",en:"Posts, captions and content calendars.",fr:"Publications, légendes et calendriers éditoriaux."},price:"From 5,000 RWF"},
+ {id:"SS010",c:"pdf",icon:"📑",n:{rw:"Guhindura PDF",en:"PDF Conversion",fr:"Conversion PDF"},d:{rw:"Guhuza, kugabanya cyangwa guhindura PDF mu yindi format.",en:"Merge, compress or convert PDF files.",fr:"Fusionner, compresser ou convertir des PDF."},price:"From 1,000 RWF"},
+ {id:"SS011",c:"accounting",icon:"🧾",n:{rw:"Invoice na Quotation",en:"Invoice & Quotation",fr:"Facture et devis"},d:{rw:"Gukora invoice cyangwa quotation y'ubucuruzi.",en:"Create business invoices or quotations.",fr:"Créer des factures ou des devis commerciaux."},price:"From 2,000 RWF"},
+ {id:"SS012",c:"training",icon:"🎓",n:{rw:"Amahugurwa ya Excel",en:"Excel Training",fr:"Formation Excel"},d:{rw:"Amasomo yo gukoresha Excel no gusesengura amakuru.",en:"Learn Excel and data analysis skills.",fr:"Apprendre Excel et l'analyse de données."},price:"Quote"}
+];
+let lang="rw";
+function tx(k){return translations[lang][k]||translations.en[k]||k}
+function setLanguage(l){lang=l;document.documentElement.lang=l;document.querySelectorAll("[data-i18n]").forEach(el=>{let k=el.dataset.i18n;if(translations[l][k])el.textContent=translations[l][k]});document.querySelectorAll("[data-placeholder]").forEach(el=>el.placeholder=tx(el.dataset.placeholder));renderCategories();renderServices()}
+function renderCategories(){let sel=document.getElementById("category"),val=sel.value||"all";sel.innerHTML=`<option value="all">${tx("allCategories")}</option>`+categories.map(c=>`<option value="${c[0]}">${c[1]} ${c[({"rw":3,"en":2,"fr":4})[lang]===3?c[3]:c[({"rw":3,"en":2,"fr":4})[lang]]}</option>`).join("");if([...sel.options].some(o=>o.value===val))sel.value=val}
+function renderServices(){
+ const q=document.getElementById("search").value.toLowerCase(),cat=document.getElementById("category").value;
+ const list=services.filter(s=>(cat==="all"||s.c===cat)&&((s.n[lang]||s.n.en).toLowerCase().includes(q)||(s.d[lang]||s.d.en).toLowerCase().includes(q)));
+ document.getElementById("services").innerHTML=list.map(s=>`<article class="card"><div class="icon">${s.icon}</div><h3>${s.n[lang]||s.n.en}</h3><p class="muted">${s.d[lang]||s.d.en}</p><div class="price">${s.price==="Quote"?tx("free"):s.price}</div><button onclick="openRequest('${s.id}')">${tx("request")}</button></article>`).join("")||`<p>${lang==="rw"?"Nta serivisi yabonetse.":lang==="fr"?"Aucun service trouvé.":"No services found."}</p>`;
+}
+function openRequest(id){const s=services.find(x=>x.id===id);document.getElementById("serviceId").value=id;document.getElementById("chosenService").textContent=s.n[lang]||s.n.en;document.getElementById("formMessage").textContent="";document.getElementById("requestModal").style.display="block"}
+function closeModal(id){document.getElementById(id).style.display="none"}
+function providerInfo(){alert(tx("providerMsg"))}
+document.getElementById("language").addEventListener("change",e=>setLanguage(e.target.value));
+document.getElementById("search").addEventListener("input",renderServices);
+document.getElementById("requestForm").addEventListener("submit",e=>{e.preventDefault();document.getElementById("formMessage").textContent=tx("submitted");});
+setLanguage("rw");
+</script>
+</body></html>

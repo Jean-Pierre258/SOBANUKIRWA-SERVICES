@@ -1,1036 +1,951 @@
+
 <!DOCTYPE html>
-<html lang="rw">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="SOBANUKIRWA SERVICES - Serivisi za online ahantu hamwe.">
-<title>SOBANUKIRWA SERVICES</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123a72">
+  <title>SOBANUKIRWA SERVICES</title>
+  <style>
+    :root {
+      --primary: #123a72;
+      --primary2: #1769aa;
+      --bg: #f4f7fb;
+      --text: #1b2638;
+      --muted: #667085;
+      --border: #e1e7ef;
+      --white: #fff;
+      --danger: #b42318;
+      --success: #067647;
+    }
 
-<script src="config.js"></script>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
 
-<style>
-:root{
-  --blue:#123b70;
-  --blue2:#1c5b9d;
-  --gold:#f4bd32;
-  --bg:#f4f7fb;
-  --ink:#182334;
-  --muted:#637083;
-  --white:#fff;
-  --line:#e4eaf2;
-  --green:#16845b;
-  --red:#b42318;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  color:var(--ink);
-  background:var(--bg);
-}
-header{
-  background:white;
-  border-bottom:1px solid var(--line);
-  position:sticky;
-  top:0;
-  z-index:5;
-}
-.nav{
-  max-width:1200px;
-  margin:auto;
-  padding:15px 20px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-.brand{font-size:20px;font-weight:800;color:var(--blue)}
-.brand span{color:var(--gold)}
-button,select,input,textarea{
-  font:inherit;
-  padding:11px 13px;
-  border:1px solid #d5dce6;
-  border-radius:9px;
-}
-button{cursor:pointer;font-weight:700}
-.btn{
-  background:var(--blue);
-  color:white;
-  border:0;
-}
-.btn-secondary{
-  background:#e9eff7;
-  color:var(--blue);
-  border:0;
-}
-.nav-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.hero{
-  background:linear-gradient(120deg,var(--blue),var(--blue2));
-  color:white;
-  padding:55px 20px;
-}
-.hero-inner{
-  max-width:1160px;
-  margin:auto;
-  display:grid;
-  grid-template-columns:1.4fr 1fr;
-  gap:30px;
-  align-items:center;
-}
-.hero h1{font-size:clamp(32px,5vw,50px);line-height:1.1}
-.hero p{line-height:1.7;color:#e4eefb}
-.hero-card{
-  padding:25px;
-  border:1px solid #ffffff40;
-  border-radius:18px;
-  background:#ffffff12;
-}
-.hero-card strong{font-size:34px;color:var(--gold)}
-.search{
-  display:flex;
-  gap:8px;
-  background:white;
-  padding:10px;
-  border-radius:12px;
-}
-.search input{flex:1;min-width:0}
-main{max-width:1160px;margin:auto;padding:32px 20px 60px}
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-h2{color:var(--blue)}
-.muted{color:var(--muted);line-height:1.5}
-.filters{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-}
-.card{
-  background:white;
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:20px;
-  box-shadow:0 4px 15px #123b7008;
-}
-.card h3{color:var(--blue)}
-.card .icon{font-size:30px}
-.price{font-weight:800;margin:15px 0}
-.card button{width:100%}
-.notice{
-  padding:17px;
-  background:#fff8e4;
-  border:1px solid #f3dda0;
-  border-radius:12px;
-  margin-top:24px;
-}
-.panel{
-  margin-top:30px;
-  padding:22px;
-  background:white;
-  border:1px solid var(--line);
-  border-radius:15px;
-}
-.hidden{display:none!important}
-.message{
-  margin:12px 0;
-  padding:12px;
-  border-radius:9px;
-  display:none;
-  overflow-wrap:anywhere;
-}
-.message.ok{display:block;background:#ecfdf3;color:var(--green)}
-.message.error{display:block;background:#fef3f2;color:var(--red)}
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:13px;
-}
-.form-grid label{display:block;font-size:13px;font-weight:700}
-.form-grid input,.form-grid select,.form-grid textarea{
-  width:100%;
-  margin-top:6px;
-}
-.full{grid-column:1/-1}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:550px}
-th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line)}
-th{background:#f4f7fb}
-.badge{
-  display:inline-block;
-  background:#eaf2ff;
-  color:var(--blue);
-  border-radius:20px;
-  padding:5px 9px;
-  font-size:12px;
-}
-footer{background:#102d51;color:white;padding:26px 20px}
-.footer-inner{
-  max-width:1160px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  gap:15px;
-}
-.modal{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:10;
-  background:#07182dcc;
-  padding:18px;
-  overflow:auto;
-}
-.modal-box{
-  max-width:600px;
-  background:white;
-  border-radius:16px;
-  margin:5vh auto;
-  padding:24px;
-}
-.close{float:right}
-@media(max-width:800px){
-  .hero-inner{grid-template-columns:1fr}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:560px){
-  .grid,.form-grid{grid-template-columns:1fr}
-  .full{grid-column:auto}
-  .nav{align-items:flex-start}
-  .search{flex-direction:column}
-}
-</style>
+    header {
+      background: linear-gradient(120deg, var(--primary), var(--primary2));
+      color: white;
+      padding: 17px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .brand { font-weight: 800; font-size: 21px; }
+    .brand small {
+      display: block;
+      font-weight: 400;
+      font-size: 11px;
+      opacity: .85;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 28px auto;
+    }
+    .hero {
+      padding: 32px;
+      border-radius: 18px;
+      color: white;
+      background: linear-gradient(125deg, #123a72, #2086c7);
+      margin-bottom: 24px;
+    }
+    .hero h1 { margin: 0 0 12px; font-size: clamp(27px, 4vw, 40px); }
+    .hero p { max-width: 650px; line-height: 1.7; margin-bottom: 0; }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 18px rgba(20, 45, 80, .04);
+    }
+    .card h2, .card h3 { margin-top: 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 17px;
+    }
+    .service-card {
+      border: 1px solid var(--border);
+      padding: 19px;
+      border-radius: 13px;
+      background: white;
+    }
+    .service-icon { font-size: 30px; margin-bottom: 10px; }
+    .service-card h3 { margin: 0 0 8px; }
+    .muted { color: var(--muted); line-height: 1.55; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cfd8e3;
+      border-radius: 8px;
+      background: white;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary2);
+      box-shadow: 0 0 0 3px rgba(23,105,170,.12);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .field { margin-bottom: 15px; }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .btn-light { background: white; color: var(--primary); }
+    .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-danger { background: var(--danger); }
+    .btn-small { padding: 8px 11px; font-size: 13px; }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tabs button { background: #e8eef6; color: var(--primary); }
+    .tabs button.active { background: var(--primary); color: white; }
+
+    .notice {
+      padding: 12px 14px;
+      border-radius: 9px;
+      margin: 14px 0;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .notice.success { color: var(--success); background: #e8f7ef; }
+    .notice.error { color: var(--danger); background: #fff0ef; }
+    .notice.info { color: #175cd3; background: #eff8ff; }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #edf2f7;
+      color: #344054;
+    }
+    .badge.pending { background: #fff4d6; color: #854d0e; }
+    .badge.approved, .badge.completed { background: #dcfae6; color: #067647; }
+    .badge.rejected { background: #fee4e2; color: #b42318; }
+
+    .request-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: white;
+    }
+    .empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+    }
+    footer {
+      text-align: center;
+      padding: 25px 12px;
+      margin-top: 35px;
+      background: white;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .small { font-size: 12px; }
+    .divider { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    @media(max-width: 600px) {
+      header { padding: 15px 4%; }
+      .container { width: 94%; margin-top: 17px; }
+      .hero { padding: 23px; }
+      .card { padding: 16px; }
+      .header-actions { width: 100%; }
+    }
+  </style>
 </head>
-
 <body>
-
-<header>
-  <div class="nav">
-    <div class="brand">SOBANUKIRWA <span>SERVICES</span></div>
-
-    <div class="nav-actions">
-      <select id="language" aria-label="Language">
-        <option value="rw">🇷🇼 Kinyarwanda</option>
-        <option value="en">🇬🇧 English</option>
-        <option value="fr">🇫🇷 Français</option>
-      </select>
-
-      <button class="btn-secondary" id="loginBtn" onclick="openAuth('login')">
-        Injira / Login
-      </button>
-
-      <button class="btn" id="registerBtn" onclick="openAuth('register')">
-        Iyandikishe
-      </button>
-
-      <button class="btn-secondary hidden" id="accountBtn" onclick="showAccount()">
-        Konti yanjye
-      </button>
-
-      <button class="btn-secondary hidden" id="logoutBtn" onclick="logout()">
-        Sohoka
-      </button>
+  <header>
+    <div class="brand">
+      SOBANUKIRWA SERVICES
+      <small>YOUR SERVICES. ONE PLACE.</small>
     </div>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="hero-inner">
-    <div>
-      <span class="badge">SOBANUKIRWA SERVICES</span>
-
-      <h1 id="heroTitle">Serivisi ukeneye, ahantu hamwe.</h1>
-
-      <p id="heroText">
-        Shaka inzobere, saba serivisi, kandi ukurikirane ubusabe bwawe.
-      </p>
-
-      <div class="search">
-        <input id="search" placeholder="Shakisha serivisi...">
-        <button class="btn" onclick="renderServices()">Shakisha</button>
-      </div>
+    <div class="header-actions">
+      <button class="btn btn-light btn-small" id="headerLogin"
+              onclick="showAuth('login')">Login</button>
+      <button class="btn btn-light btn-small" id="headerRegister"
+              onclick="showAuth('register')">Create account</button>
+      <button class="btn btn-light btn-small hidden" id="headerDashboard"
+              onclick="showPage('dashboard')">My dashboard</button>
+      <button class="btn btn-light btn-small hidden" id="headerLogout"
+              onclick="logout()">Logout</button>
     </div>
+  </header>
 
-    <div class="hero-card">
-      <strong>🌐</strong>
-      <h2 style="color:white">20+ Categories</h2>
-      <p>Kinyarwanda · English · Français</p>
-      <p>Serivisi zemezwa na Admin mbere yo kugaragara ku rubuga.</p>
-    </div>
-  </div>
-</section>
+  <main class="container">
+    <div id="globalMessage" aria-live="polite"></div>
 
-<main>
-  <div class="section-head">
-    <div>
-      <h2 id="servicesTitle">Serivisi zacu</h2>
-      <p class="muted" id="servicesDescription">
-        Hitamo serivisi ukeneye muri serivisi zemejwe.
-      </p>
-    </div>
-    <span class="badge" id="serviceCount">0 services</span>
-  </div>
-
-  <div class="filters">
-    <select id="category">
-      <option value="all">Ibyiciro byose</option>
-    </select>
-
-    <button class="btn-secondary" onclick="loadServices()">
-      ↻ Refresh
-    </button>
-  </div>
-
-  <div id="mainMessage" class="message"></div>
-  <div id="services" class="grid"></div>
-
-  <div class="notice">
-    <strong>Urashaka gutanga serivisi?</strong>
-    <p>
-      Iyandikishe nka Provider, wongere serivisi yawe,
-      utegereze ko Admin ayemeza.
-    </p>
-    <button class="btn" onclick="providerAction()">Tanga serivisi</button>
-  </div>
-
-  <!-- CUSTOMER ACCOUNT -->
-  <section id="accountPanel" class="panel hidden">
-    <h2 id="accountTitle">Konti yanjye</h2>
-    <p id="accountInfo" class="muted"></p>
-
-    <div id="customerArea" class="hidden">
-      <h3>Ubusabe bwanjye / My requests</h3>
-      <button class="btn-secondary" onclick="loadMyRequests()">Refresh requests</button>
-      <div id="myRequestsMessage" class="message"></div>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Request ID</th>
-              <th>Service ID</th>
-              <th>Status</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-          <tbody id="myRequestsBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="providerArea" class="hidden">
-      <h3>Ongeraho serivisi / Submit a service</h3>
-      <p class="muted">
-        Serivisi nshya iba itaremezwa kugeza Admin ayisuzumye.
-      </p>
-
-      <form id="serviceForm" class="form-grid">
-        <label>
-          Category
-          <select id="serviceCategory" required></select>
-        </label>
-
-        <label>
-          Language
-          <select id="serviceLanguage">
-            <option value="rw">Kinyarwanda</option>
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-          </select>
-        </label>
-
-        <label class="full">
-          Service name
-          <input id="serviceName" maxlength="160" required>
-        </label>
-
-        <label class="full">
-          Description
-          <textarea id="serviceDescription" rows="3" maxlength="4000" required></textarea>
-        </label>
-
-        <label class="full">
-          Requirements
-          <textarea id="serviceRequirements" rows="2" maxlength="2000"></textarea>
-        </label>
-
-        <label>
-          Price
-          <input id="servicePrice" type="number" min="0" step="1" value="0" required>
-        </label>
-
-        <label>
-          Currency
-          <select id="serviceCurrency">
-            <option value="RWF">RWF</option>
-            <option value="USD">USD</option>
-          </select>
-        </label>
-
-        <label class="full">
-          Delivery time
-          <input id="deliveryTime" maxlength="100" placeholder="Urugero: iminsi 2">
-        </label>
-
-        <div class="full">
-          <button class="btn" type="submit">Ohereza serivisi</button>
+    <!-- PUBLIC HOME -->
+    <section id="homePage">
+      <div class="hero">
+        <h1>Welcome to SOBANUKIRWA SERVICES</h1>
+        <p>
+          Discover available services, create an account, submit your requests,
+          and follow their progress from one convenient platform.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+          <button class="btn btn-light" onclick="showAuth('register')">
+            Get started
+          </button>
+          <button class="btn btn-light" onclick="showAuth('login')">
+            Sign in
+          </button>
         </div>
-      </form>
-
-      <div id="serviceMessage" class="message"></div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="footer-inner">
-    <div>
-      <strong>SOBANUKIRWA SERVICES</strong>
-      <p>Serivisi zawe, mu buryo bworoshye.</p>
-    </div>
-    <div>© <span id="year"></span> SOBANUKIRWA SERVICES</div>
-  </div>
-</footer>
-
-<!-- AUTH MODAL -->
-<div class="modal" id="authModal">
-  <div class="modal-box">
-    <button class="close btn-secondary" onclick="closeModal('authModal')">✕</button>
-
-    <h2 id="authTitle">Injira</h2>
-
-    <form id="authForm" class="form-grid">
-      <div id="nameField" class="full hidden">
-        <label>
-          Amazina yose / Full name
-          <input id="fullName" maxlength="120">
-        </label>
       </div>
 
-      <label class="full">
-        Email
-        <input id="email" type="email" autocomplete="email" required maxlength="160">
-      </label>
+      <div class="card">
+        <div class="row">
+          <div>
+            <h2>Our services</h2>
+            <p class="muted">Explore the services available on the platform.</p>
+          </div>
+          <button class="btn btn-outline btn-small" onclick="loadServices()">
+            Refresh
+          </button>
+        </div>
+        <div id="publicServices" class="grid">
+          <div class="empty">Loading services...</div>
+        </div>
+      </div>
+    </section>
 
-      <label class="full">
-        Password
-        <input id="password" type="password" autocomplete="current-password" required minlength="10">
-      </label>
+    <!-- AUTHENTICATION -->
+    <section id="authPage" class="hidden">
+      <div class="card">
+        <div class="tabs">
+          <button class="btn active" id="loginTab" onclick="showAuth('login')">
+            Login
+          </button>
+          <button class="btn" id="registerTab" onclick="showAuth('register')">
+            Register
+          </button>
+        </div>
 
-      <div id="roleField" class="full hidden">
-        <label>
-          Account type
-          <select id="role">
-            <option value="customer">Customer</option>
-            <option value="provider">Provider</option>
-          </select>
-        </label>
+        <div id="authMessage" aria-live="polite"></div>
+
+        <form id="loginForm">
+          <h2>Welcome back</h2>
+          <p class="muted">Sign in to access your account.</p>
+          <div class="field">
+            <label for="loginEmail">Email address</label>
+            <input id="loginEmail" name="email" type="email"
+                   autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" name="password" type="password"
+                   autocomplete="current-password" required>
+          </div>
+          <button class="btn" type="submit" id="loginButton">Login</button>
+        </form>
+
+        <form id="registerForm" class="hidden">
+          <h2>Create your account</h2>
+          <p class="muted">Fill in the details below to register.</p>
+
+          <div class="field">
+            <label for="regName">Full name</label>
+            <input id="regName" name="full_name" type="text"
+                   autocomplete="name" minlength="2" required>
+          </div>
+          <div class="field">
+            <label for="regEmail">Email address</label>
+            <input id="regEmail" name="email" type="email"
+                   autocomplete="email" required>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="regPassword">Password</label>
+              <input id="regPassword" name="password" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+            <div class="field">
+              <label for="regPasswordConfirm">Confirm password</label>
+              <input id="regPasswordConfirm" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="regLanguage">Preferred language</label>
+            <select id="regLanguage" name="preferred_language">
+              <option value="en">English</option>
+              <option value="rw">Kinyarwanda</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+          <button class="btn" type="submit" id="registerButton">
+            Create account
+          </button>
+          <p class="muted small">
+            Use a strong password and keep it private.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <!-- USER DASHBOARD -->
+    <section id="dashboardPage" class="hidden">
+      <div class="hero">
+        <h1 id="welcomeName">My dashboard</h1>
+        <p>Manage your profile, explore services, and track your requests.</p>
       </div>
 
-      <div class="full">
-        <button class="btn" type="submit" id="authSubmit">Injira</button>
+      <div class="grid">
+        <div class="card">
+          <p class="muted">Account</p>
+          <h3 id="accountName">-</h3>
+          <p id="accountEmail" class="muted">-</p>
+          <span id="accountRole" class="badge">User</span>
+        </div>
+        <div class="card">
+          <p class="muted">My requests</p>
+          <h2 id="requestCount">0</h2>
+          <button class="btn btn-outline btn-small"
+                  onclick="loadMyRequests()">Refresh requests</button>
+        </div>
       </div>
-    </form>
 
-    <div id="authMessage" class="message"></div>
-
-    <p class="muted">
-      Ntugasangize undi muntu password yawe.
-    </p>
-  </div>
-</div>
-
-<!-- REQUEST MODAL -->
-<div class="modal" id="requestModal">
-  <div class="modal-box">
-    <button class="close btn-secondary" onclick="closeModal('requestModal')">✕</button>
-
-    <h2>Saba serivisi / Request a service</h2>
-    <p id="selectedServiceName" class="muted"></p>
-
-    <form id="requestForm" class="form-grid">
-      <input type="hidden" id="selectedServiceId">
-
-      <label class="full">
-        Telefoni (si ngombwa)
-        <input id="requestPhone" maxlength="40">
-      </label>
-
-      <label class="full">
-        Sobanura ibyo ukeneye
-        <textarea id="requestDetails" rows="4" maxlength="4000" required></textarea>
-      </label>
-
-      <div class="full">
-        <button class="btn" type="submit">Ohereza ubusabe</button>
+      <div class="card">
+        <h2>Request a service</h2>
+        <div id="requestMessage" aria-live="polite"></div>
+        <form id="requestForm">
+          <div class="field">
+            <label for="serviceSelect">Select service</label>
+            <select id="serviceSelect" required>
+              <option value="">Loading services...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="requestDescription">Describe your request</label>
+            <textarea id="requestDescription" required minlength="3"
+              placeholder="Explain the service you need..."></textarea>
+          </div>
+          <button class="btn" id="requestButton" type="submit">
+            Submit request
+          </button>
+        </form>
       </div>
-    </form>
 
-    <div id="requestMessage" class="message"></div>
-  </div>
-</div>
+      <div class="card">
+        <div class="row">
+          <h2>My requests</h2>
+          <button class="btn btn-outline btn-small"
+                  onclick="loadMyRequests()">Refresh</button>
+        </div>
+        <div id="myRequests"><div class="empty">No requests loaded.</div></div>
+      </div>
 
-<script>
-"use strict";
+      <div class="card">
+        <h2>Account settings</h2>
+        <div id="passwordMessage" aria-live="polite"></div>
+        <form id="passwordForm">
+          <div class="field">
+            <label for="currentPassword">Current password</label>
+            <input id="currentPassword" type="password"
+                   autocomplete="current-password" required>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="newPassword">New password</label>
+              <input id="newPassword" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+            <div class="field">
+              <label for="confirmNewPassword">Confirm new password</label>
+              <input id="confirmNewPassword" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+          </div>
+          <button class="btn btn-outline" type="submit">Change password</button>
+        </form>
+      </div>
+    </section>
+  </main>
 
-/* =====================================================
-   CONFIGURATION
-===================================================== */
+  <footer>
+    <strong>SOBANUKIRWA SERVICES</strong>
+    <p>Services and support in one place.</p>
+    <span id="footerYear"></span>
+  </footer>
 
-const API_URL = (window.SOBANUKIRWA_CONFIG || {}).API_URL || "";
+  <script>
+    /*
+      IMPORTANT:
+      Replace this value with your deployed Google Apps Script Web App URL.
+      It must normally end in /exec.
+    */
+    const API_URL = "https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
 
-const $ = id => document.getElementById(id);
+    const SESSION_KEY = "sobanukirwa_services_session";
+    let currentUser = null;
+    let currentToken = "";
 
-let currentUser = null;
-let sessionToken = sessionStorage.getItem("ss_session_token") || "";
-let services = [];
-let selectedService = null;
-let authMode = "login";
-let language = "rw";
+    const $ = id => document.getElementById(id);
 
-const categories = [
-  ["documents","📄","Documents & Writing","Inyandiko n'ubwanditsi","Documents et rédaction"],
-  ["jobs","💼","Jobs & Careers","Akazi n'umwuga","Emploi et carrière"],
-  ["education","🎓","Education","Uburezi","Éducation"],
-  ["business","🏢","Business","Ubucuruzi","Entreprise"],
-  ["data","📊","Data Analysis","Isesengura ry'amakuru","Analyse de données"],
-  ["design","🎨","Graphic Design","Igishushanyo","Design graphique"],
-  ["web","💻","Websites & Software","Imbuga na software","Sites web et logiciels"],
-  ["translation","🌐","Translation","Ubusemuzi","Traduction"],
-  ["marketing","📣","Digital Marketing","Kwamamaza kuri internet","Marketing numérique"],
-  ["video","🎬","Video & Photo","Video n'amafoto","Vidéo et photo"],
-  ["applications","📝","Online Applications","Ubusabe bwo kuri internet","Demandes en ligne"],
-  ["it","🖥️","IT Support","Ubufasha bwa IT","Assistance informatique"],
-  ["accounting","🧾","Accounting","Ibaruramari","Comptabilité"],
-  ["pdf","📑","PDF Tools","Ibikoresho bya PDF","Outils PDF"],
-  ["health","🏥","Health Reporting","Raporo z'ubuzima","Rapports de santé"],
-  ["travel","✈️","Travel","Ingendo","Voyage"],
-  ["realestate","🏠","Real Estate","Imitungo","Immobilier"],
-  ["ecommerce","🛒","E-commerce","Ubucuruzi bwo kuri internet","Commerce en ligne"],
-  ["personal","✨","Personal Services","Serivisi bwite","Services personnels"],
-  ["training","📚","Training","Amahugurwa","Formation"]
-];
+    $("footerYear").textContent = "© " + new Date().getFullYear();
 
-const text = {
- rw:{
-  login:"Injira",register:"Iyandikishe",
-  heroTitle:"Serivisi ukeneye, ahantu hamwe.",
-  heroText:"Shaka inzobere, saba serivisi, kandi ukurikirane ubusabe bwawe.",
-  services:"Serivisi zacu",
-  serviceDescription:"Hitamo muri serivisi zemejwe na Admin.",
-  all:"Ibyiciro byose",search:"Shakisha serivisi...",
-  request:"Saba iyi serivisi",empty:"Nta serivisi zemejwe ziraboneka.",
-  loginRequired:"Banza winjire muri konti yawe kugira ngo usabe serivisi.",
-  requestSent:"Ubusabe bwawe bwoherejwe neza.",
-  providerRequired:"Banza winjire nka Provider kugira ngo utange serivisi.",
-  loadError:"Ntibyashobotse kubona serivisi. Gerageza kongera.",
-  created:"Konti yawe yakozwe. Injira ukoresheje email na password.",
-  pending:"Itegereje kwemezwa",
-  price:"Igiciro kizamenyeshwa"
- },
- en:{
-  login:"Login",register:"Register",
-  heroTitle:"The services you need, all in one place.",
-  heroText:"Find professionals, request services and track your requests.",
-  services:"Our services",
-  serviceDescription:"Choose from services approved by Admin.",
-  all:"All categories",search:"Search services...",
-  request:"Request this service",empty:"No approved services are available yet.",
-  loginRequired:"Please log in before requesting a service.",
-  requestSent:"Your request was submitted successfully.",
-  providerRequired:"Log in as a Provider to submit a service.",
-  loadError:"Could not load services. Please try again.",
-  created:"Account created. Please log in.",
-  pending:"Pending approval",
-  price:"Price to be confirmed"
- },
- fr:{
-  login:"Connexion",register:"S'inscrire",
-  heroTitle:"Les services dont vous avez besoin, au même endroit.",
-  heroText:"Trouvez des professionnels, demandez des services et suivez vos demandes.",
-  services:"Nos services",
-  serviceDescription:"Choisissez parmi les services approuvés par l'administrateur.",
-  all:"Toutes les catégories",search:"Rechercher un service...",
-  request:"Demander ce service",empty:"Aucun service approuvé n'est disponible.",
-  loginRequired:"Veuillez vous connecter avant de demander un service.",
-  requestSent:"Votre demande a été envoyée.",
-  providerRequired:"Connectez-vous comme prestataire pour proposer un service.",
-  loadError:"Impossible de charger les services. Réessayez.",
-  created:"Compte créé. Veuillez vous connecter.",
-  pending:"En attente d'approbation",
-  price:"Prix à confirmer"
- }
-};
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[ch]);
+    }
 
-function tx(key){
-  return (text[language] && text[language][key]) ||
-         (text.en && text.en[key]) || key;
-}
+    function showMessage(elementId, message, type = "info") {
+      const element = $(elementId);
+      if (!element) return;
+      element.innerHTML =
+        '<div class="notice ' + type + '">' + escapeHtml(message) + '</div>';
+    }
 
-function escapeHtml(value){
-  return String(value ?? "").replace(/[&<>"']/g, ch => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",
-    '"':"&quot;","'":"&#39;"
-  })[ch]);
-}
+    function clearMessage(elementId) {
+      if ($(elementId)) $(elementId).innerHTML = "";
+    }
 
-function showMessage(id,message,type="error"){
-  const el = $(id);
-  el.textContent = message;
-  el.className = "message " + type;
-}
+    function setBusy(buttonId, busy, busyText = "Please wait...") {
+      const button = $(buttonId);
+      if (!button) return;
 
-function clearMessage(id){
-  const el = $(id);
-  el.textContent = "";
-  el.className = "message";
-}
+      if (busy) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = busyText;
+        button.disabled = true;
+      } else {
+        button.textContent = button.dataset.originalText || button.textContent;
+        button.disabled = false;
+      }
+    }
 
+    /*
+      All requests are sent as JSON text using text/plain.
+      This avoids triggering a CORS preflight in common Apps Script setups.
+      The Apps Script deployment must still allow the web app to be reached.
+    */
+    async function api(action, data = {}) {
+      if (!API_URL || API_URL.includes("PASTE_YOUR")) {
+        throw new Error("Banza ushyiremo URL nyayo ya Google Apps Script /exec muri index.html.");
+      }
 
-/* =====================================================
-   API CLIENT
-===================================================== */
+      let response;
+      try {
+        response = await fetch(API_URL, {
+          method: "POST",
+          redirect: "follow",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            action: action,
+            token: currentToken,
+            ...data
+          })
+        });
+      } catch (error) {
+        throw new Error(
+          "Ntibyashobotse kugera kuri API. Genza URL ya Apps Script /exec, deployment na internet."
+        );
+      }
 
-async function api(action,payload={}){
-  if(!API_URL || !API_URL.endsWith("/exec")){
-    throw new Error("Reba public/config.js: API_URL igomba kuba URL nyayo ya Apps Script irangirana na /exec.");
-  }
+      const raw = await response.text();
+      let result;
 
-  const response = await fetch(API_URL,{
-    method:"POST",
-    headers:{"Content-Type":"text/plain;charset=utf-8"},
-    body:JSON.stringify({
-      action,
-      ...payload
-    })
-  });
+      try {
+        result = JSON.parse(raw);
+      } catch {
+        throw new Error(
+          "Server ntiyagaruye JSON iteganyijwe. Reba Apps Script deployment na doPost()."
+        );
+      }
 
-  if(!response.ok){
-    throw new Error("API request failed: HTTP " + response.status);
-  }
+      if (!response.ok) {
+        throw new Error(result.message || result.error ||
+          ("Server error: " + response.status));
+      }
 
-  const result = await response.json();
+      if (result.success === false || result.ok === false) {
+        throw new Error(result.message || result.error || "Igikorwa nticyakunze.");
+      }
 
-  if(!result.ok){
-    throw new Error(result.error || "Request failed.");
-  }
+      return result;
+    }
 
-  return result.data;
-}
+    function getPayload(result) {
+      return result?.data ?? result?.result ?? result;
+    }
 
+    function getArray(result) {
+      const payload = getPayload(result);
+      if (Array.isArray(payload)) return payload;
+      if (Array.isArray(payload?.services)) return payload.services;
+      if (Array.isArray(payload?.requests)) return payload.requests;
+      if (Array.isArray(payload?.items)) return payload.items;
+      if (Array.isArray(result?.services)) return result.services;
+      if (Array.isArray(result?.requests)) return result.requests;
+      return [];
+    }
 
-/* =====================================================
-   LANGUAGE AND CATEGORIES
-===================================================== */
-
-function setupCategories(){
-  const options = categories.map(c => {
-    const label = c[language === "rw" ? 3 : language === "fr" ? 4 : 2];
-    return `<option value="${escapeHtml(c[0])}">${c[1]} ${escapeHtml(label)}</option>`;
-  }).join("");
-
-  $("category").innerHTML =
-    `<option value="all">${escapeHtml(tx("all"))}</option>` + options;
-
-  $("serviceCategory").innerHTML = options;
-}
-
-function setLanguage(value){
-  language = value;
-  document.documentElement.lang = value;
-
-  $("heroTitle").textContent = tx("heroTitle");
-  $("heroText").textContent = tx("heroText");
-  $("servicesTitle").textContent = tx("services");
-  $("servicesDescription").textContent = tx("serviceDescription");
-  $("search").placeholder = tx("search");
-  $("loginBtn").textContent = tx("login");
-  $("registerBtn").textContent = tx("register");
-
-  setupCategories();
-  renderServices();
-}
-
-$("language").addEventListener("change",event=>{
-  setLanguage(event.target.value);
-});
-
-
-/* =====================================================
-   SERVICES FROM GOOGLE SHEETS
-===================================================== */
-
-async function loadServices(){
-  $("services").innerHTML = "<p>Loading services...</p>";
-  clearMessage("mainMessage");
-
-  try{
-    const result = await api("listServices",{language});
-    services = Array.isArray(result.services) ? result.services : [];
-    renderServices();
-  }catch(error){
-    services = [];
-    renderServices();
-    showMessage("mainMessage",error.message || tx("loadError"));
-  }
-}
-
-function renderServices(){
-  const query = $("search").value.trim().toLowerCase();
-  const category = $("category").value;
-
-  const filtered = services.filter(service=>{
-    const name = String(service.name || "").toLowerCase();
-    const description = String(service.description || "").toLowerCase();
-
-    return (category === "all" || service.categoryId === category) &&
-      (name.includes(query) || description.includes(query));
-  });
-
-  $("serviceCount").textContent = filtered.length + " services";
-
-  if(!filtered.length){
-    $("services").innerHTML =
-      `<div class="card"><p>${escapeHtml(tx("empty"))}</p></div>`;
-    return;
-  }
-
-  $("services").innerHTML = filtered.map(service=>{
-    const categoryItem = categories.find(c=>c[0]===service.categoryId);
-    const icon = categoryItem ? categoryItem[1] : "🌐";
-    const price = Number(service.price) > 0
-      ? Number(service.price).toLocaleString() + " " + escapeHtml(service.currency || "RWF")
-      : tx("price");
-
-    return `
-      <article class="card">
-        <div class="icon">${icon}</div>
-        <h3>${escapeHtml(service.name)}</h3>
-        <p class="muted">${escapeHtml(service.description || "")}</p>
-        <div class="price">${price}</div>
-        <button class="btn" onclick="openRequest('${escapeHtml(service.serviceId)}')">
-          ${escapeHtml(tx("request"))}
-        </button>
-      </article>
-    `;
-  }).join("");
-}
-
-$("category").addEventListener("change",renderServices);
-$("search").addEventListener("input",renderServices);
-
-
-/* =====================================================
-   LOGIN AND REGISTRATION
-===================================================== */
-
-function openAuth(mode){
-  authMode = mode;
-  $("authForm").reset();
-  clearMessage("authMessage");
-
-  const registering = mode === "register";
-
-  $("authTitle").textContent = registering ? tx("register") : tx("login");
-  $("authSubmit").textContent = registering ? tx("register") : tx("login");
-  $("nameField").classList.toggle("hidden",!registering);
-  $("roleField").classList.toggle("hidden",!registering);
-
-  $("fullName").required = registering;
-
-  $("authModal").style.display = "block";
-}
-
-function closeModal(id){
-  $(id).style.display = "none";
-}
-
-$("authForm").addEventListener("submit",async event=>{
-  event.preventDefault();
-  clearMessage("authMessage");
-
-  const email = $("email").value.trim();
-  const password = $("password").value;
-
-  try{
-    if(authMode === "register"){
-      const fullName = $("fullName").value.trim();
-      const role = $("role").value;
-
-      await api("register",{
-        fullName,
-        email,
-        password,
-        role,
-        language
+    function showPage(page) {
+      ["homePage", "authPage", "dashboardPage"].forEach(id => {
+        $(id).classList.add("hidden");
       });
 
-      showMessage("authMessage",tx("created"),"ok");
+      const target = {
+        home: "homePage",
+        auth: "authPage",
+        dashboard: "dashboardPage"
+      }[page];
 
-      // Switch to login mode after successful registration.
-      authMode = "login";
-      $("authTitle").textContent = tx("login");
-      $("authSubmit").textContent = tx("login");
-      $("nameField").classList.add("hidden");
-      $("roleField").classList.add("hidden");
-      $("fullName").required = false;
-      $("password").value = "";
-
-      return;
+      if (target) $(target).classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    const result = await api("login",{email,password});
+    function showAuth(mode) {
+      showPage("auth");
+      const login = mode === "login";
 
-    sessionToken = result.token;
-    currentUser = result.user;
+      $("loginForm").classList.toggle("hidden", !login);
+      $("registerForm").classList.toggle("hidden", login);
+      $("loginTab").classList.toggle("active", login);
+      $("registerTab").classList.toggle("active", !login);
 
-    // Keep the token in this browser tab session.
-    sessionStorage.setItem("ss_session_token",sessionToken);
-
-    closeModal("authModal");
-    updateAuthUI();
-    showAccount();
-  }catch(error){
-    showMessage("authMessage",error.message || "Authentication failed.");
-  }
-});
-
-async function restoreSession(){
-  if(!sessionToken) return;
-
-  try{
-    currentUser = await api("me",{token:sessionToken});
-    updateAuthUI();
-  }catch(error){
-    sessionStorage.removeItem("ss_session_token");
-    sessionToken = "";
-    currentUser = null;
-    updateAuthUI();
-  }
-}
-
-function updateAuthUI(){
-  const signedIn = Boolean(currentUser);
-
-  $("loginBtn").classList.toggle("hidden",signedIn);
-  $("registerBtn").classList.toggle("hidden",signedIn);
-  $("accountBtn").classList.toggle("hidden",!signedIn);
-  $("logoutBtn").classList.toggle("hidden",!signedIn);
-}
-
-async function logout(){
-  try{
-    if(sessionToken){
-      await api("logout",{token:sessionToken});
-    }
-  }catch(error){
-    console.warn("Logout request failed.");
-  }
-
-  sessionToken = "";
-  currentUser = null;
-  sessionStorage.removeItem("ss_session_token");
-
-  $("accountPanel").classList.add("hidden");
-  updateAuthUI();
-}
-
-
-/* =====================================================
-   ACCOUNT DASHBOARD
-===================================================== */
-
-function showAccount(){
-  if(!currentUser){
-    openAuth("login");
-    return;
-  }
-
-  $("accountPanel").classList.remove("hidden");
-  $("accountInfo").textContent =
-    currentUser.fullName + " · " +
-    currentUser.email + " · " +
-    currentUser.role;
-
-  $("customerArea").classList.toggle(
-    "hidden",
-    currentUser.role !== "customer"
-  );
-
-  $("providerArea").classList.toggle(
-    "hidden",
-    !["provider","admin"].includes(currentUser.role)
-  );
-
-  setupCategories();
-
-  if(currentUser.role === "customer"){
-    loadMyRequests();
-  }
-
-  $("accountPanel").scrollIntoView({behavior:"smooth"});
-}
-
-async function loadMyRequests(){
-  if(!currentUser || currentUser.role !== "customer") return;
-
-  clearMessage("myRequestsMessage");
-
-  try{
-    const result = await api("listMyRequests",{token:sessionToken});
-    const requests = result.requests || [];
-
-    if(!requests.length){
-      $("myRequestsBody").innerHTML =
-        '<tr><td colspan="4">Nta busabe uratanga.</td></tr>';
-      return;
+      clearMessage("authMessage");
     }
 
-    $("myRequestsBody").innerHTML = requests.map(request=>`
-      <tr>
-        <td>${escapeHtml(request.orderId)}</td>
-        <td>${escapeHtml(request.serviceId)}</td>
-        <td><span class="badge">${escapeHtml(request.status)}</span></td>
-        <td>${escapeHtml(request.createdAt)}</td>
-      </tr>
-    `).join("");
-  }catch(error){
-    showMessage("myRequestsMessage",error.message);
-  }
-}
+    function updateHeader() {
+      const loggedIn = Boolean(currentUser && currentToken);
 
+      $("headerLogin").classList.toggle("hidden", loggedIn);
+      $("headerRegister").classList.toggle("hidden", loggedIn);
+      $("headerDashboard").classList.toggle("hidden", !loggedIn);
+      $("headerLogout").classList.toggle("hidden", !loggedIn);
+    }
 
-/* =====================================================
-   CUSTOMER SERVICE REQUESTS
-===================================================== */
+    function saveSession(user, token) {
+      currentUser = user || null;
+      currentToken = token || "";
 
-function openRequest(serviceId){
-  selectedService = services.find(s=>s.serviceId===serviceId);
+      if (currentUser && currentToken) {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+          user: currentUser,
+          token: currentToken
+        }));
+      } else {
+        sessionStorage.removeItem(SESSION_KEY);
+      }
 
-  if(!selectedService){
-    showMessage("mainMessage","Service not found.");
-    return;
-  }
+      updateHeader();
+    }
 
-  if(!currentUser || currentUser.role !== "customer"){
-    showMessage("mainMessage",tx("loginRequired"));
-    openAuth("login");
-    return;
-  }
+    function restoreSession() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+        if (saved?.user && saved?.token) {
+          currentUser = saved.user;
+          currentToken = saved.token;
+          updateHeader();
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
 
-  $("selectedServiceId").value = serviceId;
-  $("selectedServiceName").textContent = selectedService.name;
-  $("requestPhone").value = "";
-  $("requestDetails").value = "";
+    function normalizeUser(result) {
+      const payload = getPayload(result);
+      return payload.user || payload.account || payload;
+    }
 
-  clearMessage("requestMessage");
-  $("requestModal").style.display = "block";
-}
+    function getToken(result) {
+      const payload = getPayload(result);
+      return payload.token || payload.sessionToken || result.token || "";
+    }
 
-$("requestForm").addEventListener("submit",async event=>{
-  event.preventDefault();
-  clearMessage("requestMessage");
+    async function loadServices() {
+      const publicContainer = $("publicServices");
+      publicContainer.innerHTML = '<div class="empty">Loading services...</div>';
 
-  if(!currentUser || currentUser.role !== "customer"){
-    showMessage("requestMessage","Customer login required.");
-    return;
-  }
+      try {
+        const result = await api("services");
+        const services = getArray(result);
+        renderPublicServices(services);
+        renderServiceOptions(services);
+      } catch (error) {
+        publicContainer.innerHTML =
+          '<div class="empty">Serivisi ntizashoboye kuzanwa. ' +
+          escapeHtml(error.message) + '</div>';
+      }
+    }
 
-  try{
-    await api("createRequest",{
-      token:sessionToken,
-      serviceId:$("selectedServiceId").value,
-      phone:$("requestPhone").value.trim(),
-      details:$("requestDetails").value.trim()
+    function serviceName(service) {
+      return service.name || service.service_name ||
+        service.title || service.service || "Service";
+    }
+
+    function serviceDescription(service) {
+      return service.description || service.details ||
+        service.summary || "Contact us for more information about this service.";
+    }
+
+    function serviceId(service) {
+      return service.id ?? service.service_id ?? service.name ??
+        service.service_name ?? "";
+    }
+
+    function renderPublicServices(services) {
+      const container = $("publicServices");
+
+      if (!services.length) {
+        container.innerHTML =
+          '<div class="empty">Nta serivisi zigaragaye ubu.</div>';
+        return;
+      }
+
+      container.innerHTML = services.map(service => `
+        <article class="service-card">
+          <div class="service-icon">✦</div>
+          <h3>${escapeHtml(serviceName(service))}</h3>
+          <p class="muted">${escapeHtml(serviceDescription(service))}</p>
+          <button class="btn btn-small" onclick="startServiceRequest()">
+            Request service
+          </button>
+        </article>
+      `).join("");
+    }
+
+    function renderServiceOptions(services) {
+      const select = $("serviceSelect");
+      if (!select) return;
+
+      if (!services.length) {
+        select.innerHTML = '<option value="">No services available</option>';
+        return;
+      }
+
+      select.innerHTML =
+        '<option value="">Choose a service</option>' +
+        services.map(service => `
+          <option value="${escapeHtml(serviceId(service))}">
+            ${escapeHtml(serviceName(service))}
+          </option>
+        `).join("");
+    }
+
+    function startServiceRequest() {
+      if (!currentUser || !currentToken) {
+        showAuth("login");
+        showMessage("authMessage",
+          "Injira muri konti yawe kugira ngo usabe serivisi.", "info");
+        return;
+      }
+      showPage("dashboard");
+      $("requestForm").scrollIntoView({ behavior: "smooth" });
+    }
+
+    $("registerForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("authMessage");
+
+      const full_name = $("regName").value.trim();
+      const email = $("regEmail").value.trim().toLowerCase();
+      const password = $("regPassword").value;
+      const confirmation = $("regPasswordConfirm").value;
+      const preferred_language = $("regLanguage").value;
+
+      if (password !== confirmation) {
+        showMessage("authMessage", "Passwords ntizihuye.", "error");
+        return;
+      }
+
+      if (password.length < 8) {
+        showMessage("authMessage",
+          "Password igomba kuba nibura inyuguti 8.", "error");
+        return;
+      }
+
+      setBusy("registerButton", true);
+
+      try {
+        const result = await api("register", {
+          full_name,
+          email,
+          password,
+          preferred_language
+        });
+
+        const payload = getPayload(result);
+        const user = normalizeUser(result);
+        const token = getToken(result);
+
+        if (token && user && (user.email || user.full_name || user.name)) {
+          saveSession(user, token);
+          showDashboard();
+          showMessage("globalMessage",
+            result.message || "Konti yawe yakozwe neza.", "success");
+        } else {
+          $("registerForm").reset();
+          showAuth("login");
+          $("loginEmail").value = email;
+          showMessage("authMessage",
+            result.message || payload.message ||
+            "Kwiyandikisha byagenze neza. Injira ukoresheje email na password byawe.",
+            "success");
+        }
+      } catch (error) {
+        showMessage("authMessage", error.message, "error");
+      } finally {
+        setBusy("registerButton", false);
+      }
     });
 
-    showMessage("requestMessage",tx("requestSent"),"ok");
+    $("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("authMessage");
+      setBusy("loginButton", true);
 
-    $("requestForm").reset();
+      try {
+        const result = await api("login", {
+          email: $("loginEmail").value.trim().toLowerCase(),
+          password: $("loginPassword").value
+        });
 
-    setTimeout(()=>{
-      closeModal("requestModal");
-      showAccount();
-    },1200);
-  }catch(error){
-    showMessage("requestMessage",error.message);
-  }
-});
+        const user = normalizeUser(result);
+        const token = getToken(result);
 
+        if (!token) {
+          throw new Error(
+            "Login response nta token irimo. Reba format ya response muri Code.gs."
+          );
+        }
 
-/* =====================================================
-   PROVIDER SERVICE SUBMISSION
-===================================================== */
-
-function providerAction(){
-  if(!currentUser){
-    showMessage("mainMessage",tx("providerRequired"));
-    openAuth("register");
-    $("role").value = "provider";
-    return;
-  }
-
-  if(currentUser.role !== "provider" && currentUser.role !== "admin"){
-    showMessage("mainMessage","Konti ya Customer ntishobora gutanga serivisi. Iyandikishe nka Provider.");
-    return;
-  }
-
-  showAccount();
-  $("providerArea").scrollIntoView({behavior:"smooth"});
-}
-
-$("serviceForm").addEventListener("submit",async event=>{
-  event.preventDefault();
-  clearMessage("serviceMessage");
-
-  if(!currentUser || !["provider","admin"].includes(currentUser.role)){
-    showMessage("serviceMessage","Provider login required.");
-    return;
-  }
-
-  try{
-    const result = await api("createService",{
-      token:sessionToken,
-      categoryId:$("serviceCategory").value,
-      language:$("serviceLanguage").value,
-      name:$("serviceName").value.trim(),
-      description:$("serviceDescription").value.trim(),
-      requirements:$("serviceRequirements").value.trim(),
-      price:Number($("servicePrice").value || 0),
-      currency:$("serviceCurrency").value,
-      deliveryTime:$("deliveryTime").value.trim()
+        saveSession(user, token);
+        showDashboard();
+        showMessage("globalMessage",
+          result.message || "Winjiye neza.", "success");
+      } catch (error) {
+        showMessage("authMessage", error.message, "error");
+      } finally {
+        setBusy("loginButton", false);
+      }
     });
 
-    showMessage(
-      "serviceMessage",
-      "Serivisi yakiriwe. Status: " + result.status,
-      "ok"
-    );
+    async function showDashboard() {
+      showPage("dashboard");
 
-    $("serviceForm").reset();
-    setupCategories();
-    await loadServices();
-  }catch(error){
-    showMessage("serviceMessage",error.message);
-  }
-});
+      const name = currentUser?.full_name ||
+        currentUser?.name || currentUser?.email || "My dashboard";
 
+      $("welcomeName").textContent = "Welcome, " + name;
+      $("accountName").textContent = name;
+      $("accountEmail").textContent = currentUser?.email || "";
+      $("accountRole").textContent = currentUser?.role || "User";
 
-/* =====================================================
-   INITIALIZATION
-===================================================== */
+      await loadServices();
+      await loadMyRequests();
+    }
 
-$("year").textContent = new Date().getFullYear();
+    async function loadMyRequests() {
+      const container = $("myRequests");
+      container.innerHTML = '<div class="empty">Loading requests...</div>';
 
-setLanguage("rw");
-restoreSession().finally(loadServices);
-</script>
+      try {
+        const result = await api("requests");
+        const requests = getArray(result);
+        $("requestCount").textContent = String(requests.length);
 
+        if (!requests.length) {
+          container.innerHTML =
+            '<div class="empty">Nta requests urasaba kugeza ubu.</div>';
+          return;
+        }
+
+        container.innerHTML = requests.map(request => {
+          const name = request.service_name || request.service ||
+            request.title || "Service request";
+          const status = request.status || "Pending";
+          const normalizedStatus = String(status).toLowerCase();
+          const badgeClass = ["approved", "completed", "rejected", "pending"]
+            .includes(normalizedStatus) ? normalizedStatus : "";
+
+          return `
+            <article class="request-item">
+              <div class="row">
+                <strong>${escapeHtml(name)}</strong>
+                <span class="badge ${badgeClass}">
+                  ${escapeHtml(status)}
+                </span>
+              </div>
+              <p class="muted">
+                ${escapeHtml(request.description || request.details || "")}
+              </p>
+              <p class="small muted">
+                ${escapeHtml(request.created_at || request.date || "")}
+              </p>
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        container.innerHTML =
+          '<div class="notice error">' + escapeHtml(error.message) + '</div>';
+      }
+    }
+
+    $("requestForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("requestMessage");
+
+      const selected = $("serviceSelect").value;
+      const description = $("requestDescription").value.trim();
+
+      if (!selected) {
+        showMessage("requestMessage", "Hitamo serivisi ubanze.", "error");
+        return;
+      }
+
+      setBusy("requestButton", true);
+
+      try {
+        /*
+          Verify this action name and field structure against Code.gs.
+          If your backend uses another action, change it here.
+        */
+        const result = await api("createRequest", {
+          service_id: selected,
+          service: selected,
+          description
+        });
+
+        showMessage("requestMessage",
+          result.message || "Request yawe yoherejwe.", "success");
+        $("requestForm").reset();
+        await loadMyRequests();
+      } catch (error) {
+        showMessage("requestMessage", error.message, "error");
+      } finally {
+        setBusy("requestButton", false);
+      }
+    });
+
+    $("passwordForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("passwordMessage");
+
+      const current_password = $("currentPassword").value;
+      const new_password = $("newPassword").value;
+      const confirmation = $("confirmNewPassword").value;
+
+      if (new_password !== confirmation) {
+        showMessage("passwordMessage",
+          "Password nshya ntizihuye.", "error");
+        return;
+      }
+
+      if (new_password.length < 8) {
+        showMessage("passwordMessage",
+          "Password nshya igomba kuba nibura inyuguti 8.", "error");
+        return;
+      }
+
+      try {
+        const result = await api("changePassword", {
+          current_password,
+          new_password
+        });
+
+        showMessage("passwordMessage",
+          result.message || "Password yahinduwe.", "success");
+        $("passwordForm").reset();
+      } catch (error) {
+        showMessage("passwordMessage", error.message, "error");
+      }
+    });
+
+    async function logout() {
+      try {
+        await api("logout");
+      } catch (_) {
+        // Clear the local session even if the server logout request fails.
+      }
+
+      saveSession(null, "");
+      currentUser = null;
+      currentToken = "";
+      showPage("home");
+      showMessage("globalMessage", "Wasohotse muri konti yawe.", "success");
+    }
+
+    async function validateSavedSession() {
+      if (!restoreSession()) return;
+
+      try {
+        const result = await api("me");
+        const payload = getPayload(result);
+        const user = payload.user || payload.account || payload;
+
+        if (user && (user.email || user.full_name || user.name)) {
+          saveSession(user, currentToken);
+          await showDashboard();
+        } else {
+          saveSession(null, "");
+          showPage("home");
+        }
+      } catch (_) {
+        saveSession(null, "");
+        showPage("home");
+      }
+    }
+
+    // Initial page
+    loadServices();
+    validateSavedSession();
+  </script>
 </body>
 </html>

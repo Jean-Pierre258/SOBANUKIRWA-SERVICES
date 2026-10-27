@@ -120,7 +120,26 @@ const services = [
 let lang="rw";
 function tx(k){return translations[lang][k]||translations.en[k]||k}
 function setLanguage(l){lang=l;document.documentElement.lang=l;document.querySelectorAll("[data-i18n]").forEach(el=>{let k=el.dataset.i18n;if(translations[l][k])el.textContent=translations[l][k]});document.querySelectorAll("[data-placeholder]").forEach(el=>el.placeholder=tx(el.dataset.placeholder));renderCategories();renderServices()}
-function renderCategories(){let sel=document.getElementById("category"),val=sel.value||"all";sel.innerHTML=`<option value="all">${tx("allCategories")}</option>`+categories.map(c=>`<option value="${c[0]}">${c[1]} ${c[({"rw":3,"en":2,"fr":4})[lang]===3?c[3]:c[({"rw":3,"en":2,"fr":4})[lang]]}</option>`).join("");if([...sel.options].some(o=>o.value===val))sel.value=val}
+
+function renderCategories() {
+  const sel = document.getElementById("category");
+  const val = sel.value || "all";
+
+  const nameIndex =
+    lang === "rw" ? 3 :
+    lang === "fr" ? 4 : 2;
+
+  sel.innerHTML =
+    `<option value="all">${tx("allCategories")}</option>` +
+    categories
+      .map(c => `<option value="${c[0]}">${c[1]} ${c[nameIndex]}</option>`)
+      .join("");
+
+  if ([...sel.options].some(o => o.value === val)) {
+    sel.value = val;
+  }
+}
+
 function renderServices(){
  const q=document.getElementById("search").value.toLowerCase(),cat=document.getElementById("category").value;
  const list=services.filter(s=>(cat==="all"||s.c===cat)&&((s.n[lang]||s.n.en).toLowerCase().includes(q)||(s.d[lang]||s.d.en).toLowerCase().includes(q)));

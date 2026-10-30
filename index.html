@@ -215,7 +215,8 @@
       .card { padding: 16px; }
       .header-actions { width: 100%; justify-content: flex-end; margin-left: 0; }
     }
-  </style>
+  .btn-success{background:#16803c!important;color:#fff!important;border:1px solid #16803c!important}.response-panel{line-height:1.6}
+</style>
 </head>
 <body>
   <header>
@@ -970,48 +971,40 @@
     async function loadMyRequests() {
       const container = $("myRequests");
       container.innerHTML = '<div class="empty">Loading requests...</div>';
-
       try {
         const result = await api("listMyRequests");
-        const requests = getArray(result);
+        const requests = getArray(result).filter(r => String(r.requester_id) === String(currentUser?.user_id || currentUser?.id || ""));
         $("requestCount").textContent = String(requests.length);
+        if (!requests.length) { container.innerHTML = '<div class="empty">Nta requests urasaba kugeza ubu.</div>'; return; }
+        container.innerHTML = requests.map(request => {
+          const name = request.service_name || request.service_title || "Service request";
+          const status = request.status || "PENDING";
+          const hasResponse = Boolean(String(request.response_text || "").trim());
+          const viewButton = hasResponse
+            ? `<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">🟢 View response</button>`
+            : `<button class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">View response</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
+          return `<article class="request-item"><div class="row"><strong>${escapeHtml(name)}</strong><span class="badge">${escapeHtml(status)}</span></div>
+            <p>${escapeHtml(request.message || "Nta bisobanuro byongeweho.")}</p>
+            <p class="small muted">${escapeHtml(request.created_at || "")}</p>
+            ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "Document wohereje")}</a></p>` : ""}
+            ${viewButton}<div id="response-${escapeHtml(request.order_id)}" class="response-panel" style="margin-top:10px"></div></article>`;
+        }).join("");
+      } catch (error) { container.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
+    }
 
-        if (!requests.length) {
-          container.innerHTML =
-            '<div class="empty">Nta requests urasaba kugeza ubu.</div>';
+    async function viewResponse(requestId) {
+      const panel = $("response-" + requestId);
+      if (!panel) return;
+      try {
+        const result = await api("viewRequestResponse", {order_id:requestId});
+        const data = getPayload(result);
+        if (!data.response_text) {
+          panel.innerHTML = '<div class="notice">Turagusaba kwihangana. Admin ntaragusubiza; uzamenyeshwa igihe igisubizo kizaba cyabonetse.</div>';
           return;
         }
-
-        container.innerHTML = requests.map(request => {
-          const name = request.service_name || request.service ||
-            request.title || "Service request";
-          const status = request.status || "Pending";
-          const normalizedStatus = String(status).toLowerCase();
-          const badgeClass = ["approved", "completed", "rejected", "pending"]
-            .includes(normalizedStatus) ? normalizedStatus : "";
-
-          return `
-            <article class="request-item">
-              <div class="row">
-                <strong>${escapeHtml(name)}</strong>
-                <span class="badge ${badgeClass}">
-                  ${escapeHtml(status)}
-                </span>
-              </div>
-              <p class="muted">
-                ${escapeHtml(request.description || request.details || "")}
-              </p>
-              <p class="small muted">
-                ${escapeHtml(request.created_at || request.date || "")}
-              </p>
-              ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "View attached document")}</a></p>` : ""}
-            </article>
-          `;
-        }).join("");
-      } catch (error) {
-        container.innerHTML =
-          '<div class="notice error">' + escapeHtml(error.message) + '</div>';
-      }
+        panel.innerHTML = `<div class="notice success"><strong>Igisubizo cya Admin</strong><p>${escapeHtml(data.response_text).replace(/\n/g,"<br>")}</p><p class="small muted">${escapeHtml(data.response_at || "")}</p>${data.response_attachment_url ? `<p><a target="_blank" rel="noopener" href="${escapeHtml(data.response_attachment_url)}">📎 ${escapeHtml(data.response_attachment_name || "Document ya Admin")}</a></p>` : ""}</div>`;
+        await loadMyRequests();
+      } catch (error) { panel.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
     }
 
     function readAttachmentAsBase64(file) {

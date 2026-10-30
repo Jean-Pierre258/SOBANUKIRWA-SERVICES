@@ -519,7 +519,7 @@ function openModal(title,fields,onSave) {
 
 async function fileToAttachment(file) {
  if(!file) return null;
- const allowed=/\\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
+ const allowed=/\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
  if(!allowed.test(file.name)) throw new Error("Allowed files: PDF, PNG, JPG, DOC, DOCX, XLS, XLSX, TXT.");
  if(file.size>5*1024*1024) throw new Error("Document must be 5 MB or smaller.");
  const dataUrl=await new Promise((resolve,reject)=>{

@@ -87,6 +87,10 @@
     }
     .service-icon { font-size: 30px; margin-bottom: 10px; }
     .service-card h3 { margin: 0 0 8px; }
+    .service-price { color: var(--success); font-weight: 800; font-size: 18px; margin: 12px 0; }
+    .service-category { display:inline-block; font-size:12px; padding:5px 8px; border-radius:20px; background:#eaf2fb; color:var(--primary); margin-bottom:9px; }
+    .service-filters { display:grid; grid-template-columns:2fr 1fr; gap:10px; margin:16px 0; }
+    @media(max-width:600px){ .service-filters {grid-template-columns:1fr;} }
     .muted { color: var(--muted); line-height: 1.55; }
     .row {
       display: flex;
@@ -250,6 +254,13 @@
             Refresh
           </button>
         </div>
+        <div class="service-filters">
+          <input id="serviceSearch" type="search" placeholder="Search services by name or category..." aria-label="Search services">
+          <select id="serviceCategory" aria-label="Filter by category">
+            <option value="">All 20 categories</option>
+          </select>
+        </div>
+        <p class="muted small">Prices are starting estimates in RWF. Confirm the final price with the provider before ordering.</p>
         <div id="publicServices" class="grid">
           <div class="empty">Loading services...</div>
         </div>
@@ -422,6 +433,49 @@
       It must normally end in /exec.
     */
     const API_URL = "https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
+
+    const DEFAULT_SERVICES = [
+      {service_id:'SRV001',category:'Technology',title:'Website Design',description:'Design and development of a responsive business website.',price:150000,currency:'RWF',status:'APPROVED',icon:'💻'},
+      {service_id:'SRV002',category:'Technology',title:'Computer and Phone Support',description:'Help with software, settings, troubleshooting and basic repairs.',price:10000,currency:'RWF',status:'APPROVED',icon:'💻'},
+      {service_id:'SRV003',category:'Education',title:'Private Tutoring',description:'One-to-one tutoring for school subjects per session.',price:10000,currency:'RWF',status:'APPROVED',icon:'📚'},
+      {service_id:'SRV004',category:'Education',title:'Online Course Support',description:'Help accessing online courses and learning platforms.',price:5000,currency:'RWF',status:'APPROVED',icon:'📚'},
+      {service_id:'SRV005',category:'Transport',title:'Local Transport Booking',description:'Assistance arranging local transport; final fare depends on distance.',price:5000,currency:'RWF',status:'APPROVED',icon:'🚗'},
+      {service_id:'SRV006',category:'Transport',title:'Delivery and Errand Service',description:'Local parcel delivery or errands; final fee depends on distance and load.',price:5000,currency:'RWF',status:'APPROVED',icon:'🚗'},
+      {service_id:'SRV007',category:'Home Services',title:'Home Cleaning',description:'Basic home cleaning service; price depends on home size.',price:20000,currency:'RWF',status:'APPROVED',icon:'🏠'},
+      {service_id:'SRV008',category:'Home Services',title:'Plumbing Assistance',description:'Basic plumbing inspection and minor repairs; materials charged separately.',price:15000,currency:'RWF',status:'APPROVED',icon:'🏠'},
+      {service_id:'SRV009',category:'Business',title:'Business Plan Writing',description:'Preparation of a basic business plan.',price:30000,currency:'RWF',status:'APPROVED',icon:'📊'},
+      {service_id:'SRV010',category:'Business',title:'Business Consultation',description:'One-hour business planning or operational consultation.',price:15000,currency:'RWF',status:'APPROVED',icon:'📊'},
+      {service_id:'SRV011',category:'Design and Creative',title:'Logo Design',description:'Custom logo concept and one revision.',price:15000,currency:'RWF',status:'APPROVED',icon:'🎨'},
+      {service_id:'SRV012',category:'Design and Creative',title:'Flyer or Poster Design',description:'Promotional flyer or poster design.',price:10000,currency:'RWF',status:'APPROVED',icon:'🎨'},
+      {service_id:'SRV013',category:'Writing and Translation',title:'CV Creation',description:'Professional CV formatting and writing.',price:5000,currency:'RWF',status:'APPROVED',icon:'✍️'},
+      {service_id:'SRV014',category:'Writing and Translation',title:'Cover Letter Writing',description:'Job-specific cover letter preparation.',price:3000,currency:'RWF',status:'APPROVED',icon:'✍️'},
+      {service_id:'SRV015',category:'Data and Statistics',title:'Statistical Data Analysis',description:'Basic statistical analysis and interpretation.',price:15000,currency:'RWF',status:'APPROVED',icon:'📈'},
+      {service_id:'SRV016',category:'Data and Statistics',title:'Excel Data Cleaning',description:'Cleaning, formatting and organizing a small spreadsheet.',price:10000,currency:'RWF',status:'APPROVED',icon:'📈'},
+      {service_id:'SRV017',category:'Health and Wellness',title:'Health Data Summary and Charts',description:'Summary tables and charts from supplied health data.',price:20000,currency:'RWF',status:'APPROVED',icon:'🩺'},
+      {service_id:'SRV018',category:'Health and Wellness',title:'Wellness Coaching Session',description:'General wellness guidance session, not medical diagnosis.',price:10000,currency:'RWF',status:'APPROVED',icon:'🩺'},
+      {service_id:'SRV019',category:'Marketing',title:'Social Media Post Design',description:'Design of one social media promotional post.',price:7000,currency:'RWF',status:'APPROVED',icon:'📣'},
+      {service_id:'SRV020',category:'Marketing',title:'Digital Marketing Consultation',description:'One-hour review of digital marketing options.',price:15000,currency:'RWF',status:'APPROVED',icon:'📣'},
+      {service_id:'SRV021',category:'Photography and Video',title:'Basic Event Photography',description:'Basic photography coverage; duration and travel affect price.',price:50000,currency:'RWF',status:'APPROVED',icon:'📷'},
+      {service_id:'SRV022',category:'Photography and Video',title:'Short Video Editing',description:'Editing a short video up to approximately one minute.',price:20000,currency:'RWF',status:'APPROVED',icon:'📷'},
+      {service_id:'SRV023',category:'Finance and Accounting',title:'Bookkeeping Support',description:'Basic transaction recording and categorization.',price:20000,currency:'RWF',status:'APPROVED',icon:'💰'},
+      {service_id:'SRV024',category:'Finance and Accounting',title:'Budget Preparation',description:'Personal or small-business budget preparation.',price:10000,currency:'RWF',status:'APPROVED',icon:'💰'},
+      {service_id:'SRV025',category:'Legal and Administrative',title:'Administrative Document Preparation',description:'Formatting and organizing non-legal administrative documents.',price:5000,currency:'RWF',status:'APPROVED',icon:'⚖️'},
+      {service_id:'SRV026',category:'Legal and Administrative',title:'Form Filling Assistance',description:'Help completing standard online or paper forms.',price:3000,currency:'RWF',status:'APPROVED',icon:'⚖️'},
+      {service_id:'SRV027',category:'Events',title:'Event Planning Consultation',description:'One-hour planning consultation.',price:15000,currency:'RWF',status:'APPROVED',icon:'🎉'},
+      {service_id:'SRV028',category:'Events',title:'Invitation Card Design',description:'Digital invitation card design.',price:8000,currency:'RWF',status:'APPROVED',icon:'🎉'},
+      {service_id:'SRV029',category:'Food and Catering',title:'Small Event Catering',description:'Basic catering estimate for a small event; confirm menu and guest count.',price:50000,currency:'RWF',status:'APPROVED',icon:'🍲'},
+      {service_id:'SRV030',category:'Food and Catering',title:'Cake Order Coordination',description:'Assistance coordinating a cake order; cake price depends on size.',price:5000,currency:'RWF',status:'APPROVED',icon:'🍲'},
+      {service_id:'SRV031',category:'Beauty and Personal Care',title:'Hair and Beauty Booking',description:'Assistance booking a beauty service; provider sets final price.',price:3000,currency:'RWF',status:'APPROVED',icon:'💇'},
+      {service_id:'SRV032',category:'Beauty and Personal Care',title:'Personal Grooming Consultation',description:'Basic grooming consultation.',price:5000,currency:'RWF',status:'APPROVED',icon:'💇'},
+      {service_id:'SRV033',category:'Repairs and Maintenance',title:'Basic Electrical Repair',description:'Minor electrical repair assessment; parts charged separately.',price:15000,currency:'RWF',status:'APPROVED',icon:'🔧'},
+      {service_id:'SRV034',category:'Repairs and Maintenance',title:'Appliance Troubleshooting',description:'Basic appliance fault assessment.',price:10000,currency:'RWF',status:'APPROVED',icon:'🔧'},
+      {service_id:'SRV035',category:'Real Estate',title:'Property Listing Support',description:'Prepare a property listing with photos and description.',price:10000,currency:'RWF',status:'APPROVED',icon:'🏘️'},
+      {service_id:'SRV036',category:'Real Estate',title:'Rental Search Assistance',description:'Help identifying rental options based on your requirements.',price:15000,currency:'RWF',status:'APPROVED',icon:'🏘️'},
+      {service_id:'SRV037',category:'Agriculture',title:'Agriculture Advisory Session',description:'General crop or farm management advice session.',price:10000,currency:'RWF',status:'APPROVED',icon:'🌱'},
+      {service_id:'SRV038',category:'Agriculture',title:'Farm Input Planning',description:'Basic farm input and seasonal planning assistance.',price:12000,currency:'RWF',status:'APPROVED',icon:'🌱'},
+      {service_id:'SRV039',category:'Printing and Publishing',title:'Document Typing and Formatting',description:'Typing and formatting a standard document.',price:3000,currency:'RWF',status:'APPROVED',icon:'🖨️'},
+      {service_id:'SRV040',category:'Printing and Publishing',title:'Printing Coordination',description:'Help preparing files for printing; printing costs charged separately.',price:2000,currency:'RWF',status:'APPROVED',icon:'🖨️'}
+    ];
 
     const SESSION_KEY = "sobanukirwa_services_session";
     let currentUser = null;
@@ -609,52 +663,81 @@
       return payload.token || payload.sessionToken || result.token || "";
     }
 
+    let allServices = [];
+
     async function loadServices() {
       const publicContainer = $("publicServices");
       publicContainer.innerHTML = '<div class="empty">Loading services...</div>';
-
+      let services = [];
       try {
-        const result = await api("services");
-        const services = getArray(result);
-        renderPublicServices(services);
-        renderServiceOptions(services);
+        const result = await api("listServices");
+        services = getArray(result);
       } catch (error) {
-        publicContainer.innerHTML =
-          '<div class="empty">Serivisi ntizashoboye kuzanwa. ' +
-          escapeHtml(error.message) + '</div>';
+        console.warn("Using built-in service catalogue because API could not load:", error);
       }
+      // Show the built-in catalogue if the database is empty or temporarily unavailable.
+      // To submit requests for these services, run the updated Apps Script setup/seed step.
+      if (!services.length) services = DEFAULT_SERVICES;
+      allServices = services;
+      populateCategoryFilter(services);
+      renderPublicServices(services);
+      renderServiceOptions(services);
     }
 
     function serviceName(service) {
-      return service.name || service.service_name ||
-        service.title || service.service || "Service";
+      return service.name || service.service_name || service.title || service.service || "Service";
     }
 
     function serviceDescription(service) {
-      return service.description || service.details ||
-        service.summary || "Contact us for more information about this service.";
+      return service.description || service.details || service.summary ||
+        "Contact us for more information about this service.";
     }
 
     function serviceId(service) {
-      return service.id ?? service.service_id ?? service.name ??
-        service.service_name ?? "";
+      return service.id ?? service.service_id ?? service.name ?? service.service_name ?? "";
+    }
+
+    function servicePrice(service) {
+      const price = Number(service.price);
+      if (!Number.isFinite(price)) return "Price on request";
+      return new Intl.NumberFormat("en-RW", {maximumFractionDigits:0}).format(price) +
+        " " + (service.currency || "RWF");
+    }
+
+    function populateCategoryFilter(services) {
+      const select = $("serviceCategory");
+      if (!select) return;
+      const current = select.value;
+      const categories = [...new Set(services.map(s => s.category).filter(Boolean))].sort();
+      select.innerHTML = '<option value="">All categories (' + categories.length + ')</option>' +
+        categories.map(c => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>').join("");
+      if (categories.includes(current)) select.value = current;
+    }
+
+    function filterServices() {
+      const q = ($("serviceSearch")?.value || "").trim().toLowerCase();
+      const category = $("serviceCategory")?.value || "";
+      const filtered = allServices.filter(service => {
+        const text = [serviceName(service), serviceDescription(service), service.category].join(" ").toLowerCase();
+        return (!q || text.includes(q)) && (!category || service.category === category);
+      });
+      renderPublicServices(filtered);
     }
 
     function renderPublicServices(services) {
       const container = $("publicServices");
-
       if (!services.length) {
-        container.innerHTML =
-          '<div class="empty">Nta serivisi zigaragaye ubu.</div>';
+        container.innerHTML = '<div class="empty">Nta serivisi ihuye n’ishakisha ryawe.</div>';
         return;
       }
-
       container.innerHTML = services.map(service => `
         <article class="service-card">
-          <div class="service-icon">✦</div>
+          <div class="service-icon">${escapeHtml(service.icon || "✦")}</div>
+          <span class="service-category">${escapeHtml(service.category || "General")}</span>
           <h3>${escapeHtml(serviceName(service))}</h3>
           <p class="muted">${escapeHtml(serviceDescription(service))}</p>
-          <button class="btn btn-small" onclick="startServiceRequest()">
+          <div class="service-price">${escapeHtml(servicePrice(service))}</div>
+          <button class="btn btn-small" onclick="startServiceRequest('${escapeHtml(serviceId(service))}')">
             Request service
           </button>
         </article>
@@ -664,22 +747,19 @@
     function renderServiceOptions(services) {
       const select = $("serviceSelect");
       if (!select) return;
-
       if (!services.length) {
         select.innerHTML = '<option value="">No services available</option>';
         return;
       }
-
-      select.innerHTML =
-        '<option value="">Choose a service</option>' +
+      select.innerHTML = '<option value="">Choose a service</option>' +
         services.map(service => `
           <option value="${escapeHtml(serviceId(service))}">
-            ${escapeHtml(serviceName(service))}
+            ${escapeHtml(serviceName(service))} — ${escapeHtml(servicePrice(service))}
           </option>
         `).join("");
     }
 
-    function startServiceRequest() {
+    function startServiceRequest(selectedId) {
       if (!currentUser || !currentToken) {
         showAuth("login");
         showMessage("authMessage",
@@ -687,6 +767,7 @@
         return;
       }
       showPage("dashboard");
+      if (selectedId) $("serviceSelect").value = selectedId;
       $("requestForm").scrollIntoView({ behavior: "smooth" });
     }
 
@@ -797,7 +878,7 @@
       container.innerHTML = '<div class="empty">Loading requests...</div>';
 
       try {
-        const result = await api("requests");
+        const result = await api("listMyRequests");
         const requests = getArray(result);
         $("requestCount").textContent = String(requests.length);
 
@@ -859,8 +940,7 @@
         */
         const result = await api("createRequest", {
           service_id: selected,
-          service: selected,
-          description
+          message: description
         });
 
         showMessage("requestMessage",
@@ -942,6 +1022,9 @@
         showPage("home");
       }
     }
+
+    $("serviceSearch").addEventListener("input", filterServices);
+    $("serviceCategory").addEventListener("change", filterServices);
 
     // Initial page
     loadServices();

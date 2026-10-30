@@ -54,7 +54,7 @@ h2{margin:0;font-size:25px}
 .tools{display:flex;gap:8px;flex-wrap:wrap}
 .field{padding:10px 12px;border:1px solid #d6e0ed;border-radius:9px;background:white;min-width:130px;max-width:100%;color:var(--ink)}
 .tablewrap{overflow:auto}
-table{border-collapse:collapse;width:100%;min-width:650px}
+table{border-collapse:collapse;width:100%;min-width:780px}
 th,td{text-align:left;padding:13px 15px;border-bottom:1px solid #edf1f6;font-size:13px}
 th{font-size:11px;color:#77879b;text-transform:uppercase;background:#fbfcfe}
 .status{display:inline-block;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:bold;background:#edf2f7;color:#52647a;text-transform:capitalize}
@@ -62,6 +62,9 @@ th{font-size:11px;color:#77879b;text-transform:uppercase;background:#fbfcfe}
 .status.pending,.status.accepted,.status.in_progress{background:#fff4dc;color:#946315}
 .status.rejected,.status.suspended,.status.cancelled,.status.inactive{background:#ffedef;color:#b52d3b}
 .actions{display:flex;gap:6px;flex-wrap:wrap}
+.request-desc{max-width:300px;white-space:normal;line-height:1.45;color:#53657d;margin-top:5px}
+.doclink{display:inline-block;margin-top:6px;color:#205b97;font-weight:bold;font-size:12px;text-decoration:none}
+.doclink:hover{text-decoration:underline}
 .smallbtn{border:0;border-radius:7px;padding:7px 9px;background:#eaf3ff;color:#205b97;font-weight:bold;font-size:11px}
 .smallbtn.green{background:#e5f8ee;color:#087647}
 .smallbtn.red{background:#ffedef;color:#b52d3b}
@@ -318,20 +321,30 @@ function serviceRow(s, compact=false) {
 function requestRow(r, compact=false) {
  const id = pick(r,["order_id","request_id","id"],"");
  const service = services.find(s=>String(s.service_id)===String(r.service_id));
- const title = service ? service.title : `Service ${pick(r,["service_id"],"")}`;
+ const title = pick(r,["service_name"], service ? pick(service,["title","service_name","name"],"Service") : `Service ${pick(r,["service_id"],"")}`);
  const customer = users.find(u=>String(u.user_id)===String(r.requester_id));
- const customerName = customer ? customer.full_name : pick(r,["requester_id"],"—");
+ const customerName = customer ? customer.full_name : pick(r,["requester_name","requester_id"],"—");
  const date = pick(r,["created_at"],"—");
  const status = String(pick(r,["status"],"PENDING")).toUpperCase();
+ const description = pick(r,["message","description","request_description","details"],"No description provided.");
+ const attachmentUrl = pick(r,["attachment_url"],"");
+ const attachmentName = pick(r,["attachment_name"],"Attached document");
+ const responseText = pick(r,["response_text"],"");
+ const responseState = responseText && responseText !== "—" ? `<div class="muted" style="margin-top:5px;color:#087647">✓ Admin response sent</div>` : `<div class="muted" style="margin-top:5px">Awaiting response</div>`;
  const actions = compact
-  ? `<button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>`
+  ? `<button class="smallbtn" data-action="request-details" data-id="${esc(id)}">Details</button><button class="smallbtn green" data-action="request-respond" data-id="${esc(id)}">Respond</button>`
   : `<div class="actions">
+      <button class="smallbtn" data-action="request-details" data-id="${esc(id)}">View details</button>
+      <button class="smallbtn green" data-action="request-respond" data-id="${esc(id)}">${responseText && responseText !== "—" ? "Edit response" : "Respond"}</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="ACCEPTED">Accept</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>
-      <button class="smallbtn green" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
+      <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
       <button class="smallbtn red" data-action="request-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
      </div>`;
- return `<tr><td><b>${esc(title)}</b><div class="muted">${esc(id)}</div></td><td>${esc(customerName)}</td><td>${esc(date)}</td><td>${statusHTML(status)}</td><td>${actions}</td></tr>`;
+ return `<tr>
+  <td><b>${esc(title)}</b><div class="muted">${esc(id)}</div><div class="request-desc">${esc(description)}</div>${attachmentUrl ? `<a class="doclink" href="${esc(attachmentUrl)}" target="_blank" rel="noopener">📎 ${esc(attachmentName)}</a>` : `<div class="muted">No attachment</div>`}${responseState}</td>
+  <td>${esc(customerName)}</td><td>${esc(date)}</td><td>${statusHTML(status)}</td><td>${actions}</td>
+ </tr>`;
 }
 function userRow(u) {
  const id = pick(u,["user_id"],"");
@@ -450,6 +463,54 @@ function openModal(title,fields,onSave) {
   const data=Object.fromEntries(new FormData(e.target).entries());
   try{await onSave(data);$("modalHost").innerHTML="";toast("Saved successfully.");await refreshAll()}
   catch(err){toast(err.message)}
+ };
+}
+
+async function fileToAttachment(file) {
+ if(!file) return null;
+ const allowed=/\\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
+ if(!allowed.test(file.name)) throw new Error("Allowed files: PDF, PNG, JPG, DOC, DOCX, XLS, XLSX, TXT.");
+ if(file.size>5*1024*1024) throw new Error("Document must be 5 MB or smaller.");
+ const dataUrl=await new Promise((resolve,reject)=>{
+  const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error("Could not read the selected document.")); reader.readAsDataURL(file);
+ });
+ return {name:file.name,mime_type:file.type||"application/octet-stream",data:String(dataUrl).split(",")[1]};
+}
+function openResponseModal(r) {
+ const id=pick(r,["order_id","request_id","id"],"");
+ const service=services.find(x=>String(x.service_id)===String(r.service_id));
+ const title=pick(r,["service_name"],service?pick(service,["title","name"],"Service"):"Service");
+ $("modalHost").innerHTML=`<div class="modalbg" id="modalBackdrop"><form class="modal" id="responseForm">
+  <h3>Respond to customer request</h3>
+  <p class="muted"><b>Service:</b> ${esc(title)} · <b>Request ID:</b> ${esc(id)}</p>
+  <label>Customer's request</label><textarea class="field" readonly>${esc(pick(r,["message","description","request_description","details"],"No description provided."))}</textarea>
+  ${r.attachment_url?`<p><a class="doclink" href="${esc(r.attachment_url)}" target="_blank" rel="noopener">📎 Open ${esc(pick(r,["attachment_name"],"customer document"))}</a></p>`:"<p class='muted'>Customer did not attach a document.</p>"}
+  <label for="adminResponseText">Your response *</label>
+  <textarea class="field" id="adminResponseText" required placeholder="Write a clear response to the customer…">${esc(pick(r,["response_text"],""))}</textarea>
+  <label for="responseStatus">Request status</label>
+  <select class="field" id="responseStatus"><option value="ACCEPTED">Accepted</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option><option value="REJECTED">Rejected</option></select>
+  <label for="responseFile">Attach document (optional, max 5 MB)</label>
+  <input class="field" id="responseFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">
+  ${r.response_attachment_url?`<p class="muted">Existing attachment: <a class="doclink" href="${esc(r.response_attachment_url)}" target="_blank" rel="noopener">${esc(pick(r,["response_attachment_name"],"Open document"))}</a>. Uploading a new file will replace it.</p>`:""}
+  <div id="responseError" class="message error hidden"></div>
+  <div class="modalactions"><button type="button" class="btn lightbtn" id="modalCancel">Cancel</button><button class="btn primary" id="sendResponseBtn">Send response</button></div>
+ </form></div>`;
+ $("responseStatus").value=String(r.status||"ACCEPTED").toUpperCase();
+ $("modalCancel").onclick=()=>$("modalHost").innerHTML="";
+ $("responseForm").onsubmit=async e=>{
+  e.preventDefault();
+  const btn=$("sendResponseBtn"), err=$("responseError");
+  btn.disabled=true;btn.textContent="Sending…";err.classList.add("hidden");
+  try {
+   const attachment=await fileToAttachment($("responseFile").files[0]);
+   const fields={order_id:id,response_text:$("adminResponseText").value.trim(),status:$("responseStatus").value};
+   if(attachment) fields.attachment=attachment;
+   const result=await api("adminRespondRequest",fields);
+   if(result.success===false) throw new Error(result.message||"Could not send response.");
+   $("modalHost").innerHTML="";toast(result.message||"Response sent to customer.");
+   await refreshAll();
+  } catch(err2) {err.textContent=err2.message;err.classList.remove("hidden");}
+  finally {btn.disabled=false;btn.textContent="Send response";}
  };
 }
 

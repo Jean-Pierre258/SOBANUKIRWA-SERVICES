@@ -44,6 +44,15 @@ main{padding:25px;min-width:0}
 h2{margin:0;font-size:25px}
 .muted{color:var(--muted);font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.analysis-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:16px}
+.barrow{display:grid;grid-template-columns:minmax(90px,1fr) 3fr 42px;gap:10px;align-items:center;margin:13px 0;font-size:13px}
+.bartrack{height:12px;background:#edf3fb;border-radius:20px;overflow:hidden}.barfill{height:100%;background:linear-gradient(90deg,#2463a8,#4b91df);border-radius:20px}
+.analysis-note{padding:12px 14px;border-radius:10px;background:#edf6ff;color:#31577f;font-size:13px;margin-top:12px}
+.request-split{display:grid;grid-template-columns:1fr 1.1fr;gap:16px}
+.detailbox{border:1px solid var(--border);border-radius:12px;padding:17px;min-width:0}
+.detailbox h3{margin:0 0 16px;font-size:15px}.detailrow{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #edf1f6;font-size:13px}.detailrow b{color:#31577f}.detailtext{white-space:pre-wrap;background:#f5f8fd;border-radius:8px;padding:12px;font-size:13px;line-height:1.5}
+@media(max-width:800px){.analysis-grid,.request-split{grid-template-columns:1fr}.detailrow{grid-template-columns:100px 1fr}}
 .stat,.panel{background:white;border:1px solid var(--border);border-radius:15px;box-shadow:0 5px 18px #102c5209}
 .stat{padding:19px}
 .stat span{display:block;color:var(--muted);font-size:13px}
@@ -140,6 +149,7 @@ footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-ali
  <button class="nav active" data-page="dashboard">▦ Dashboard</button>
  <button class="nav" data-page="services">◇ Services</button>
  <button class="nav" data-page="requests">▤ Requests</button>
+ <button class="nav" data-page="analysis">▥ Analysis</button>
  <button class="nav" data-page="users">♙ Users</button>
  <button class="nav" data-page="announcements">✉ Announcements</button>
 </aside>
@@ -187,6 +197,23 @@ footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-ali
   </div></div>
   <div id="requestsTable" class="tablewrap"><div class="loading">Loading…</div></div>
  </div>
+</section>
+
+<section id="page-analysis" class="hidden">
+ <div class="pagehead"><div><h2>Analysis & Reports</h2><p class="muted">Live summary of requests, services, users and response performance.</p></div><button class="btn primary" id="refreshAnalysis" type="button">↻ Refresh analysis</button></div>
+ <div class="stats">
+  <div class="stat"><span>Requests received</span><strong id="aTotalRequests">0</strong></div>
+  <div class="stat"><span>Awaiting response</span><strong id="aAwaiting">0</strong></div>
+  <div class="stat"><span>Responses sent</span><strong id="aResponded">0</strong></div>
+  <div class="stat"><span>Completion rate</span><strong id="aCompletion">0%</strong></div>
+ </div>
+ <div class="analysis-grid">
+  <div class="analysis-card"><h3>Requests by status</h3><div id="analysisStatuses"></div></div>
+  <div class="analysis-card"><h3>Service listing status</h3><div id="analysisServices"></div></div>
+  <div class="analysis-card"><h3>Requests by service</h3><div id="analysisByService"></div></div>
+  <div class="analysis-card"><h3>Platform overview</h3><div id="analysisOverview"></div><div class="analysis-note">Analysis is calculated from records currently returned by the backend. Refresh to load the latest data.</div></div>
+ </div>
+ <div class="panel"><div class="panelhead"><h3>Operational recommendations</h3></div><div id="analysisRecommendations" style="padding:18px;line-height:1.8;font-size:14px"></div></div>
 </section>
 
 <section id="page-users" class="hidden">
@@ -332,10 +359,9 @@ function requestRow(r, compact=false) {
  const responseText = pick(r,["response_text"],"");
  const responseState = responseText && responseText !== "—" ? `<div class="muted" style="margin-top:5px;color:#087647">✓ Admin response sent</div>` : `<div class="muted" style="margin-top:5px">Awaiting response</div>`;
  const actions = compact
-  ? `<button class="smallbtn" data-action="request-details" data-id="${esc(id)}">Details</button><button class="smallbtn green" data-action="request-respond" data-id="${esc(id)}">Respond</button>`
+  ? `<button class="smallbtn primary" data-action="request-view-respond" data-id="${esc(id)}">View &amp; Respond</button>`
   : `<div class="actions">
-      <button class="smallbtn" data-action="request-details" data-id="${esc(id)}">View details</button>
-      <button class="smallbtn green" data-action="request-respond" data-id="${esc(id)}">${responseText && responseText !== "—" ? "Edit response" : "Respond"}</button>
+      <button class="smallbtn primary" data-action="request-view-respond" data-id="${esc(id)}">View &amp; Respond</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="ACCEPTED">Accept</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
@@ -395,6 +421,25 @@ function renderUsers() {
  $("totalUsers").textContent=users.length;
 }
 
+function renderBars(containerId, entries, total) {
+ const el=$(containerId); if(!entries.length){el.innerHTML='<div class="empty">No data available yet.</div>';return;}
+ el.innerHTML=entries.map(([label,value])=>{const pct=total?Math.round(value/total*100):0;return `<div class="barrow"><span>${esc(label)}</span><div class="bartrack"><div class="barfill" style="width:${pct}%"></div></div><b>${value}</b></div>`}).join('');
+}
+function renderAnalysis(){
+ const norm=v=>String(v||'PENDING').toUpperCase().replaceAll(' ','_');
+ const statusCounts={};requests.forEach(r=>{const k=norm(r.status);statusCounts[k]=(statusCounts[k]||0)+1;});
+ const responded=requests.filter(r=>{const t=pick(r,['response_text','admin_response','response'],'');return t&&t!=='—';}).length;
+ const awaiting=Math.max(0,requests.length-responded);const completed=requests.filter(r=>norm(r.status)==='COMPLETED').length;
+ $('aTotalRequests').textContent=requests.length;$('aAwaiting').textContent=awaiting;$('aResponded').textContent=responded;$('aCompletion').textContent=(requests.length?Math.round(completed/requests.length*100):0)+'%';
+ renderBars('analysisStatuses',Object.entries(statusCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k.replaceAll('_',' '),v]),requests.length);
+ const serviceCounts={};services.forEach(s=>{const k=norm(s.status);serviceCounts[k]=(serviceCounts[k]||0)+1;});
+ renderBars('analysisServices',Object.entries(serviceCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k.replaceAll('_',' '),v]),services.length);
+ const byService={};requests.forEach(r=>{const s=services.find(x=>String(x.service_id)===String(r.service_id));const name=pick(r,['service_name'],s?pick(s,['title','service_name','name'],'Unknown service'):'Unknown service');byService[name]=(byService[name]||0)+1;});
+ renderBars('analysisByService',Object.entries(byService).sort((a,b)=>b[1]-a[1]).slice(0,8),Math.max(1,...Object.values(byService)));
+ $('analysisOverview').innerHTML=[['Registered users',users.length],['Listed services',services.length],['Approved services',services.filter(s=>norm(s.status)==='APPROVED').length],['Pending service approvals',services.filter(s=>norm(s.status)==='PENDING').length],['Requests rejected',requests.filter(r=>norm(r.status)==='REJECTED').length]].map(([k,v])=>`<div class="detailrow"><b>${esc(k)}</b><span>${v}</span></div>`).join('');
+ const rec=[];if(awaiting)rec.push(`<li><b>${awaiting}</b> request(s) are awaiting an admin response. Prioritize the oldest pending requests.</li>`);if(services.some(s=>norm(s.status)==='PENDING'))rec.push(`<li>Review and approve or reject pending service listings.</li>`);if(!requests.length)rec.push('<li>No requests have been returned by the backend yet. Check the connection and refresh.</li>');if(requests.length&&completed===requests.length)rec.push('<li>All recorded requests are completed. Continue monitoring new submissions.</li>');if(!rec.length)rec.push('<li>Review request statuses regularly and keep customers informed with a response for each request.</li>');$('analysisRecommendations').innerHTML='<ul>'+rec.join('')+'</ul>';
+}
+
 async function loadServices() {
  const result=await api("listServices");
  services=arrayFrom(result,"services");
@@ -422,6 +467,7 @@ async function refreshAll() {
  try {
   await Promise.all([loadServices(),loadRequests(),loadUsers()]);
   await loadDashboard();
+  renderAnalysis();
  } catch(e) { toast(e.message); }
 }
 
@@ -432,6 +478,11 @@ async function handleAction(button) {
   await api("approveService",{service_id:id,status});
   toast("Service status updated.");
   await refreshAll();
+ }
+ if(action==="request-view-respond") {
+  const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
+  if(!r) throw new Error("Request not found.");
+  openRequestWorkspace(r);
  }
  if(action==="request-status") {
   await api("updateRequestStatus",{order_id:id,status});
@@ -476,6 +527,27 @@ async function fileToAttachment(file) {
  });
  return {name:file.name,mime_type:file.type||"application/octet-stream",data:String(dataUrl).split(",")[1]};
 }
+function openRequestWorkspace(r){
+ const id=pick(r,['order_id','request_id','id'],'');
+ const service=services.find(x=>String(x.service_id)===String(r.service_id));
+ const title=pick(r,['service_name'],service?pick(service,['title','service_name','name'],'Service'):'Service');
+ const customer=users.find(x=>String(x.user_id)===String(r.requester_id));
+ const customerName=pick(r,['requester_name'],customer?customer.full_name:pick(r,['requester_id'],'—'));
+ const description=pick(r,['message','description','request_description','details'],'No description provided.');
+ const attachment=pick(r,['attachment_url'],'');const response=pick(r,['response_text','admin_response','response'],'');
+ $('modalHost').innerHTML=`<div class="modalbg" id="modalBackdrop"><div class="modal" style="width:min(1120px,100%);padding:20px"><div class="pagehead"><div><h3 style="margin:0">View &amp; Respond to Request</h3><p class="muted">${esc(id)}</p></div>${statusHTML(r.status)}</div><div class="request-split">
+ <section class="detailbox"><h3>▤ REQUEST DETAILS</h3>
+ <div class="detailrow"><b>Service name</b><span>${esc(title)}</span></div><div class="detailrow"><b>Request ID</b><span>${esc(id)}</span></div><div class="detailrow"><b>Requester</b><span>${esc(customerName)}</span></div><div class="detailrow"><b>Created date</b><span>${esc(pick(r,['created_at'],'—'))}</span></div><div class="detailrow"><b>Status</b><span>${statusHTML(r.status)}</span></div>
+ <p><b>Request description</b></p><div class="detailtext">${esc(description)}</div><p><b>Attached document</b></p>${attachment?`<a class="doclink" href="${esc(attachment)}" target="_blank" rel="noopener">📎 ${esc(pick(r,['attachment_name'],'Open customer attachment'))}</a>`:'<div class="muted">No attachment provided.</div>'}
+ </section><section class="detailbox"><h3>↩ ADMIN RESPONSE</h3><form id="workspaceResponseForm"><label>Response to customer *</label><textarea class="field" id="workspaceResponseText" required placeholder="Write your response to the customer…" style="min-height:130px">${esc(response==='—'?'':response)}</textarea>
+ <label>Attach document (optional, max 5 MB)</label><input class="field" id="workspaceResponseFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">${pick(r,['response_attachment_url'],'')?`<p class="muted">Current attachment: <a class="doclink" href="${esc(r.response_attachment_url)}" target="_blank" rel="noopener">${esc(pick(r,['response_attachment_name'],'Open document'))}</a></p>`:''}
+ <label>Update request status</label><div class="tools"><button type="button" class="smallbtn green" data-work-status="ACCEPTED">Accept</button><button type="button" class="smallbtn" data-work-status="IN_PROGRESS">Start</button><button type="button" class="smallbtn" data-work-status="COMPLETED">Complete</button><button type="button" class="smallbtn red" data-work-status="REJECTED">Reject</button></div><input type="hidden" id="workspaceStatus" value="${esc(normWorkspaceStatus(r.status))}"><div id="workspaceError" class="message error hidden"></div><div class="modalactions"><button type="button" class="btn lightbtn" id="modalCancel">Close</button><button class="btn primary" id="workspaceSend">Send response</button></div></form></section></div></div></div>`;
+ $('modalCancel').onclick=()=>$('modalHost').innerHTML='';
+ document.querySelectorAll('[data-work-status]').forEach(b=>b.onclick=()=>{ $('workspaceStatus').value=b.dataset.workStatus;toast('Status selected: '+b.dataset.workStatus.replaceAll('_',' ')); });
+ $('workspaceResponseForm').onsubmit=async e=>{e.preventDefault();const btn=$('workspaceSend'),err=$('workspaceError');btn.disabled=true;btn.textContent='Sending…';err.classList.add('hidden');try{const attachmentData=await fileToAttachment($('workspaceResponseFile').files[0]);const fields={order_id:id,response_text:$('workspaceResponseText').value.trim(),status:$('workspaceStatus').value};if(attachmentData)fields.attachment=attachmentData;const result=await api('adminRespondRequest',fields);if(result.success===false)throw new Error(result.message||'Could not send response.');$('modalHost').innerHTML='';toast(result.message||'Response sent to customer.');await refreshAll();}catch(e2){err.textContent=e2.message;err.classList.remove('hidden');}finally{btn.disabled=false;btn.textContent='Send response';}};
+}
+function normWorkspaceStatus(v){const s=String(v||'PENDING').toUpperCase();return ['ACCEPTED','IN_PROGRESS','COMPLETED','REJECTED'].includes(s)?s:'ACCEPTED';}
+
 function openResponseModal(r) {
  const id=pick(r,["order_id","request_id","id"],"");
  const service=services.find(x=>String(x.service_id)===String(r.service_id));
@@ -550,6 +622,7 @@ $("logoutBtn").onclick=async()=>{
 };
 $("refreshBtn").onclick=refreshAll;
 $("reloadDashboard").onclick=refreshAll;
+$("refreshAnalysis").onclick=refreshAll;
 ["serviceSearch","serviceFilter"].forEach(id=>$(id).addEventListener("input",renderServices));
 ["requestSearch","requestFilter"].forEach(id=>$(id).addEventListener("input",renderRequests));
 ["userSearch","userFilter"].forEach(id=>$(id).addEventListener("input",renderUsers));

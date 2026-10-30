@@ -981,8 +981,8 @@
           const status = request.status || "PENDING";
           const hasResponse = Boolean(String(request.response_text || "").trim());
           const viewButton = hasResponse
-            ? `<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">🟢 View response</button>`
-            : `<button class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">View response</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
+            ? `<button type="button" class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}'); return false;">🟢 View response</button>`
+            : `<button type="button" class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}'); return false;">View response</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
           return `<article class="request-item"><div class="row"><strong>${escapeHtml(name)}</strong><span class="badge">${escapeHtml(status)}</span></div>
             <p>${escapeHtml(request.message || "Nta bisobanuro byongeweho.")}</p>
             <p class="small muted">${escapeHtml(request.created_at || "")}</p>
@@ -995,6 +995,7 @@
     async function viewResponse(requestId) {
       const panel = $("response-" + requestId);
       if (!panel) return;
+      panel.innerHTML = '<div class="notice">Turimo gushaka igisubizo cya Admin...</div>';
       try {
         const result = await api("viewRequestResponse", {order_id:requestId});
         const data = getPayload(result);
@@ -1003,7 +1004,6 @@
           return;
         }
         panel.innerHTML = `<div class="notice success"><strong>Igisubizo cya Admin</strong><p>${escapeHtml(data.response_text).replace(/\n/g,"<br>")}</p><p class="small muted">${escapeHtml(data.response_at || "")}</p>${data.response_attachment_url ? `<p><a target="_blank" rel="noopener" href="${escapeHtml(data.response_attachment_url)}">📎 ${escapeHtml(data.response_attachment_name || "Document ya Admin")}</a></p>` : ""}</div>`;
-        await loadMyRequests();
       } catch (error) { panel.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
     }
 

@@ -37,10 +37,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
+      align-items: center;
+      gap: 18px;
       flex-wrap: wrap;
     }
-    .brand { font-weight: 800; font-size: 21px; }
+    .brand { font-weight: 800; font-size: 21px; flex: 0 0 auto; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; margin-left: auto; }
+    #headerMyRequests { order: 1; }
+    #headerDashboard { order: 2; }
+    #headerSettings { order: 3; }
+    #headerLogout { order: 4; }
     .brand small {
       display: block;
       font-weight: 400;
@@ -49,7 +55,6 @@
       margin-top: 4px;
       letter-spacing: 1px;
     }
-    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .container {
       width: min(1100px, 92%);
@@ -87,10 +92,6 @@
     }
     .service-icon { font-size: 30px; margin-bottom: 10px; }
     .service-card h3 { margin: 0 0 8px; }
-    .service-price { color: var(--success); font-weight: 800; font-size: 18px; margin: 12px 0; }
-    .service-category { display:inline-block; font-size:12px; padding:5px 8px; border-radius:20px; background:#eaf2fb; color:var(--primary); margin-bottom:9px; }
-    .service-filters { display:grid; grid-template-columns:2fr 1fr; gap:10px; margin:16px 0; }
-    @media(max-width:600px){ .service-filters {grid-template-columns:1fr;} }
     .muted { color: var(--muted); line-height: 1.55; }
     .row {
       display: flex;
@@ -196,12 +197,23 @@
     .small { font-size: 12px; }
     .divider { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
 
+    .icon-btn { position:relative; min-width:42px; padding:9px 12px; font-size:16px; }
+    .icon-count { position:absolute; top:-7px; right:-7px; min-width:19px; height:19px; border-radius:20px; background:#d92d20; color:#fff; font-size:11px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid white; }
+    .service-icon { width:52px; height:52px; display:flex; align-items:center; justify-content:center; border-radius:14px; background:#eaf2ff; color:var(--primary); font-size:28px; }
+    .dashboard-service-grid { margin-top:12px; }
+    .payment-method { display:flex; gap:12px; align-items:center; padding:14px; border:1px solid var(--border); border-radius:12px; margin:10px 0; }
+    .payment-method .pay-icon { font-size:26px; width:42px; text-align:center; }
+    .popover { position:absolute; right:5%; top:78px; width:min(360px,90vw); z-index:20; background:#fff; color:var(--text); border:1px solid var(--border); border-radius:14px; box-shadow:0 12px 35px rgba(0,0,0,.18); padding:16px; }
+    .notification-item { padding:12px 0; border-bottom:1px solid var(--border); }
+    .notification-item:last-child { border-bottom:0; }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(12,26,48,.55); z-index:50; display:flex; align-items:center; justify-content:center; padding:18px; }
+    .modal-box { background:white; border-radius:16px; padding:22px; width:min(520px,100%); max-height:85vh; overflow:auto; }
     @media(max-width: 600px) {
       header { padding: 15px 4%; }
       .container { width: 94%; margin-top: 17px; }
       .hero { padding: 23px; }
       .card { padding: 16px; }
-      .header-actions { width: 100%; }
+      .header-actions { width: 100%; justify-content: flex-end; margin-left: 0; }
     }
   </style>
 </head>
@@ -212,14 +224,24 @@
       <small>YOUR SERVICES. ONE PLACE.</small>
     </div>
     <div class="header-actions">
+      <button class="btn btn-light btn-small hidden" id="headerMyRequests"
+              onclick="showMyRequests()">📋 My requests</button>
+      <button class="btn btn-light btn-small icon-btn hidden" id="headerPayments" title="Payment methods" aria-label="Payment methods" onclick="openPayments()">💳</button>
+      <button class="btn btn-light btn-small icon-btn hidden" id="headerNotifications" title="Notifications" aria-label="Notifications" onclick="toggleNotifications()">🔔<span id="notificationCount" class="icon-count hidden">0</span></button>
       <button class="btn btn-light btn-small" id="headerLogin"
               onclick="showAuth('login')">Login</button>
       <button class="btn btn-light btn-small" id="headerRegister"
               onclick="showAuth('register')">Create account</button>
       <button class="btn btn-light btn-small hidden" id="headerDashboard"
               onclick="showPage('dashboard')">My dashboard</button>
+      <button class="btn btn-light btn-small hidden" id="headerSettings"
+              onclick="showPage('settings')">⚙️ Settings</button>
       <button class="btn btn-light btn-small hidden" id="headerLogout"
               onclick="logout()">Logout</button>
+    </div>
+    <div id="notificationsPopover" class="popover hidden">
+      <div class="row"><h3 style="margin:0">🔔 Notifications</h3><button class="btn btn-outline btn-small" onclick="toggleNotifications(false)">Close</button></div>
+      <div id="notificationsList"><p class="muted">Loading notifications...</p></div>
     </div>
   </header>
 
@@ -248,19 +270,14 @@
         <div class="row">
           <div>
             <h2>Our services</h2>
-            <p class="muted">Explore the services available on the platform.</p>
+            <p class="muted">Explore services across 20 categories. Prices are shown in RWF and may vary with the work required.</p>
           </div>
-          <button class="btn btn-outline btn-small" onclick="loadServices()">
-            Refresh
-          </button>
+          <button class="btn btn-outline btn-small" onclick="loadServices()">Refresh</button>
         </div>
-        <div class="service-filters">
-          <input id="serviceSearch" type="search" placeholder="Search services by name or category..." aria-label="Search services">
-          <select id="serviceCategory" aria-label="Filter by category">
-            <option value="">All 20 categories</option>
-          </select>
+        <div class="form-grid" style="margin:16px 0">
+          <div class="field"><label for="serviceSearch">Search service</label><input id="serviceSearch" type="search" placeholder="Search by name, category or keyword" oninput="filterServices()"></div>
+          <div class="field"><label for="categoryFilter">Category</label><select id="categoryFilter" onchange="filterServices()"><option value="">All 20 categories</option></select></div>
         </div>
-        <p class="muted small">Prices are starting estimates in RWF. Confirm the final price with the provider before ordering.</p>
         <div id="publicServices" class="grid">
           <div class="empty">Loading services...</div>
         </div>
@@ -363,8 +380,14 @@
         </div>
       </div>
 
+      <div class="card" id="dashboardServicesSection">
+        <div class="row"><div><h2>🧩 All available services</h2><p class="muted">Choose any service below. Each service is displayed as a card with an icon.</p></div><button class="btn btn-outline btn-small" onclick="loadServices()">↻ Refresh</button></div>
+        <div class="form-grid" style="margin:14px 0"><div class="field"><label for="dashboardServiceSearch">Search services</label><input id="dashboardServiceSearch" type="search" placeholder="Search services..." oninput="filterDashboardServices()"></div></div>
+        <div id="dashboardServices" class="grid dashboard-service-grid"><div class="empty">Loading services...</div></div>
+      </div>
+
       <div class="card">
-        <h2>Request a service</h2>
+        <h2>📝 Request a service</h2>
         <div id="requestMessage" aria-live="polite"></div>
         <form id="requestForm">
           <div class="field">
@@ -378,13 +401,16 @@
             <textarea id="requestDescription" required minlength="3"
               placeholder="Explain the service you need..."></textarea>
           </div>
-          <button class="btn" id="requestButton" type="submit">
-            Submit request
-          </button>
+          <div class="field">
+            <label for="requestAttachment">📎 Attach a document (optional)</label>
+            <input id="requestAttachment" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">
+            <p class="muted small">Optional. PDF, image, Word, Excel or TXT; maximum 5 MB.</p>
+          </div>
+          <button class="btn" id="requestButton" type="submit">📨 Submit request</button>
         </form>
       </div>
 
-      <div class="card">
+      <div class="card" id="myRequestsSection">
         <div class="row">
           <h2>My requests</h2>
           <button class="btn btn-outline btn-small"
@@ -393,8 +419,17 @@
         <div id="myRequests"><div class="empty">No requests loaded.</div></div>
       </div>
 
+    </section>
+
+    <!-- ACCOUNT SETTINGS PAGE -->
+    <section id="settingsPage" class="hidden">
+      <div class="hero">
+        <h1>Account Settings</h1>
+        <p>Manage your account security and change your password.</p>
+      </div>
       <div class="card">
         <h2>Account settings</h2>
+        <p class="muted">Update your password to help keep your account secure.</p>
         <div id="passwordMessage" aria-live="polite"></div>
         <form id="passwordForm">
           <div class="field">
@@ -415,6 +450,7 @@
             </div>
           </div>
           <button class="btn btn-outline" type="submit">Change password</button>
+          <button class="btn btn-outline" type="button" onclick="showPage('dashboard')">Back to dashboard</button>
         </form>
       </div>
     </section>
@@ -433,49 +469,6 @@
       It must normally end in /exec.
     */
     const API_URL = "https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
-
-    const DEFAULT_SERVICES = [
-      {service_id:'SRV001',category:'Technology',title:'Website Design',description:'Design and development of a responsive business website.',price:150000,currency:'RWF',status:'APPROVED',icon:'💻'},
-      {service_id:'SRV002',category:'Technology',title:'Computer and Phone Support',description:'Help with software, settings, troubleshooting and basic repairs.',price:10000,currency:'RWF',status:'APPROVED',icon:'💻'},
-      {service_id:'SRV003',category:'Education',title:'Private Tutoring',description:'One-to-one tutoring for school subjects per session.',price:10000,currency:'RWF',status:'APPROVED',icon:'📚'},
-      {service_id:'SRV004',category:'Education',title:'Online Course Support',description:'Help accessing online courses and learning platforms.',price:5000,currency:'RWF',status:'APPROVED',icon:'📚'},
-      {service_id:'SRV005',category:'Transport',title:'Local Transport Booking',description:'Assistance arranging local transport; final fare depends on distance.',price:5000,currency:'RWF',status:'APPROVED',icon:'🚗'},
-      {service_id:'SRV006',category:'Transport',title:'Delivery and Errand Service',description:'Local parcel delivery or errands; final fee depends on distance and load.',price:5000,currency:'RWF',status:'APPROVED',icon:'🚗'},
-      {service_id:'SRV007',category:'Home Services',title:'Home Cleaning',description:'Basic home cleaning service; price depends on home size.',price:20000,currency:'RWF',status:'APPROVED',icon:'🏠'},
-      {service_id:'SRV008',category:'Home Services',title:'Plumbing Assistance',description:'Basic plumbing inspection and minor repairs; materials charged separately.',price:15000,currency:'RWF',status:'APPROVED',icon:'🏠'},
-      {service_id:'SRV009',category:'Business',title:'Business Plan Writing',description:'Preparation of a basic business plan.',price:30000,currency:'RWF',status:'APPROVED',icon:'📊'},
-      {service_id:'SRV010',category:'Business',title:'Business Consultation',description:'One-hour business planning or operational consultation.',price:15000,currency:'RWF',status:'APPROVED',icon:'📊'},
-      {service_id:'SRV011',category:'Design and Creative',title:'Logo Design',description:'Custom logo concept and one revision.',price:15000,currency:'RWF',status:'APPROVED',icon:'🎨'},
-      {service_id:'SRV012',category:'Design and Creative',title:'Flyer or Poster Design',description:'Promotional flyer or poster design.',price:10000,currency:'RWF',status:'APPROVED',icon:'🎨'},
-      {service_id:'SRV013',category:'Writing and Translation',title:'CV Creation',description:'Professional CV formatting and writing.',price:5000,currency:'RWF',status:'APPROVED',icon:'✍️'},
-      {service_id:'SRV014',category:'Writing and Translation',title:'Cover Letter Writing',description:'Job-specific cover letter preparation.',price:3000,currency:'RWF',status:'APPROVED',icon:'✍️'},
-      {service_id:'SRV015',category:'Data and Statistics',title:'Statistical Data Analysis',description:'Basic statistical analysis and interpretation.',price:15000,currency:'RWF',status:'APPROVED',icon:'📈'},
-      {service_id:'SRV016',category:'Data and Statistics',title:'Excel Data Cleaning',description:'Cleaning, formatting and organizing a small spreadsheet.',price:10000,currency:'RWF',status:'APPROVED',icon:'📈'},
-      {service_id:'SRV017',category:'Health and Wellness',title:'Health Data Summary and Charts',description:'Summary tables and charts from supplied health data.',price:20000,currency:'RWF',status:'APPROVED',icon:'🩺'},
-      {service_id:'SRV018',category:'Health and Wellness',title:'Wellness Coaching Session',description:'General wellness guidance session, not medical diagnosis.',price:10000,currency:'RWF',status:'APPROVED',icon:'🩺'},
-      {service_id:'SRV019',category:'Marketing',title:'Social Media Post Design',description:'Design of one social media promotional post.',price:7000,currency:'RWF',status:'APPROVED',icon:'📣'},
-      {service_id:'SRV020',category:'Marketing',title:'Digital Marketing Consultation',description:'One-hour review of digital marketing options.',price:15000,currency:'RWF',status:'APPROVED',icon:'📣'},
-      {service_id:'SRV021',category:'Photography and Video',title:'Basic Event Photography',description:'Basic photography coverage; duration and travel affect price.',price:50000,currency:'RWF',status:'APPROVED',icon:'📷'},
-      {service_id:'SRV022',category:'Photography and Video',title:'Short Video Editing',description:'Editing a short video up to approximately one minute.',price:20000,currency:'RWF',status:'APPROVED',icon:'📷'},
-      {service_id:'SRV023',category:'Finance and Accounting',title:'Bookkeeping Support',description:'Basic transaction recording and categorization.',price:20000,currency:'RWF',status:'APPROVED',icon:'💰'},
-      {service_id:'SRV024',category:'Finance and Accounting',title:'Budget Preparation',description:'Personal or small-business budget preparation.',price:10000,currency:'RWF',status:'APPROVED',icon:'💰'},
-      {service_id:'SRV025',category:'Legal and Administrative',title:'Administrative Document Preparation',description:'Formatting and organizing non-legal administrative documents.',price:5000,currency:'RWF',status:'APPROVED',icon:'⚖️'},
-      {service_id:'SRV026',category:'Legal and Administrative',title:'Form Filling Assistance',description:'Help completing standard online or paper forms.',price:3000,currency:'RWF',status:'APPROVED',icon:'⚖️'},
-      {service_id:'SRV027',category:'Events',title:'Event Planning Consultation',description:'One-hour planning consultation.',price:15000,currency:'RWF',status:'APPROVED',icon:'🎉'},
-      {service_id:'SRV028',category:'Events',title:'Invitation Card Design',description:'Digital invitation card design.',price:8000,currency:'RWF',status:'APPROVED',icon:'🎉'},
-      {service_id:'SRV029',category:'Food and Catering',title:'Small Event Catering',description:'Basic catering estimate for a small event; confirm menu and guest count.',price:50000,currency:'RWF',status:'APPROVED',icon:'🍲'},
-      {service_id:'SRV030',category:'Food and Catering',title:'Cake Order Coordination',description:'Assistance coordinating a cake order; cake price depends on size.',price:5000,currency:'RWF',status:'APPROVED',icon:'🍲'},
-      {service_id:'SRV031',category:'Beauty and Personal Care',title:'Hair and Beauty Booking',description:'Assistance booking a beauty service; provider sets final price.',price:3000,currency:'RWF',status:'APPROVED',icon:'💇'},
-      {service_id:'SRV032',category:'Beauty and Personal Care',title:'Personal Grooming Consultation',description:'Basic grooming consultation.',price:5000,currency:'RWF',status:'APPROVED',icon:'💇'},
-      {service_id:'SRV033',category:'Repairs and Maintenance',title:'Basic Electrical Repair',description:'Minor electrical repair assessment; parts charged separately.',price:15000,currency:'RWF',status:'APPROVED',icon:'🔧'},
-      {service_id:'SRV034',category:'Repairs and Maintenance',title:'Appliance Troubleshooting',description:'Basic appliance fault assessment.',price:10000,currency:'RWF',status:'APPROVED',icon:'🔧'},
-      {service_id:'SRV035',category:'Real Estate',title:'Property Listing Support',description:'Prepare a property listing with photos and description.',price:10000,currency:'RWF',status:'APPROVED',icon:'🏘️'},
-      {service_id:'SRV036',category:'Real Estate',title:'Rental Search Assistance',description:'Help identifying rental options based on your requirements.',price:15000,currency:'RWF',status:'APPROVED',icon:'🏘️'},
-      {service_id:'SRV037',category:'Agriculture',title:'Agriculture Advisory Session',description:'General crop or farm management advice session.',price:10000,currency:'RWF',status:'APPROVED',icon:'🌱'},
-      {service_id:'SRV038',category:'Agriculture',title:'Farm Input Planning',description:'Basic farm input and seasonal planning assistance.',price:12000,currency:'RWF',status:'APPROVED',icon:'🌱'},
-      {service_id:'SRV039',category:'Printing and Publishing',title:'Document Typing and Formatting',description:'Typing and formatting a standard document.',price:3000,currency:'RWF',status:'APPROVED',icon:'🖨️'},
-      {service_id:'SRV040',category:'Printing and Publishing',title:'Printing Coordination',description:'Help preparing files for printing; printing costs charged separately.',price:2000,currency:'RWF',status:'APPROVED',icon:'🖨️'}
-    ];
 
     const SESSION_KEY = "sobanukirwa_services_session";
     let currentUser = null;
@@ -589,14 +582,20 @@
     }
 
     function showPage(page) {
-      ["homePage", "authPage", "dashboardPage"].forEach(id => {
+      if (page === "settings" && !(currentUser && currentToken)) {
+        showAuth("login");
+        return;
+      }
+
+      ["homePage", "authPage", "dashboardPage", "settingsPage"].forEach(id => {
         $(id).classList.add("hidden");
       });
 
       const target = {
         home: "homePage",
         auth: "authPage",
-        dashboard: "dashboardPage"
+        dashboard: "dashboardPage",
+        settings: "settingsPage"
       }[page];
 
       if (target) $(target).classList.remove("hidden");
@@ -618,10 +617,15 @@
     function updateHeader() {
       const loggedIn = Boolean(currentUser && currentToken);
 
+      $("headerMyRequests").classList.toggle("hidden", !loggedIn);
       $("headerLogin").classList.toggle("hidden", loggedIn);
       $("headerRegister").classList.toggle("hidden", loggedIn);
       $("headerDashboard").classList.toggle("hidden", !loggedIn);
+      $("headerSettings").classList.toggle("hidden", !loggedIn);
       $("headerLogout").classList.toggle("hidden", !loggedIn);
+      $("headerPayments").classList.toggle("hidden", !loggedIn);
+      $("headerNotifications").classList.toggle("hidden", !loggedIn);
+      if (!loggedIn) $("notificationsPopover").classList.add("hidden");
     }
 
     function saveSession(user, token) {
@@ -663,63 +667,53 @@
       return payload.token || payload.sessionToken || result.token || "";
     }
 
-    let allServices = [];
-
     async function loadServices() {
       const publicContainer = $("publicServices");
       publicContainer.innerHTML = '<div class="empty">Loading services...</div>';
-      let services = [];
+
       try {
         const result = await api("listServices");
-        services = getArray(result);
+        const services = getArray(result);
+        allServices = services;
+        populateCategoryFilter(services);
+        filterServices();
+        renderServiceOptions(services);
       } catch (error) {
-        console.warn("Using built-in service catalogue because API could not load:", error);
+        publicContainer.innerHTML =
+          '<div class="empty">Serivisi ntizashoboye kuzanwa. ' +
+          escapeHtml(error.message) + '</div>';
       }
-      // Show the built-in catalogue if the database is empty or temporarily unavailable.
-      // To submit requests for these services, run the updated Apps Script setup/seed step.
-      if (!services.length) services = DEFAULT_SERVICES;
-      allServices = services;
-      populateCategoryFilter(services);
-      renderPublicServices(services);
-      renderServiceOptions(services);
     }
 
     function serviceName(service) {
-      return service.name || service.service_name || service.title || service.service || "Service";
+      return service.name || service.service_name ||
+        service.title || service.service || "Service";
     }
 
     function serviceDescription(service) {
-      return service.description || service.details || service.summary ||
-        "Contact us for more information about this service.";
+      return service.description || service.details ||
+        service.summary || "Contact us for more information about this service.";
     }
 
     function serviceId(service) {
-      return service.id ?? service.service_id ?? service.name ?? service.service_name ?? "";
+      return service.id ?? service.service_id ?? service.name ??
+        service.service_name ?? "";
     }
 
-    function servicePrice(service) {
-      const price = Number(service.price);
-      if (!Number.isFinite(price)) return "Price on request";
-      return new Intl.NumberFormat("en-RW", {maximumFractionDigits:0}).format(price) +
-        " " + (service.currency || "RWF");
-    }
+    let allServices = [];
 
-    function populateCategoryFilter(services) {
-      const select = $("serviceCategory");
-      if (!select) return;
-      const current = select.value;
-      const categories = [...new Set(services.map(s => s.category).filter(Boolean))].sort();
-      select.innerHTML = '<option value="">All categories (' + categories.length + ')</option>' +
-        categories.map(c => '<option value="' + escapeHtml(c) + '">' + escapeHtml(c) + '</option>').join("");
-      if (categories.includes(current)) select.value = current;
+    function formatPrice(service) {
+      const price = Number(service.price || 0);
+      if (!Number.isFinite(price)) return escapeHtml(service.price || "Contact us");
+      return new Intl.NumberFormat("en-RW", {maximumFractionDigits: 0}).format(price) + " " + (service.currency || "RWF");
     }
 
     function filterServices() {
       const q = ($("serviceSearch")?.value || "").trim().toLowerCase();
-      const category = $("serviceCategory")?.value || "";
+      const cat = ($("categoryFilter")?.value || "").toLowerCase();
       const filtered = allServices.filter(service => {
         const text = [serviceName(service), serviceDescription(service), service.category].join(" ").toLowerCase();
-        return (!q || text.includes(q)) && (!category || service.category === category);
+        return (!q || text.includes(q)) && (!cat || String(service.category || "").toLowerCase() === cat);
       });
       renderPublicServices(filtered);
     }
@@ -727,39 +721,127 @@
     function renderPublicServices(services) {
       const container = $("publicServices");
       if (!services.length) {
-        container.innerHTML = '<div class="empty">Nta serivisi ihuye n’ishakisha ryawe.</div>';
+        container.innerHTML = '<div class="empty">Nta serivisi ihuye n’ishakisha ryawe. Gerageza irindi jambo.</div>';
         return;
       }
       container.innerHTML = services.map(service => `
         <article class="service-card">
-          <div class="service-icon">${escapeHtml(service.icon || "✦")}</div>
-          <span class="service-category">${escapeHtml(service.category || "General")}</span>
+          <div class="service-icon">${serviceIcon(service)}</div>
+          <span class="badge">${escapeHtml(service.category || "General")}</span>
           <h3>${escapeHtml(serviceName(service))}</h3>
           <p class="muted">${escapeHtml(serviceDescription(service))}</p>
-          <div class="service-price">${escapeHtml(servicePrice(service))}</div>
-          <button class="btn btn-small" onclick="startServiceRequest('${escapeHtml(serviceId(service))}')">
-            Request service
-          </button>
+          <p style="font-size:18px;font-weight:800;color:var(--primary);margin:12px 0">${escapeHtml(formatPrice(service))}</p>
+          <button class="btn btn-small" onclick="startServiceRequest('${String(serviceId(service)).replace(/'/g, "\\'")}')">Request service</button>
         </article>
       `).join("");
+    }
+
+    function serviceIcon(service) {
+      const text = [service.category, serviceName(service), serviceDescription(service)].join(" ").toLowerCase();
+      if (/design|logo|graphic|photo|video/.test(text)) return "🎨";
+      if (/computer|software|website|web|technology|it support/.test(text)) return "💻";
+      if (/education|tutor|training|course|school/.test(text)) return "📚";
+      if (/health|medical|clinic/.test(text)) return "🩺";
+      if (/transport|delivery|travel|car/.test(text)) return "🚚";
+      if (/clean|repair|maintenance|electric|plumb/.test(text)) return "🛠️";
+      if (/business|account|finance|tax|bookkeep/.test(text)) return "📊";
+      if (/legal|law|document|translation|writing/.test(text)) return "📄";
+      if (/food|catering|restaurant/.test(text)) return "🍽️";
+      if (/beauty|salon|fashion/.test(text)) return "✨";
+      return "✦";
+    }
+
+    function renderDashboardServices(services) {
+      const container = $("dashboardServices");
+      if (!container) return;
+      if (!services.length) { container.innerHTML = '<div class="empty">No services available yet.</div>'; return; }
+      container.innerHTML = services.map(service => `
+        <article class="service-card">
+          <div class="service-icon">${serviceIcon(service)}</div>
+          <span class="badge">${escapeHtml(service.category || "General")}</span>
+          <h3>${escapeHtml(serviceName(service))}</h3>
+          <p class="muted">${escapeHtml(serviceDescription(service))}</p>
+          <p style="font-size:18px;font-weight:800;color:var(--primary);margin:12px 0">${escapeHtml(formatPrice(service))}</p>
+          <button class="btn btn-small" onclick="startServiceRequest('${String(serviceId(service)).replace(/'/g, "\\'")}')">📝 Request service</button>
+        </article>`).join("");
+    }
+
+    function filterDashboardServices() {
+      const q = ($("dashboardServiceSearch")?.value || "").trim().toLowerCase();
+      const filtered = allServices.filter(service => [serviceName(service), serviceDescription(service), service.category].join(" ").toLowerCase().includes(q));
+      renderDashboardServices(filtered);
+    }
+
+    function openPayments() {
+      const modal = document.createElement("div");
+      modal.className = "modal-backdrop";
+      modal.id = "paymentsModal";
+      modal.innerHTML = `<div class="modal-box"><div class="row"><h2 style="margin:0">💳 Payment methods</h2><button class="btn btn-outline btn-small" onclick="closePayments()">✕</button></div>
+        <p class="muted">Choose a payment method after your service request is reviewed. Do not send money to an unverified number.</p>
+        <div class="payment-method"><span class="pay-icon">📱</span><div><strong>MTN MoMo</strong><div class="muted small">Mobile Money — payment details confirmed by administrator.</div></div></div>
+        <div class="payment-method"><span class="pay-icon">📲</span><div><strong>Airtel Money</strong><div class="muted small">Mobile Money — payment details confirmed by administrator.</div></div></div>
+        <div class="payment-method"><span class="pay-icon">🏦</span><div><strong>Bank transfer</strong><div class="muted small">Request official bank details from support.</div></div></div>
+        <div class="notice info">Online payment processing is not connected yet. This panel displays methods only; it does not collect or process payments.</div>
+        <button class="btn" onclick="closePayments()">Close</button></div>`;
+      document.body.appendChild(modal);
+    }
+    function closePayments() { const modal = $("paymentsModal"); if (modal) modal.remove(); }
+
+    async function toggleNotifications(force) {
+      const panel = $("notificationsPopover");
+      const shouldOpen = typeof force === "boolean" ? force : panel.classList.contains("hidden");
+      panel.classList.toggle("hidden", !shouldOpen);
+      if (!shouldOpen) return;
+      const list = $("notificationsList");
+      list.innerHTML = '<p class="muted">Loading notifications...</p>';
+      try {
+        const result = await api("getNotifications");
+        const payload = getPayload(result);
+        const items = payload.notifications || [];
+        const unread = items.filter(n => ![true, "true", 1, "1", "READ"].includes(n.is_read)).length;
+        $("notificationCount").textContent = String(unread);
+        $("notificationCount").classList.toggle("hidden", unread === 0);
+        if (!items.length) { list.innerHTML = '<p class="muted">No notifications yet.</p>'; return; }
+        list.innerHTML = items.slice(0, 12).map(n => `<div class="notification-item"><strong>${escapeHtml(n.title || "Notification")}</strong><p class="muted small">${escapeHtml(n.message || "")}</p><div class="row"><span class="muted small">${escapeHtml(n.created_at || "")}</span>${![true,"true",1,"1","READ"].includes(n.is_read) ? `<button class="btn btn-outline btn-small" onclick="markNotificationRead('${String(n.notification_id || "").replace(/'/g,"\\'")}')">Mark read</button>` : '<span class="badge">Read</span>'}</div></div>`).join("");
+      } catch (error) { list.innerHTML = `<p class="muted">${escapeHtml(error.message)}</p>`; }
+    }
+    async function refreshNotificationCount() {
+      if (!currentUser || !currentToken) return;
+      try { const result = await api("getNotifications"); const items = getPayload(result).notifications || []; const count = items.filter(n => ![true,"true",1,"1","READ"].includes(n.is_read)).length; $("notificationCount").textContent = String(count); $("notificationCount").classList.toggle("hidden", count === 0); } catch (_) {}
+    }
+    async function markNotificationRead(id) {
+      try { await api("markNotificationRead", {notification_id:id}); await toggleNotifications(true); await refreshNotificationCount(); }
+      catch (error) { alert(error.message); }
+    }
+
+    function populateCategoryFilter(services) {
+      const select = $("categoryFilter");
+      if (!select) return;
+      const current = select.value;
+      const categories = [...new Set(services.map(s => String(s.category || "").trim()).filter(Boolean))].sort();
+      select.innerHTML = '<option value="">All 20 categories</option>' + categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      select.value = categories.includes(current) ? current : "";
     }
 
     function renderServiceOptions(services) {
       const select = $("serviceSelect");
       if (!select) return;
+
       if (!services.length) {
         select.innerHTML = '<option value="">No services available</option>';
         return;
       }
-      select.innerHTML = '<option value="">Choose a service</option>' +
+
+      select.innerHTML =
+        '<option value="">Choose a service</option>' +
         services.map(service => `
           <option value="${escapeHtml(serviceId(service))}">
-            ${escapeHtml(serviceName(service))} — ${escapeHtml(servicePrice(service))}
+            ${escapeHtml(serviceName(service))}
           </option>
         `).join("");
     }
 
-    function startServiceRequest(selectedId) {
+    function startServiceRequest(selectedServiceId = "") {
       if (!currentUser || !currentToken) {
         showAuth("login");
         showMessage("authMessage",
@@ -767,7 +849,7 @@
         return;
       }
       showPage("dashboard");
-      if (selectedId) $("serviceSelect").value = selectedId;
+      if (selectedServiceId) $("serviceSelect").value = selectedServiceId;
       $("requestForm").scrollIntoView({ behavior: "smooth" });
     }
 
@@ -858,6 +940,17 @@
       }
     });
 
+    function showMyRequests() {
+      if (!(currentUser && currentToken)) {
+        showAuth("login");
+        return;
+      }
+      showPage("dashboard");
+      loadMyRequests();
+      const section = $("myRequestsSection");
+      if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     async function showDashboard() {
       showPage("dashboard");
 
@@ -871,6 +964,7 @@
 
       await loadServices();
       await loadMyRequests();
+      await refreshNotificationCount();
     }
 
     async function loadMyRequests() {
@@ -910,6 +1004,7 @@
               <p class="small muted">
                 ${escapeHtml(request.created_at || request.date || "")}
               </p>
+              ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "View attached document")}</a></p>` : ""}
             </article>
           `;
         }).join("");
@@ -919,12 +1014,32 @@
       }
     }
 
+    function readAttachmentAsBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({name:file.name, mime_type:file.type || "application/octet-stream", data:String(reader.result).split(",")[1] || ""});
+        reader.onerror = () => reject(new Error("Document ntiyasomwe. Gerageza indi file."));
+        reader.readAsDataURL(file);
+      });
+    }
+
     $("requestForm").addEventListener("submit", async event => {
       event.preventDefault();
       clearMessage("requestMessage");
 
       const selected = $("serviceSelect").value;
       const description = $("requestDescription").value.trim();
+      const fileInput = $("requestAttachment");
+      const file = fileInput?.files?.[0] || null;
+
+      if (file && file.size > 5 * 1024 * 1024) {
+        showMessage("requestMessage", "Document irenze 5 MB. Hitamo ntoya.", "error");
+        return;
+      }
+      if (file && !/\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i.test(file.name)) {
+        showMessage("requestMessage", "Ubwoko bwa document ntibwemerewe.", "error");
+        return;
+      }
 
       if (!selected) {
         showMessage("requestMessage", "Hitamo serivisi ubanze.", "error");
@@ -934,13 +1049,13 @@
       setBusy("requestButton", true);
 
       try {
-        /*
-          Verify this action name and field structure against Code.gs.
-          If your backend uses another action, change it here.
-        */
+        const attachment = file ? await readAttachmentAsBase64(file) : null;
+        /* Optional attachment is stored privately by Apps Script in Google Drive. */
         const result = await api("createRequest", {
           service_id: selected,
-          message: description
+          service: selected,
+          message: description,
+          attachment: attachment
         });
 
         showMessage("requestMessage",
@@ -1022,9 +1137,6 @@
         showPage("home");
       }
     }
-
-    $("serviceSearch").addEventListener("input", filterServices);
-    $("serviceCategory").addEventListener("change", filterServices);
 
     // Initial page
     loadServices();

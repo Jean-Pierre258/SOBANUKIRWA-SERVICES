@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,10 +38,16 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
+      align-items: center;
+      gap: 18px;
       flex-wrap: wrap;
     }
-    .brand { font-weight: 800; font-size: 21px; }
+    .brand { font-weight: 800; font-size: 21px; flex: 0 0 auto; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; align-items: center; margin-left: auto; }
+    #headerMyRequests { order: 1; }
+    #headerDashboard { order: 2; }
+    #headerSettings { order: 3; }
+    #headerLogout { order: 4; }
     .brand small {
       display: block;
       font-weight: 400;
@@ -49,7 +56,6 @@
       margin-top: 4px;
       letter-spacing: 1px;
     }
-    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
     .container {
       width: min(1100px, 92%);
@@ -192,14 +198,26 @@
     .small { font-size: 12px; }
     .divider { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
 
+    .icon-btn { position:relative; min-width:42px; padding:9px 12px; font-size:16px; }
+    .icon-count { position:absolute; top:-7px; right:-7px; min-width:19px; height:19px; border-radius:20px; background:#d92d20; color:#fff; font-size:11px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; padding:0 4px; border:2px solid white; }
+    .service-icon { width:52px; height:52px; display:flex; align-items:center; justify-content:center; border-radius:14px; background:#eaf2ff; color:var(--primary); font-size:28px; }
+    .dashboard-service-grid { margin-top:12px; }
+    .payment-method { display:flex; gap:12px; align-items:center; padding:14px; border:1px solid var(--border); border-radius:12px; margin:10px 0; }
+    .payment-method .pay-icon { font-size:26px; width:42px; text-align:center; }
+    .popover { position:absolute; right:5%; top:78px; width:min(360px,90vw); z-index:20; background:#fff; color:var(--text); border:1px solid var(--border); border-radius:14px; box-shadow:0 12px 35px rgba(0,0,0,.18); padding:16px; }
+    .notification-item { padding:12px 0; border-bottom:1px solid var(--border); }
+    .notification-item:last-child { border-bottom:0; }
+    .modal-backdrop { position:fixed; inset:0; background:rgba(12,26,48,.55); z-index:50; display:flex; align-items:center; justify-content:center; padding:18px; }
+    .modal-box { background:white; border-radius:16px; padding:22px; width:min(520px,100%); max-height:85vh; overflow:auto; }
     @media(max-width: 600px) {
       header { padding: 15px 4%; }
       .container { width: 94%; margin-top: 17px; }
       .hero { padding: 23px; }
       .card { padding: 16px; }
-      .header-actions { width: 100%; }
+      .header-actions { width: 100%; justify-content: flex-end; margin-left: 0; }
     }
-  </style>
+  .btn-success{background:#16803c!important;color:#fff!important;border:1px solid #16803c!important}.response-panel{line-height:1.6}
+</style>
 </head>
 <body>
   <header>
@@ -208,14 +226,24 @@
       <small>YOUR SERVICES. ONE PLACE.</small>
     </div>
     <div class="header-actions">
+      <button class="btn btn-light btn-small hidden" id="headerMyRequests"
+              onclick="showMyRequests()">📋 My requests</button>
+      <button class="btn btn-light btn-small icon-btn hidden" id="headerPayments" title="Payment methods" aria-label="Payment methods" onclick="openPayments()">💳</button>
+      <button class="btn btn-light btn-small icon-btn hidden" id="headerNotifications" title="Notifications" aria-label="Notifications" onclick="toggleNotifications()">🔔<span id="notificationCount" class="icon-count hidden">0</span></button>
       <button class="btn btn-light btn-small" id="headerLogin"
               onclick="showAuth('login')">Login</button>
       <button class="btn btn-light btn-small" id="headerRegister"
               onclick="showAuth('register')">Create account</button>
       <button class="btn btn-light btn-small hidden" id="headerDashboard"
               onclick="showPage('dashboard')">My dashboard</button>
+      <button class="btn btn-light btn-small hidden" id="headerSettings"
+              onclick="showPage('settings')">⚙️ Settings</button>
       <button class="btn btn-light btn-small hidden" id="headerLogout"
               onclick="logout()">Logout</button>
+    </div>
+    <div id="notificationsPopover" class="popover hidden">
+      <div class="row"><h3 style="margin:0">🔔 Notifications</h3><button class="btn btn-outline btn-small" onclick="toggleNotifications(false)">Close</button></div>
+      <div id="notificationsList"><p class="muted">Loading notifications...</p></div>
     </div>
   </header>
 
@@ -244,18 +272,13 @@
         <div class="row">
           <div>
             <h2>Our services</h2>
-            <p class="muted">Explore the services available on the platform.</p>
+            <p class="muted">Explore services across 20 categories. Prices are shown in RWF and may vary with the work required.</p>
           </div>
-          <button class="btn btn-outline btn-small" onclick="loadServices()">
-            Refresh
-          </button>
+          <button class="btn btn-outline btn-small" onclick="loadServices()">Refresh</button>
         </div>
-        <div class="field" style="margin:16px 0; position:relative;">
-          <label for="serviceSearch">Search for a service</label>
-          <input id="serviceSearch" type="search" list="serviceSuggestions"
-            placeholder="Start typing a service name..." autocomplete="off">
-          <datalist id="serviceSuggestions"></datalist>
-          <p class="muted small">Start typing and choose a suggested service.</p>
+        <div class="form-grid" style="margin:16px 0">
+          <div class="field"><label for="serviceSearch">Search service</label><input id="serviceSearch" type="search" placeholder="Search by name, category or keyword" oninput="filterServices()"></div>
+          <div class="field"><label for="categoryFilter">Category</label><select id="categoryFilter" onchange="filterServices()"><option value="">All 20 categories</option></select></div>
         </div>
         <div id="publicServices" class="grid">
           <div class="empty">Loading services...</div>
@@ -359,8 +382,14 @@
         </div>
       </div>
 
+      <div class="card" id="dashboardServicesSection">
+        <div class="row"><div><h2>🧩 All available services</h2><p class="muted">Choose any service below. Each service is displayed as a card with an icon.</p></div><button class="btn btn-outline btn-small" onclick="loadServices()">↻ Refresh</button></div>
+        <div class="form-grid" style="margin:14px 0"><div class="field"><label for="dashboardServiceSearch">Search services</label><input id="dashboardServiceSearch" type="search" placeholder="Search services..." oninput="filterDashboardServices()"></div></div>
+        <div id="dashboardServices" class="grid dashboard-service-grid"><div class="empty">Loading services...</div></div>
+      </div>
+
       <div class="card">
-        <h2>Request a service</h2>
+        <h2>📝 Request a service</h2>
         <div id="requestMessage" aria-live="polite"></div>
         <form id="requestForm">
           <div class="field">
@@ -375,19 +404,15 @@
               placeholder="Explain the service you need..."></textarea>
           </div>
           <div class="field">
-            <label for="requestDocument">Attach document (optional)</label>
-            <input id="requestDocument" type="file"
-              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">
-            <p class="muted small">Allowed: PDF, Word, Excel, text, JPG or PNG. Maximum size: 5 MB.</p>
-            <div id="documentPreview" class="small muted" aria-live="polite"></div>
+            <label for="requestAttachment">📎 Attach a document (optional)</label>
+            <input id="requestAttachment" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">
+            <p class="muted small">Optional. PDF, image, Word, Excel or TXT; maximum 5 MB.</p>
           </div>
-          <button class="btn" id="requestButton" type="submit">
-            Submit request
-          </button>
+          <button class="btn" id="requestButton" type="submit">📨 Submit request</button>
         </form>
       </div>
 
-      <div class="card">
+      <div class="card" id="myRequestsSection">
         <div class="row">
           <h2>My requests</h2>
           <button class="btn btn-outline btn-small"
@@ -396,8 +421,17 @@
         <div id="myRequests"><div class="empty">No requests loaded.</div></div>
       </div>
 
+    </section>
+
+    <!-- ACCOUNT SETTINGS PAGE -->
+    <section id="settingsPage" class="hidden">
+      <div class="hero">
+        <h1>Account Settings</h1>
+        <p>Manage your account security and change your password.</p>
+      </div>
       <div class="card">
         <h2>Account settings</h2>
+        <p class="muted">Update your password to help keep your account secure.</p>
         <div id="passwordMessage" aria-live="polite"></div>
         <form id="passwordForm">
           <div class="field">
@@ -418,6 +452,7 @@
             </div>
           </div>
           <button class="btn btn-outline" type="submit">Change password</button>
+          <button class="btn btn-outline" type="button" onclick="showPage('dashboard')">Back to dashboard</button>
         </form>
       </div>
     </section>
@@ -549,14 +584,20 @@
     }
 
     function showPage(page) {
-      ["homePage", "authPage", "dashboardPage"].forEach(id => {
+      if (page === "settings" && !(currentUser && currentToken)) {
+        showAuth("login");
+        return;
+      }
+
+      ["homePage", "authPage", "dashboardPage", "settingsPage"].forEach(id => {
         $(id).classList.add("hidden");
       });
 
       const target = {
         home: "homePage",
         auth: "authPage",
-        dashboard: "dashboardPage"
+        dashboard: "dashboardPage",
+        settings: "settingsPage"
       }[page];
 
       if (target) $(target).classList.remove("hidden");
@@ -578,10 +619,15 @@
     function updateHeader() {
       const loggedIn = Boolean(currentUser && currentToken);
 
+      $("headerMyRequests").classList.toggle("hidden", !loggedIn);
       $("headerLogin").classList.toggle("hidden", loggedIn);
       $("headerRegister").classList.toggle("hidden", loggedIn);
       $("headerDashboard").classList.toggle("hidden", !loggedIn);
+      $("headerSettings").classList.toggle("hidden", !loggedIn);
       $("headerLogout").classList.toggle("hidden", !loggedIn);
+      $("headerPayments").classList.toggle("hidden", !loggedIn);
+      $("headerNotifications").classList.toggle("hidden", !loggedIn);
+      if (!loggedIn) $("notificationsPopover").classList.add("hidden");
     }
 
     function saveSession(user, token) {
@@ -628,9 +674,11 @@
       publicContainer.innerHTML = '<div class="empty">Loading services...</div>';
 
       try {
-        const result = await api("services");
+        const result = await api("listServices");
         const services = getArray(result);
-        renderPublicServices(services);
+        allServices = services;
+        populateCategoryFilter(services);
+        filterServices();
         renderServiceOptions(services);
       } catch (error) {
         publicContainer.innerHTML =
@@ -654,66 +702,127 @@
         service.service_name ?? "";
     }
 
+    let allServices = [];
+
+    function formatPrice(service) {
+      const price = Number(service.price || 0);
+      if (!Number.isFinite(price)) return escapeHtml(service.price || "Contact us");
+      return new Intl.NumberFormat("en-RW", {maximumFractionDigits: 0}).format(price) + " " + (service.currency || "RWF");
+    }
+
+    function filterServices() {
+      const q = ($("serviceSearch")?.value || "").trim().toLowerCase();
+      const cat = ($("categoryFilter")?.value || "").toLowerCase();
+      const filtered = allServices.filter(service => {
+        const text = [serviceName(service), serviceDescription(service), service.category].join(" ").toLowerCase();
+        return (!q || text.includes(q)) && (!cat || String(service.category || "").toLowerCase() === cat);
+      });
+      renderPublicServices(filtered);
+    }
+
     function renderPublicServices(services) {
       const container = $("publicServices");
-
       if (!services.length) {
-        container.innerHTML =
-          '<div class="empty">Nta serivisi zigaragaye ubu.</div>';
+        container.innerHTML = '<div class="empty">Nta serivisi ihuye n’ishakisha ryawe. Gerageza irindi jambo.</div>';
         return;
       }
-
-      const search = $("serviceSearch");
-      const suggestions = $("serviceSuggestions");
-      if (suggestions) {
-        suggestions.innerHTML = services.map(service =>
-          `<option value="${escapeHtml(serviceName(service))}"></option>`
-        ).join("");
-      }
-      if (search && !search.dataset.bound) {
-        search.dataset.bound = "1";
-        search.addEventListener("input", () => filterPublicServices(services, search.value));
-        search.addEventListener("change", () => {
-          const chosen = services.find(service =>
-            serviceName(service).toLowerCase() === search.value.trim().toLowerCase()
-          );
-          if (chosen && $("serviceSelect")) {
-            const option = Array.from($("serviceSelect").options).find(o => o.value === String(serviceId(chosen)));
-            if (option) $("serviceSelect").value = option.value;
-          }
-        });
-      }
-
       container.innerHTML = services.map(service => `
-        <article class="service-card" data-service-search="${escapeHtml((serviceName(service) + " " + serviceDescription(service)).toLowerCase())}">
-          <div class="service-icon">✦</div>
+        <article class="service-card">
+          <div class="service-icon">${serviceIcon(service)}</div>
+          <span class="badge">${escapeHtml(service.category || "General")}</span>
           <h3>${escapeHtml(serviceName(service))}</h3>
           <p class="muted">${escapeHtml(serviceDescription(service))}</p>
-          <button class="btn btn-small" onclick="startServiceRequest()">
-            Request service
-          </button>
+          <p style="font-size:18px;font-weight:800;color:var(--primary);margin:12px 0">${escapeHtml(formatPrice(service))}</p>
+          <button class="btn btn-small" onclick="startServiceRequest('${String(serviceId(service)).replace(/'/g, "\\'")}')">Request service</button>
         </article>
       `).join("");
     }
 
-    function filterPublicServices(services, query) {
-      const container = $("publicServices");
-      const q = String(query || "").trim().toLowerCase();
-      let visible = 0;
-      container.querySelectorAll(".service-card").forEach(card => {
-        const match = !q || (card.dataset.serviceSearch || "").includes(q);
-        card.style.display = match ? "" : "none";
-        if (match) visible++;
-      });
-      let empty = $("serviceSearchEmpty");
-      if (!empty) {
-        empty = document.createElement("div");
-        empty.id = "serviceSearchEmpty";
-        empty.className = "empty";
-        container.appendChild(empty);
-      }
-      empty.textContent = visible ? "" : "No matching services found. Try another name.";
-      empty.style.display = visible ? "none" : "block";
+    function serviceIcon(service) {
+      const text = [service.category, serviceName(service), serviceDescription(service)].join(" ").toLowerCase();
+      if (/design|logo|graphic|photo|video/.test(text)) return "🎨";
+      if (/computer|software|website|web|technology|it support/.test(text)) return "💻";
+      if (/education|tutor|training|course|school/.test(text)) return "📚";
+      if (/health|medical|clinic/.test(text)) return "🩺";
+      if (/transport|delivery|travel|car/.test(text)) return "🚚";
+      if (/clean|repair|maintenance|electric|plumb/.test(text)) return "🛠️";
+      if (/business|account|finance|tax|bookkeep/.test(text)) return "📊";
+      if (/legal|law|document|translation|writing/.test(text)) return "📄";
+      if (/food|catering|restaurant/.test(text)) return "🍽️";
+      if (/beauty|salon|fashion/.test(text)) return "✨";
+      return "✦";
+    }
+
+    function renderDashboardServices(services) {
+      const container = $("dashboardServices");
+      if (!container) return;
+      if (!services.length) { container.innerHTML = '<div class="empty">No services available yet.</div>'; return; }
+      container.innerHTML = services.map(service => `
+        <article class="service-card">
+          <div class="service-icon">${serviceIcon(service)}</div>
+          <span class="badge">${escapeHtml(service.category || "General")}</span>
+          <h3>${escapeHtml(serviceName(service))}</h3>
+          <p class="muted">${escapeHtml(serviceDescription(service))}</p>
+          <p style="font-size:18px;font-weight:800;color:var(--primary);margin:12px 0">${escapeHtml(formatPrice(service))}</p>
+          <button class="btn btn-small" onclick="startServiceRequest('${String(serviceId(service)).replace(/'/g, "\\'")}')">📝 Request service</button>
+        </article>`).join("");
+    }
+
+    function filterDashboardServices() {
+      const q = ($("dashboardServiceSearch")?.value || "").trim().toLowerCase();
+      const filtered = allServices.filter(service => [serviceName(service), serviceDescription(service), service.category].join(" ").toLowerCase().includes(q));
+      renderDashboardServices(filtered);
+    }
+
+    function openPayments() {
+      const modal = document.createElement("div");
+      modal.className = "modal-backdrop";
+      modal.id = "paymentsModal";
+      modal.innerHTML = `<div class="modal-box"><div class="row"><h2 style="margin:0">💳 Payment methods</h2><button class="btn btn-outline btn-small" onclick="closePayments()">✕</button></div>
+        <p class="muted">Choose a payment method after your service request is reviewed. Do not send money to an unverified number.</p>
+        <div class="payment-method"><span class="pay-icon">📱</span><div><strong>MTN MoMo</strong><div class="muted small">Mobile Money — payment details confirmed by administrator.</div></div></div>
+        <div class="payment-method"><span class="pay-icon">📲</span><div><strong>Airtel Money</strong><div class="muted small">Mobile Money — payment details confirmed by administrator.</div></div></div>
+        <div class="payment-method"><span class="pay-icon">🏦</span><div><strong>Bank transfer</strong><div class="muted small">Request official bank details from support.</div></div></div>
+        <div class="notice info">Online payment processing is not connected yet. This panel displays methods only; it does not collect or process payments.</div>
+        <button class="btn" onclick="closePayments()">Close</button></div>`;
+      document.body.appendChild(modal);
+    }
+    function closePayments() { const modal = $("paymentsModal"); if (modal) modal.remove(); }
+
+    async function toggleNotifications(force) {
+      const panel = $("notificationsPopover");
+      const shouldOpen = typeof force === "boolean" ? force : panel.classList.contains("hidden");
+      panel.classList.toggle("hidden", !shouldOpen);
+      if (!shouldOpen) return;
+      const list = $("notificationsList");
+      list.innerHTML = '<p class="muted">Loading notifications...</p>';
+      try {
+        const result = await api("getNotifications");
+        const payload = getPayload(result);
+        const items = payload.notifications || [];
+        const unread = items.filter(n => ![true, "true", 1, "1", "READ"].includes(n.is_read)).length;
+        $("notificationCount").textContent = String(unread);
+        $("notificationCount").classList.toggle("hidden", unread === 0);
+        if (!items.length) { list.innerHTML = '<p class="muted">No notifications yet.</p>'; return; }
+        list.innerHTML = items.slice(0, 12).map(n => `<div class="notification-item"><strong>${escapeHtml(n.title || "Notification")}</strong><p class="muted small">${escapeHtml(n.message || "")}</p><div class="row"><span class="muted small">${escapeHtml(n.created_at || "")}</span>${![true,"true",1,"1","READ"].includes(n.is_read) ? `<button class="btn btn-outline btn-small" onclick="markNotificationRead('${String(n.notification_id || "").replace(/'/g,"\\'")}')">Mark read</button>` : '<span class="badge">Read</span>'}</div></div>`).join("");
+      } catch (error) { list.innerHTML = `<p class="muted">${escapeHtml(error.message)}</p>`; }
+    }
+    async function refreshNotificationCount() {
+      if (!currentUser || !currentToken) return;
+      try { const result = await api("getNotifications"); const items = getPayload(result).notifications || []; const count = items.filter(n => ![true,"true",1,"1","READ"].includes(n.is_read)).length; $("notificationCount").textContent = String(count); $("notificationCount").classList.toggle("hidden", count === 0); } catch (_) {}
+    }
+    async function markNotificationRead(id) {
+      try { await api("markNotificationRead", {notification_id:id}); await toggleNotifications(true); await refreshNotificationCount(); }
+      catch (error) { alert(error.message); }
+    }
+
+    function populateCategoryFilter(services) {
+      const select = $("categoryFilter");
+      if (!select) return;
+      const current = select.value;
+      const categories = [...new Set(services.map(s => String(s.category || "").trim()).filter(Boolean))].sort();
+      select.innerHTML = '<option value="">All 20 categories</option>' + categories.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      select.value = categories.includes(current) ? current : "";
     }
 
     function renderServiceOptions(services) {
@@ -734,7 +843,7 @@
         `).join("");
     }
 
-    function startServiceRequest() {
+    function startServiceRequest(selectedServiceId = "") {
       if (!currentUser || !currentToken) {
         showAuth("login");
         showMessage("authMessage",
@@ -742,6 +851,7 @@
         return;
       }
       showPage("dashboard");
+      if (selectedServiceId) $("serviceSelect").value = selectedServiceId;
       $("requestForm").scrollIntoView({ behavior: "smooth" });
     }
 
@@ -832,6 +942,17 @@
       }
     });
 
+    function showMyRequests() {
+      if (!(currentUser && currentToken)) {
+        showAuth("login");
+        return;
+      }
+      showPage("dashboard");
+      loadMyRequests();
+      const section = $("myRequestsSection");
+      if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     async function showDashboard() {
       showPage("dashboard");
 
@@ -845,87 +966,56 @@
 
       await loadServices();
       await loadMyRequests();
+      await refreshNotificationCount();
     }
 
     async function loadMyRequests() {
       const container = $("myRequests");
       container.innerHTML = '<div class="empty">Loading requests...</div>';
-
       try {
-        const result = await api("requests");
-        const requests = getArray(result);
+        const result = await api("listMyRequests");
+        const requests = getArray(result).filter(r => String(r.requester_id) === String(currentUser?.user_id || currentUser?.id || ""));
         $("requestCount").textContent = String(requests.length);
+        if (!requests.length) { container.innerHTML = '<div class="empty">Nta requests urasaba kugeza ubu.</div>'; return; }
+        container.innerHTML = requests.map(request => {
+          const name = request.service_name || request.service_title || "Service request";
+          const status = request.status || "PENDING";
+          const hasResponse = Boolean(String(request.response_text || "").trim());
+          const viewButton = hasResponse
+            ? `<button type="button" class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}'); return false;">🟢 View response</button>`
+            : `<button type="button" class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}'); return false;">View response</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
+          return `<article class="request-item"><div class="row"><strong>${escapeHtml(name)}</strong><span class="badge">${escapeHtml(status)}</span></div>
+            <p>${escapeHtml(request.message || "Nta bisobanuro byongeweho.")}</p>
+            <p class="small muted">${escapeHtml(request.created_at || "")}</p>
+            ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "Document wohereje")}</a></p>` : ""}
+            ${viewButton}<div id="response-${escapeHtml(request.order_id)}" class="response-panel" style="margin-top:10px"></div></article>`;
+        }).join("");
+      } catch (error) { container.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
+    }
 
-        if (!requests.length) {
-          container.innerHTML =
-            '<div class="empty">Nta requests urasaba kugeza ubu.</div>';
+    async function viewResponse(requestId) {
+      const panel = $("response-" + requestId);
+      if (!panel) return;
+      panel.innerHTML = '<div class="notice">Turimo gushaka igisubizo cya Admin...</div>';
+      try {
+        const result = await api("viewRequestResponse", {order_id:requestId});
+        const data = getPayload(result);
+        if (!data.response_text) {
+          panel.innerHTML = '<div class="notice">Turagusaba kwihangana. Admin ntaragusubiza; uzamenyeshwa igihe igisubizo kizaba cyabonetse.</div>';
           return;
         }
-
-        container.innerHTML = requests.map(request => {
-          const name = request.service_name || request.service ||
-            request.title || "Service request";
-          const status = request.status || "Pending";
-          const normalizedStatus = String(status).toLowerCase();
-          const badgeClass = ["approved", "completed", "rejected", "pending"]
-            .includes(normalizedStatus) ? normalizedStatus : "";
-
-          return `
-            <article class="request-item">
-              <div class="row">
-                <strong>${escapeHtml(name)}</strong>
-                <span class="badge ${badgeClass}">
-                  ${escapeHtml(status)}
-                </span>
-              </div>
-              <p class="muted">
-                ${escapeHtml(request.description || request.details || "")}
-              </p>
-              <p class="small muted">
-                ${escapeHtml(request.created_at || request.date || "")}
-              </p>
-              ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "Open attached document")}</a></p>` : ""}
-              ${request.response_text || request.admin_response ? `<hr class="divider"><strong>Response from SOBANUKIRWA SERVICES</strong><p>${escapeHtml(request.response_text || request.admin_response)}</p>` : ""}
-              ${request.response_attachment_url ? `<p><a href="${escapeHtml(request.response_attachment_url)}" target="_blank" rel="noopener">📄 Open response document</a></p>` : ""}
-            </article>
-          `;
-        }).join("");
-      } catch (error) {
-        container.innerHTML =
-          '<div class="notice error">' + escapeHtml(error.message) + '</div>';
-      }
+        panel.innerHTML = `<div class="notice success"><strong>Igisubizo cya Admin</strong><p>${escapeHtml(data.response_text).replace(/\n/g,"<br>")}</p><p class="small muted">${escapeHtml(data.response_at || "")}</p>${data.response_attachment_url ? `<p><a target="_blank" rel="noopener" href="${escapeHtml(data.response_attachment_url)}">📎 ${escapeHtml(data.response_attachment_name || "Document ya Admin")}</a></p>` : ""}</div>`;
+      } catch (error) { panel.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
     }
 
-    // Convert an optional attachment to the object expected by Apps Script.
-    // Code.gs must save the file and return its URL for it to appear in the admin portal.
-    async function fileToAttachment(file) {
-      if (!file) return null;
-      const allowed = /\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
-      if (!allowed.test(file.name)) {
-        throw new Error("Ubwoko bwa document ntibwemerewe. Koresha PDF, Word, Excel, TXT, JPG cyangwa PNG.");
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error("Document igomba kuba itarengeje 5 MB.");
-      }
-      const dataUrl = await new Promise((resolve, reject) => {
+    function readAttachmentAsBase64(file) {
+      return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("Document ntiyasomwe. Ongera ugerageze."));
+        reader.onload = () => resolve({name:file.name, mime_type:file.type || "application/octet-stream", data:String(reader.result).split(",")[1] || ""});
+        reader.onerror = () => reject(new Error("Document ntiyasomwe. Gerageza indi file."));
         reader.readAsDataURL(file);
       });
-      return {
-        name: file.name,
-        mime_type: file.type || "application/octet-stream",
-        data: String(dataUrl).split(",")[1]
-      };
     }
-
-    $("requestDocument").addEventListener("change", () => {
-      const file = $("requestDocument").files[0];
-      $("documentPreview").textContent = file
-        ? `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`
-        : "";
-    });
 
     $("requestForm").addEventListener("submit", async event => {
       event.preventDefault();
@@ -933,6 +1023,17 @@
 
       const selected = $("serviceSelect").value;
       const description = $("requestDescription").value.trim();
+      const fileInput = $("requestAttachment");
+      const file = fileInput?.files?.[0] || null;
+
+      if (file && file.size > 5 * 1024 * 1024) {
+        showMessage("requestMessage", "Document irenze 5 MB. Hitamo ntoya.", "error");
+        return;
+      }
+      if (file && !/\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i.test(file.name)) {
+        showMessage("requestMessage", "Ubwoko bwa document ntibwemerewe.", "error");
+        return;
+      }
 
       if (!selected) {
         showMessage("requestMessage", "Hitamo serivisi ubanze.", "error");
@@ -942,23 +1043,18 @@
       setBusy("requestButton", true);
 
       try {
-        /*
-          Verify this action name and field structure against Code.gs.
-          If your backend uses another action, change it here.
-        */
-        const attachment = await fileToAttachment($("requestDocument").files[0]);
+        const attachment = file ? await readAttachmentAsBase64(file) : null;
+        /* Optional attachment is stored privately by Apps Script in Google Drive. */
         const result = await api("createRequest", {
           service_id: selected,
           service: selected,
-          description,
           message: description,
-          attachment: attachment || undefined
+          attachment: attachment
         });
 
         showMessage("requestMessage",
           result.message || "Request yawe yoherejwe.", "success");
         $("requestForm").reset();
-        $("documentPreview").textContent = "";
         await loadMyRequests();
       } catch (error) {
         showMessage("requestMessage", error.message, "error");

@@ -795,7 +795,7 @@
           content.innerHTML = `<div class="notice error">Admin has not configured an active payment method yet. Please wait or contact support.</div>`; return;
         }
         content.innerHTML = `<div class="notice info"><strong>Service amount: ${fmt}</strong><br>Pay using one of the official accounts below, then enter the transaction reference (MTCN / transaction ID).</div>` +
-          methods.map(m => `<div class="payment-method"><span class="pay-icon">${m.method_id === "MTN_MOMO" ? "📱" : m.method_id === "AIRTEL_MONEY" ? "📲" : "🏦"}</span><div><strong>${escapeHtml(m.name)}</strong><div>${escapeHtml(m.account_name || "")}</div><div><strong>${escapeHtml(m.account_number || "")}</strong></div><div class="muted small">${escapeHtml(m.instructions || "")}</div></div></div>`).join("") +
+          methods.map(m => `<div class="payment-method"><span class="pay-icon">${(m.method_id === "MTN_MOMO" || m.method_id === "MOMO_PAY") ? "📱" : m.method_id === "AIRTEL_MONEY" ? "📲" : "🏦"}</span><div><strong>${escapeHtml(m.name)}</strong><div>${escapeHtml(m.account_name || "")}</div><div><strong>${escapeHtml(m.account_number || "")}</strong></div><div class="muted small" style="white-space:pre-line">${escapeHtml(m.instructions || "")}</div></div></div>`).join("") +
           `<form id="paymentSubmitForm"><div class="field"><label>Payment method</label><select id="paymentMethodSelect" required>${methods.map(m=>`<option value="${escapeHtml(m.method_id)}">${escapeHtml(m.name)}</option>`).join("")}</select></div><div class="field"><label>Transaction reference / ID</label><input id="paymentReferenceInput" required minlength="4" maxlength="150" placeholder="Enter transaction ID after paying"></div><button class="btn" id="submitPaymentButton" type="submit">I have paid — submit for verification</button></form><p class="muted small">Your response stays locked until Admin confirms that the money has been received. Do not submit a false transaction reference.</p>`;
         $("paymentSubmitForm").addEventListener("submit", async ev => {
           ev.preventDefault(); setBusy("submitPaymentButton", true, "Submitting...");
@@ -1032,7 +1032,7 @@
         modal.innerHTML = `<div class="modal-box"><div class="row"><h2>💳 Kwishyura serivisi</h2><button class="btn btn-outline btn-small" onclick="closeCustomerPay()">✕</button></div>
           <p><b>${escapeHtml(serviceName)}</b></p><p>Igiciro: <b>${escapeHtml(new Intl.NumberFormat("en-RW").format(amount))} RWF</b></p>
           <label>Hitamo uburyo bwo kwishyura</label><select id="customerPayMethod" required>${methods.map(m=>`<option value="${escapeHtml(m.method_id||m.method_code)}">${escapeHtml(m.method_name||m.name)} — ${escapeHtml(m.account_number||"")} ${escapeHtml(m.account_name||"")}</option>`).join("")}</select>
-          <div id="customerPayDetails" class="notice info"></div>
+          <div id="customerPayDetails" class="notice info" style="white-space:pre-line"></div>
           <label>Transaction reference / nimero y'ubwishyu</label><input id="customerPayReference" placeholder="Andika transaction ID" required>
           <p class="muted small">Banza wohereze amafaranga kuri nimero iri hejuru, hanyuma wandike transaction reference. Admin azagenzura ubwishyu.</p>
           <button class="btn" onclick="submitCustomerPayment('${escapeHtml(orderId)}')">Nohereza icyemezo cy'ubwishyu</button></div>`;
@@ -1044,7 +1044,7 @@
     }
     function renderCustomerPayDetails() {
       const m=(window.customerPaymentMethods||[]).find(x=>String(x.method_id||x.method_code)===String($("customerPayMethod").value));
-      $("customerPayDetails").innerHTML=m?`<b>${escapeHtml(m.method_name||m.name)}</b><br>Nomero: <b>${escapeHtml(m.account_number||"")}</b><br>Konti: ${escapeHtml(m.account_name||"")}<br>${escapeHtml(m.instructions||"")}`:"";
+      $("customerPayDetails").innerHTML=m?`<b>${escapeHtml(m.method_name||m.name)}</b>\nNomero / Merchant Code: <b>${escapeHtml(m.account_number||"")}</b>\nKonti: ${escapeHtml(m.account_name||"")}\n\n${escapeHtml(m.instructions||"")}`:"";
     }
     function closeCustomerPay(){const m=$("customerPayModal");if(m)m.remove();}
     async function submitCustomerPayment(orderId){

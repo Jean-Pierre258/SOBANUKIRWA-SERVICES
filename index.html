@@ -2,337 +2,1043 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#123a72">
-<title>SOBANUKIRWA SERVICES</title>
-<style>
-:root{--primary:#123a72;--blue:#1769aa;--bg:#f4f7fb;--text:#1b2638;--muted:#667085;--border:#e1e7ef;--danger:#b42318;--success:#067647}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-header{background:linear-gradient(120deg,var(--primary),var(--blue));color:white;padding:16px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
-.brand{font-weight:800;font-size:21px}
-.brand small{display:block;font-size:11px;font-weight:400;letter-spacing:1px;margin-top:4px}
-.header-actions{display:flex;gap:8px;flex-wrap:wrap}
-.container{width:min(1100px,94%);margin:25px auto}
-.hero{padding:30px;border-radius:18px;color:white;background:linear-gradient(125deg,#123a72,#2086c7);margin-bottom:22px}
-.hero h1{margin:0 0 10px;font-size:clamp(27px,4vw,40px)}
-.hero p{line-height:1.65;max-width:700px}
-.card{background:white;border:1px solid var(--border);border-radius:14px;padding:21px;margin-bottom:19px;box-shadow:0 5px 18px #142d500a}
-.card h2,.card h3{margin-top:0}
-.grid,.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:15px}
-.service-card,.request-item{border:1px solid var(--border);border-radius:12px;padding:17px;background:white;margin-bottom:10px}
-.service-icon{width:48px;height:48px;border-radius:13px;background:#eaf2ff;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:10px}
-.muted{color:var(--muted);line-height:1.55}
-.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.field{margin-bottom:14px}
-label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
-input,select,textarea{width:100%;padding:12px;border:1px solid #cfd8e3;border-radius:8px;background:white;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #1769aa1f}
-textarea{min-height:95px;resize:vertical}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 15px;border:0;border-radius:8px;background:var(--primary);color:white;font-weight:700;text-decoration:none}
-.btn:hover{filter:brightness(1.08)}
-.btn:disabled{opacity:.6;cursor:wait}
-.btn-light{background:white;color:var(--primary)}
-.btn-outline{background:transparent;color:var(--primary);border:1px solid var(--primary)}
-.btn-success{background:#16803c}
-.btn-small{padding:8px 11px;font-size:13px}
-.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-.tabs button{background:#e8eef6;color:var(--primary)}
-.tabs button.active{background:var(--primary);color:white}
-.notice{padding:12px 14px;border-radius:9px;margin:12px 0;line-height:1.5;overflow-wrap:anywhere}
-.notice.success{color:var(--success);background:#e8f7ef}
-.notice.error{color:var(--danger);background:#fff0ef}
-.notice.info{color:#175cd3;background:#eff8ff}
-.badge{display:inline-block;font-size:12px;padding:5px 9px;border-radius:20px;background:#edf2f7;color:#344054}
-.badge.pending,.badge.ready_for_payment,.badge.pending_payment,.badge.under_review{background:#fff4d6;color:#854d0e}
-.badge.approved,.badge.completed{background:#dcfae6;color:#067647}
-.badge.rejected{background:#fee4e2;color:#b42318}
-.empty{text-align:center;padding:24px;color:var(--muted)}
-footer{text-align:center;padding:24px 12px;margin-top:30px;background:white;color:var(--muted);border-top:1px solid var(--border);font-size:13px}
-.popover{position:absolute;right:5%;top:78px;width:min(360px,90vw);z-index:20;background:white;color:var(--text);border:1px solid var(--border);border-radius:14px;box-shadow:0 12px 35px #0003;padding:16px}
-.notification-item{padding:12px 0;border-bottom:1px solid var(--border)}
-.icon-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:20px;background:#d92d20;color:white;font-size:11px;padding:0 4px}
-.modal-backdrop{position:fixed;inset:0;background:#0c1a308c;z-index:50;display:flex;align-items:center;justify-content:center;padding:18px}
-.modal-box{background:white;border-radius:16px;padding:22px;width:min(600px,100%);max-height:88vh;overflow:auto}
-.payment-method{padding:13px;border:1px solid var(--border);border-radius:10px;margin:9px 0}
-@media(max-width:600px){header{padding:14px 4%}.container{margin-top:16px}.hero{padding:22px}.card{padding:16px}.header-actions{width:100%}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123a72">
+  <title>SOBANUKIRWA SERVICES</title>
+  <style>
+    :root {
+      --primary: #123a72;
+      --primary2: #1769aa;
+      --bg: #f4f7fb;
+      --text: #1b2638;
+      --muted: #667085;
+      --border: #e1e7ef;
+      --white: #fff;
+      --danger: #b42318;
+      --success: #067647;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+
+    header {
+      background: linear-gradient(120deg, var(--primary), var(--primary2));
+      color: white;
+      padding: 17px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .brand { font-weight: 800; font-size: 21px; }
+    .brand small {
+      display: block;
+      font-weight: 400;
+      font-size: 11px;
+      opacity: .85;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 28px auto;
+    }
+    .hero {
+      padding: 32px;
+      border-radius: 18px;
+      color: white;
+      background: linear-gradient(125deg, #123a72, #2086c7);
+      margin-bottom: 24px;
+    }
+    .hero h1 { margin: 0 0 12px; font-size: clamp(27px, 4vw, 40px); }
+    .hero p { max-width: 650px; line-height: 1.7; margin-bottom: 0; }
+
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 18px rgba(20, 45, 80, .04);
+    }
+    .card h2, .card h3 { margin-top: 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 17px;
+    }
+    .service-card {
+      border: 1px solid var(--border);
+      padding: 19px;
+      border-radius: 13px;
+      background: white;
+    }
+    .service-icon { font-size: 30px; margin-bottom: 10px; }
+    .service-card h3 { margin: 0 0 8px; }
+    .muted { color: var(--muted); line-height: 1.55; }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cfd8e3;
+      border-radius: 8px;
+      background: white;
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary2);
+      box-shadow: 0 0 0 3px rgba(23,105,170,.12);
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    .field { margin-bottom: 15px; }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .btn-light { background: white; color: var(--primary); }
+    .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); }
+    .btn-danger { background: var(--danger); }
+    .btn-small { padding: 8px 11px; font-size: 13px; }
+
+    .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .tabs button { background: #e8eef6; color: var(--primary); }
+    .tabs button.active { background: var(--primary); color: white; }
+
+    .notice {
+      padding: 12px 14px;
+      border-radius: 9px;
+      margin: 14px 0;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .notice.success { color: var(--success); background: #e8f7ef; }
+    .notice.error { color: var(--danger); background: #fff0ef; }
+    .notice.info { color: #175cd3; background: #eff8ff; }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #edf2f7;
+      color: #344054;
+    }
+    .badge.pending { background: #fff4d6; color: #854d0e; }
+    .badge.approved, .badge.completed { background: #dcfae6; color: #067647; }
+    .badge.rejected { background: #fee4e2; color: #b42318; }
+
+    .request-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: white;
+    }
+    .empty {
+      text-align: center;
+      padding: 24px;
+      color: var(--muted);
+    }
+    footer {
+      text-align: center;
+      padding: 25px 12px;
+      margin-top: 35px;
+      background: white;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .small { font-size: 12px; }
+    .divider { border: 0; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    @media(max-width: 600px) {
+      header { padding: 15px 4%; }
+      .container { width: 94%; margin-top: 17px; }
+      .hero { padding: 23px; }
+      .card { padding: 16px; }
+      .header-actions { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <div class="brand">SOBANUKIRWA SERVICES<small>YOUR SERVICES. ONE PLACE.</small></div>
-  <div class="header-actions">
-    <button class="btn btn-light btn-small hidden" id="headerMyRequests" onclick="showMyRequests()">📋 My requests</button>
-    <button class="btn btn-light btn-small hidden" id="headerPayments" onclick="openPayments()">💳 Payments</button>
-    <button class="btn btn-light btn-small hidden" id="headerNotifications" onclick="toggleNotifications()">🔔 <span id="notificationCount" class="hidden">0</span></button>
-    <button class="btn btn-light btn-small" id="headerLogin" onclick="showAuth('login')">Login</button>
-    <button class="btn btn-light btn-small" id="headerRegister" onclick="showAuth('register')">Create account</button>
-    <button class="btn btn-light btn-small hidden" id="headerDashboard" onclick="showPage('dashboard')">My dashboard</button>
-    <button class="btn btn-light btn-small hidden" id="headerSettings" onclick="showPage('settings')">⚙️ Settings</button>
-    <button class="btn btn-light btn-small hidden" id="headerLogout" onclick="logout()">Logout</button>
-  </div>
-  <div id="notificationsPopover" class="popover hidden">
-    <div class="row"><h3 style="margin:0">🔔 Notifications</h3><button class="btn btn-outline btn-small" onclick="toggleNotifications(false)">Close</button></div>
-    <div id="notificationsList"><p class="muted">Loading...</p></div>
-  </div>
-</header>
-
-<main class="container">
-<div id="globalMessage" aria-live="polite"></div>
-
-<section id="homePage">
-  <div class="hero">
-    <h1>Welcome to SOBANUKIRWA SERVICES</h1>
-    <p>Discover services, submit requests, track progress, and pay when the administrator confirms your service is ready.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-light" onclick="showAuth('register')">Get started</button>
-      <button class="btn btn-light" onclick="showAuth('login')">Sign in</button>
+  <header>
+    <div class="brand">
+      SOBANUKIRWA SERVICES
+      <small>YOUR SERVICES. ONE PLACE.</small>
     </div>
-  </div>
-  <div class="card">
-    <div class="row"><div><h2>Our services</h2><p class="muted">Browse available services and their prices.</p></div><button class="btn btn-outline btn-small" onclick="loadServices()">Refresh</button></div>
-    <div class="form-grid" style="margin-top:15px">
-      <div class="field"><label for="serviceSearch">Search service</label><input id="serviceSearch" type="search" placeholder="Search name or category" oninput="filterServices()"></div>
-      <div class="field"><label for="categoryFilter">Category</label><select id="categoryFilter" onchange="filterServices()"><option value="">All categories</option></select></div>
+    <div class="header-actions">
+      <button class="btn btn-light btn-small" id="headerLogin"
+              onclick="showAuth('login')">Login</button>
+      <button class="btn btn-light btn-small" id="headerRegister"
+              onclick="showAuth('register')">Create account</button>
+      <button class="btn btn-light btn-small hidden" id="headerDashboard"
+              onclick="showPage('dashboard')">My dashboard</button>
+      <button class="btn btn-light btn-small hidden" id="headerLogout"
+              onclick="logout()">Logout</button>
     </div>
-    <div id="publicServices" class="grid"><div class="empty">Loading services...</div></div>
-  </div>
-</section>
+  </header>
 
-<section id="authPage" class="hidden">
-<div class="card">
-  <div class="tabs"><button class="btn active" id="loginTab" onclick="showAuth('login')">Login</button><button class="btn" id="registerTab" onclick="showAuth('register')">Register</button></div>
-  <div id="authMessage" aria-live="polite"></div>
-  <form id="loginForm">
-    <h2>Welcome back</h2>
-    <div class="field"><label for="loginEmail">Email address</label><input id="loginEmail" type="email" autocomplete="email" required></div>
-    <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
-    <button class="btn" id="loginButton" type="submit">Login</button>
-  </form>
-  <form id="registerForm" class="hidden">
-    <h2>Create your account</h2>
-    <div class="field"><label for="regName">Full name</label><input id="regName" type="text" minlength="2" required autocomplete="name"></div>
-    <div class="field"><label for="regEmail">Email address</label><input id="regEmail" type="email" required autocomplete="email"></div>
-    <div class="form-grid">
-      <div class="field"><label for="regPassword">Password</label><input id="regPassword" type="password" minlength="8" required autocomplete="new-password"></div>
-      <div class="field"><label for="regPasswordConfirm">Confirm password</label><input id="regPasswordConfirm" type="password" minlength="8" required autocomplete="new-password"></div>
-    </div>
-    <div class="field"><label for="regLanguage">Preferred language</label><select id="regLanguage"><option value="en">English</option><option value="rw">Kinyarwanda</option><option value="fr">Français</option></select></div>
-    <button class="btn" id="registerButton" type="submit">Create account</button>
-  </form>
-</div>
-</section>
+  <main class="container">
+    <div id="globalMessage" aria-live="polite"></div>
 
-<section id="dashboardPage" class="hidden">
-  <div class="hero"><h1 id="welcomeName">My dashboard</h1><p>Request services, follow payment review, and access your completed results.</p></div>
-  <div class="grid">
-    <div class="card"><p class="muted">Account</p><h3 id="accountName">-</h3><p id="accountEmail" class="muted">-</p><span id="accountRole" class="badge">User</span></div>
-    <div class="card"><p class="muted">My requests</p><h2 id="requestCount">0</h2><button class="btn btn-outline btn-small" onclick="loadMyRequests()">Refresh requests</button></div>
-  </div>
-  <div class="card">
-    <div class="row"><div><h2>🧩 Available services</h2><p class="muted">Choose a service to request.</p></div><button class="btn btn-outline btn-small" onclick="loadServices()">Refresh</button></div>
-    <div class="field"><label for="dashboardServiceSearch">Search services</label><input id="dashboardServiceSearch" type="search" placeholder="Search services..." oninput="filterDashboardServices()"></div>
-    <div id="dashboardServices" class="grid"></div>
-  </div>
-  <div class="card">
-    <h2>📝 Request a service</h2><div id="requestMessage"></div>
-    <form id="requestForm">
-      <div class="field"><label for="serviceSelect">Select service</label><select id="serviceSelect" required><option value="">Loading...</option></select></div>
-      <div class="field"><label for="requestDescription">Describe your request</label><textarea id="requestDescription" minlength="3" required placeholder="Explain what you need..."></textarea></div>
-      <button class="btn" id="requestButton" type="submit">📨 Submit request</button>
-    </form>
-  </div>
-  <div class="card" id="myRequestsSection">
-    <div class="row"><h2>My requests and payments</h2><button class="btn btn-outline btn-small" onclick="loadMyRequests()">Refresh</button></div>
-    <div id="myRequests"><div class="empty">No requests loaded.</div></div>
-  </div>
-</section>
-
-<section id="settingsPage" class="hidden">
-  <div class="hero"><h1>Account settings</h1><p>Change your password.</p></div>
-  <div class="card"><div id="passwordMessage"></div>
-    <form id="passwordForm">
-      <div class="field"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" required autocomplete="current-password"></div>
-      <div class="form-grid">
-        <div class="field"><label for="newPassword">New password</label><input id="newPassword" type="password" minlength="8" required autocomplete="new-password"></div>
-        <div class="field"><label for="confirmNewPassword">Confirm new password</label><input id="confirmNewPassword" type="password" minlength="8" required autocomplete="new-password"></div>
+    <!-- PUBLIC HOME -->
+    <section id="homePage">
+      <div class="hero">
+        <h1>Welcome to SOBANUKIRWA SERVICES</h1>
+        <p>
+          Discover available services, create an account, submit your requests,
+          and follow their progress from one convenient platform.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+          <button class="btn btn-light" onclick="showAuth('register')">
+            Get started
+          </button>
+          <button class="btn btn-light" onclick="showAuth('login')">
+            Sign in
+          </button>
+        </div>
       </div>
-      <button class="btn" type="submit">Change password</button>
-      <button class="btn btn-outline" type="button" onclick="showPage('dashboard')">Back</button>
-    </form>
-  </div>
-</section>
-</main>
 
-<footer><strong>SOBANUKIRWA SERVICES</strong><p>Services and support in one place.</p><span id="footerYear"></span></footer>
+      <div class="card">
+        <div class="row">
+          <div>
+            <h2>Our services</h2>
+            <p class="muted">Explore the services available on the platform.</p>
+          </div>
+          <button class="btn btn-outline btn-small" onclick="loadServices()">
+            Refresh
+          </button>
+        </div>
+        <div class="field" style="margin:16px 0; position:relative;">
+          <label for="serviceSearch">Search for a service</label>
+          <input id="serviceSearch" type="search" list="serviceSuggestions"
+            placeholder="Start typing a service name..." autocomplete="off">
+          <datalist id="serviceSuggestions"></datalist>
+          <p class="muted small">Start typing and choose a suggested service.</p>
+        </div>
+        <div id="publicServices" class="grid">
+          <div class="empty">Loading services...</div>
+        </div>
+      </div>
+    </section>
 
-<script>
-/* Use your deployed Apps Script web-app URL. */
-const API_URL="https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
-const SESSION_KEY="sobanukirwa_services_session";
-let currentUser=null,currentToken="",allServices=[];
-const $=id=>document.getElementById(id);
-$("footerYear").textContent="© "+new Date().getFullYear();
+    <!-- AUTHENTICATION -->
+    <section id="authPage" class="hidden">
+      <div class="card">
+        <div class="tabs">
+          <button class="btn active" id="loginTab" onclick="showAuth('login')">
+            Login
+          </button>
+          <button class="btn" id="registerTab" onclick="showAuth('register')">
+            Register
+          </button>
+        </div>
 
-function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
-function showMessage(id,msg,type="info"){const el=$(id);if(el)el.innerHTML=`<div class="notice ${type}">${escapeHtml(msg)}</div>`;}
-function clearMessage(id){if($(id))$(id).innerHTML="";}
-function setBusy(id,busy,text="Please wait..."){const b=$(id);if(!b)return;if(busy){b.dataset.originalText=b.textContent;b.textContent=text;b.disabled=true;}else{b.textContent=b.dataset.originalText||b.textContent;b.disabled=false;}}
-async function api(action,data={}){
-  let response;
-  try{response=await fetch(API_URL,{method:"POST",redirect:"follow",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action,token:currentToken,...data})});}
-  catch(e){throw new Error("Could not reach Apps Script. Check the /exec URL, deployment permissions and internet connection.");}
-  const raw=await response.text();let result;
-  try{result=JSON.parse(raw);}catch(e){throw new Error("Server did not return JSON. Check Code.gs doPost() and deployment.");}
-  if(!response.ok||result.success===false||result.ok===false)throw new Error(result.message||result.error||("Server error "+response.status));
-  return result;
-}
-function payload(r){return r?.data??r?.result??r;}
-function getArray(r){const p=payload(r);if(Array.isArray(p))return p;return p.services||p.requests||p.items||r.services||r.requests||[];}
-function showPage(page){
-  if(page==="settings"&&!(currentUser&&currentToken)){showAuth("login");return;}
-  ["homePage","authPage","dashboardPage","settingsPage"].forEach(id=>$(id).classList.add("hidden"));
-  const ids={home:"homePage",auth:"authPage",dashboard:"dashboardPage",settings:"settingsPage"};
-  if(ids[page])$(ids[page]).classList.remove("hidden");
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-function showAuth(mode){showPage("auth");const login=mode==="login";$("loginForm").classList.toggle("hidden",!login);$("registerForm").classList.toggle("hidden",login);$("loginTab").classList.toggle("active",login);$("registerTab").classList.toggle("active",!login);clearMessage("authMessage");}
-function updateHeader(){
-  const yes=!!(currentUser&&currentToken);
-  ["headerMyRequests","headerPayments","headerNotifications","headerDashboard","headerSettings","headerLogout"].forEach(id=>$(id).classList.toggle("hidden",!yes));
-  ["headerLogin","headerRegister"].forEach(id=>$(id).classList.toggle("hidden",yes));
-  if(!yes)$("notificationsPopover").classList.add("hidden");
-}
-function saveSession(user,token){
-  currentUser=user||null;currentToken=token||"";
-  if(currentUser&&currentToken)sessionStorage.setItem(SESSION_KEY,JSON.stringify({user:currentUser,token:currentToken}));
-  else sessionStorage.removeItem(SESSION_KEY);
-  updateHeader();
-}
-function restoreSession(){try{const s=JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null");if(s?.user&&s?.token){currentUser=s.user;currentToken=s.token;updateHeader();return true;}}catch(e){}return false;}
-function normalizeUser(r){const p=payload(r);return p.user||p.account||p;}
-function tokenFrom(r){const p=payload(r);return p.token||p.sessionToken||r.token||"";}
+        <div id="authMessage" aria-live="polite"></div>
 
-function serviceName(s){return s.title||s.service_name||s.name||s.service||"Service";}
-function serviceId(s){return s.service_id??s.id??"";}
-function serviceDescription(s){return s.description||s.details||s.summary||"Contact us for more information.";}
-function servicePrice(s){const n=Number(s.price);return Number.isFinite(n)?new Intl.NumberFormat("en-RW",{maximumFractionDigits:0}).format(n)+" "+(s.currency||"RWF"):(s.price||"Contact us");}
-function serviceIcon(s){const t=[s.category,serviceName(s),serviceDescription(s)].join(" ").toLowerCase();if(/design|logo|graphic|photo|video/.test(t))return"🎨";if(/computer|software|website|web|technology|it/.test(t))return"💻";if(/education|tutor|training|course|school/.test(t))return"📚";if(/health|medical|clinic/.test(t))return"🩺";if(/transport|delivery|travel/.test(t))return"🚚";if(/repair|maintenance|electric|plumb/.test(t))return"🛠️";if(/business|account|finance|tax/.test(t))return"📊";if(/legal|document|translation|writing/.test(t))return"📄";return"✦";}
-function serviceCard(s){return `<article class="service-card"><div class="service-icon">${serviceIcon(s)}</div><span class="badge">${escapeHtml(s.category||"General")}</span><h3>${escapeHtml(serviceName(s))}</h3><p class="muted">${escapeHtml(serviceDescription(s))}</p><p style="font-size:18px;font-weight:800;color:var(--primary)">${escapeHtml(servicePrice(s))}</p><button class="btn btn-small" onclick="startServiceRequest('${escapeHtml(serviceId(s))}')">📝 Request service</button></article>`;}
-async function loadServices(){
-  $("publicServices").innerHTML='<div class="empty">Loading services...</div>';
-  try{allServices=getArray(await api("listServices"));populateCategories();filterServices();renderServiceOptions();filterDashboardServices();}
-  catch(e){$("publicServices").innerHTML=`<div class="empty">${escapeHtml(e.message)}</div>`;}
-}
-function populateCategories(){const sel=$("categoryFilter"),old=sel.value,cats=[...new Set(allServices.map(s=>String(s.category||"").trim()).filter(Boolean))].sort();sel.innerHTML='<option value="">All categories</option>'+cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");if(cats.includes(old))sel.value=old;}
-function filterServices(){const q=($("serviceSearch").value||"").toLowerCase().trim(),cat=($("categoryFilter").value||"").toLowerCase();const list=allServices.filter(s=>(!q||[serviceName(s),serviceDescription(s),s.category].join(" ").toLowerCase().includes(q))&&(!cat||String(s.category||"").toLowerCase()===cat));$("publicServices").innerHTML=list.length?list.map(serviceCard).join(""):'<div class="empty">No matching services found.</div>';}
-function filterDashboardServices(){if(!$("dashboardServices"))return;const q=($("dashboardServiceSearch").value||"").toLowerCase().trim(),list=allServices.filter(s=>[serviceName(s),serviceDescription(s),s.category].join(" ").toLowerCase().includes(q));$("dashboardServices").innerHTML=list.length?list.map(serviceCard).join(""):'<div class="empty">No services available.</div>';}
-function renderServiceOptions(){const sel=$("serviceSelect");sel.innerHTML=allServices.length?'<option value="">Choose a service</option>'+allServices.map(s=>`<option value="${escapeHtml(serviceId(s))}">${escapeHtml(serviceName(s))} — ${escapeHtml(servicePrice(s))}</option>`).join(""):'<option value="">No services available</option>';}
-function startServiceRequest(id=""){if(!currentUser||!currentToken){showAuth("login");showMessage("authMessage","Please sign in before requesting a service.");return;}showPage("dashboard");if(id)$("serviceSelect").value=id;$("requestForm").scrollIntoView({behavior:"smooth"});}
+        <form id="loginForm">
+          <h2>Welcome back</h2>
+          <p class="muted">Sign in to access your account.</p>
+          <div class="field">
+            <label for="loginEmail">Email address</label>
+            <input id="loginEmail" name="email" type="email"
+                   autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" name="password" type="password"
+                   autocomplete="current-password" required>
+          </div>
+          <button class="btn" type="submit" id="loginButton">Login</button>
+        </form>
 
-$("registerForm").addEventListener("submit",async e=>{
-  e.preventDefault();clearMessage("authMessage");
-  const full_name=$("regName").value.trim(),email=$("regEmail").value.trim().toLowerCase(),password=$("regPassword").value,preferred_language=$("regLanguage").value;
-  if(password!==$("regPasswordConfirm").value){showMessage("authMessage","Passwords do not match.","error");return;}
-  if(password.length<8){showMessage("authMessage","Password must contain at least 8 characters.","error");return;}
-  setBusy("registerButton",true);
-  try{const r=await api("register",{full_name,email,password,preferred_language}),u=normalizeUser(r),t=tokenFrom(r);if(t){saveSession(u,t);await showDashboard();showMessage("globalMessage","Account created successfully.","success");}else{showAuth("login");$("loginEmail").value=email;showMessage("authMessage",r.message||"Account created. Please log in.","success");}}
-  catch(e){showMessage("authMessage",e.message,"error");}finally{setBusy("registerButton",false);}
-});
-$("loginForm").addEventListener("submit",async e=>{
-  e.preventDefault();clearMessage("authMessage");setBusy("loginButton",true);
-  try{const r=await api("login",{email:$("loginEmail").value.trim().toLowerCase(),password:$("loginPassword").value}),u=normalizeUser(r),t=tokenFrom(r);if(!t)throw new Error("Login response did not include a token. Check Code.gs.");saveSession(u,t);await showDashboard();showMessage("globalMessage","Signed in successfully.","success");}
-  catch(e){showMessage("authMessage",e.message,"error");}finally{setBusy("loginButton",false);}
-});
-async function showDashboard(){showPage("dashboard");const n=currentUser?.full_name||currentUser?.name||currentUser?.email||"My dashboard";$("welcomeName").textContent="Welcome, "+n;$("accountName").textContent=n;$("accountEmail").textContent=currentUser?.email||"";$("accountRole").textContent=currentUser?.role||"User";await loadServices();await loadMyRequests();await refreshNotificationCount();}
-function showMyRequests(){if(!currentToken){showAuth("login");return;}showPage("dashboard");loadMyRequests();$("myRequestsSection").scrollIntoView({behavior:"smooth"});}
+        <form id="registerForm" class="hidden">
+          <h2>Create your account</h2>
+          <p class="muted">Fill in the details below to register.</p>
 
-function reqId(r){return r.order_id||r.request_id||r.id||"";}
-function reqName(r){const s=allServices.find(x=>String(serviceId(x))===String(r.service_id));return r.service_title||r.service_name||(s?serviceName(s):"Service request");}
-function badge(s){const v=String(s||"PENDING").toUpperCase();return `<span class="badge ${escapeHtml(v.toLowerCase())}">${escapeHtml(v.replace(/_/g," "))}</span>`;}
-function actionsForRequest(r){
-  const id=reqId(r),ps=String(r.payment_status||"").toUpperCase(),st=String(r.status||"").toUpperCase();let html="";
-  if(["READY_FOR_PAYMENT","PENDING_PAYMENT","PAYMENT_DUE"].includes(st)||["PENDING_PAYMENT","REJECTED"].includes(ps))html+=`<button class="btn btn-small" onclick="openPaymentForm('${escapeHtml(id)}','${escapeHtml(r.price??"")}')">💳 Submit payment details</button>`;
-  if(["UNDER_REVIEW","PENDING_REVIEW"].includes(ps))html+='<div class="notice info">Payment details submitted. Waiting for administrator verification.</div>';
-  if(ps==="REJECTED")html+='<div class="notice error">Payment was rejected. Please check with the administrator before trying again.</div>';
-  if(ps==="APPROVED"||st==="COMPLETED")html+=`<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(id)}')">🔓 View paid response</button>`;
-  html+=`<div id="response-${escapeHtml(id)}" class="response-panel"></div>`;return html;
-}
-async function loadMyRequests(){
-  const c=$("myRequests");c.innerHTML='<div class="empty">Loading requests...</div>';
-  try{const items=getArray(await api("listMyRequests"));$("requestCount").textContent=String(items.length);
-    if(!items.length){c.innerHTML='<div class="empty">You have not submitted any requests yet.</div>';return;}
-    c.innerHTML=items.map(r=>`<article class="request-item"><div class="row"><strong>${escapeHtml(reqName(r))}</strong>${badge(r.status)}</div><p>${escapeHtml(r.message||"")}</p><p class="small muted">Submitted: ${escapeHtml(r.created_at||"")}</p><p><strong>Price:</strong> ${escapeHtml(servicePrice({price:r.price,currency:r.currency||"RWF"}))}</p><p><strong>Payment status:</strong> ${badge(r.payment_status||"NOT_STARTED")}</p>${r.payment_reference?`<p class="small muted">Reference: ${escapeHtml(r.payment_reference)}</p>`:""}${actionsForRequest(r)}</article>`).join("");
-  }catch(e){c.innerHTML=`<div class="notice error">${escapeHtml(e.message)}</div>`;}
-}
-$("requestForm").addEventListener("submit",async e=>{
-  e.preventDefault();clearMessage("requestMessage");const service_id=$("serviceSelect").value,message=$("requestDescription").value.trim();
-  if(!service_id){showMessage("requestMessage","Choose a service first.","error");return;}
-  setBusy("requestButton",true);
-  try{const r=await api("createRequest",{service_id,service:service_id,message});showMessage("requestMessage",r.message||"Your request has been submitted.","success");$("requestForm").reset();await loadMyRequests();await refreshNotificationCount();}
-  catch(e){showMessage("requestMessage",e.message,"error");}finally{setBusy("requestButton",false);}
-});
+          <div class="field">
+            <label for="regName">Full name</label>
+            <input id="regName" name="full_name" type="text"
+                   autocomplete="name" minlength="2" required>
+          </div>
+          <div class="field">
+            <label for="regEmail">Email address</label>
+            <input id="regEmail" name="email" type="email"
+                   autocomplete="email" required>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="regPassword">Password</label>
+              <input id="regPassword" name="password" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+            <div class="field">
+              <label for="regPasswordConfirm">Confirm password</label>
+              <input id="regPasswordConfirm" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+          </div>
+          <div class="field">
+            <label for="regLanguage">Preferred language</label>
+            <select id="regLanguage" name="preferred_language">
+              <option value="en">English</option>
+              <option value="rw">Kinyarwanda</option>
+              <option value="fr">Français</option>
+            </select>
+          </div>
+          <button class="btn" type="submit" id="registerButton">
+            Create account
+          </button>
+          <p class="muted small">
+            Use a strong password and keep it private.
+          </p>
+        </form>
+      </div>
+    </section>
 
-function openPaymentForm(orderId,amount){
-  const modal=document.createElement("div");modal.className="modal-backdrop";modal.id="paymentModal";
-  modal.innerHTML=`<div class="modal-box"><div class="row"><h2 style="margin:0">Submit payment details</h2><button class="btn btn-outline btn-small" onclick="closePaymentForm()">✕</button></div>
-  <p class="muted">Only pay after your request is marked ready for payment. Confirm the official payment instructions with SOBANUKIRWA SERVICES. Submitting a reference does not automatically approve your payment.</p>
-  <div class="notice info"><strong>Amount due:</strong> ${escapeHtml(amount||"Confirm with administrator")} RWF</div>
-  <form id="paymentForm"><input type="hidden" id="paymentOrderId" value="${escapeHtml(orderId)}">
-  <div class="field"><label for="paymentMethod">Payment method</label><select id="paymentMethod" required><option value="">Select method</option><option value="MTN_MOMO">MTN MoMo</option><option value="AIRTEL_MONEY">Airtel Money</option><option value="BANK_TRANSFER">Bank transfer</option></select></div>
-  <div class="field"><label for="paymentReference">Transaction reference</label><input id="paymentReference" required minlength="3" maxlength="100" placeholder="Transaction ID from your receipt"></div>
-  <p class="muted small">Never enter your Mobile Money PIN or password. An administrator must verify the transaction.</p><button class="btn" id="submitPaymentButton" type="submit">Submit for verification</button></form><div id="paymentFormMessage"></div></div>`;
-  document.body.appendChild(modal);$("paymentForm").addEventListener("submit",submitPayment);
-}
-function closePaymentForm(){$("paymentModal")?.remove();}
-async function submitPayment(e){
-  e.preventDefault();setBusy("submitPaymentButton",true);
-  try{const order_id=$("paymentOrderId").value,payment_method=$("paymentMethod").value,payment_reference=$("paymentReference").value.trim();const r=await api("submitPayment",{order_id,payment_method,payment_reference});showMessage("paymentFormMessage",r.message||"Payment submitted for verification.","success");await loadMyRequests();await refreshNotificationCount();setTimeout(closePaymentForm,1200);}
-  catch(e){showMessage("paymentFormMessage",e.message,"error");}finally{setBusy("submitPaymentButton",false);}
-}
-async function viewResponse(id){
-  const panel=$("response-"+id);if(!panel)return;panel.innerHTML='<div class="notice info">Checking payment approval and response access...</div>';
-  try{const r=await api("getRequestResult",{order_id:id}),d=payload(r);if(d.payment_status&&String(d.payment_status).toUpperCase()!=="APPROVED")throw new Error("Payment is not approved yet. The response remains locked.");if(!d.response_text&&!d.response_url)throw new Error("The administrator has not added a response yet.");panel.innerHTML=`<div class="notice success"><strong>Service response</strong>${d.response_text?`<p>${escapeHtml(d.response_text).replace(/\n/g,"<br>")}</p>`:""}${d.response_url?`<p><a href="${escapeHtml(d.response_url)}" target="_blank" rel="noopener">📎 Open result/document</a></p>`:""}<p class="small muted">${escapeHtml(d.delivered_at||"")}</p></div>`;}
-  catch(e){panel.innerHTML=`<div class="notice info">${escapeHtml(e.message)}</div>`;}
-}
-function openPayments(){
-  const m=document.createElement("div");m.className="modal-backdrop";m.id="paymentsInfoModal";
-  m.innerHTML=`<div class="modal-box"><div class="row"><h2 style="margin:0">💳 Payment methods</h2><button class="btn btn-outline btn-small" onclick="closePayments()">✕</button></div>
-  <div class="payment-method"><strong>📱 MTN MoMo</strong><p class="muted small">Use only the official payment details confirmed by the administrator.</p></div>
-  <div class="payment-method"><strong>📲 Airtel Money</strong><p class="muted small">Use only the official payment details confirmed by the administrator.</p></div>
-  <div class="notice info">Payment verification is manual. The service response stays locked until the administrator approves the payment.</div><button class="btn" onclick="closePayments()">Close</button></div>`;
-  document.body.appendChild(m);
-}
-function closePayments(){$("paymentsInfoModal")?.remove();}
-function isRead(v){return [true,"true",1,"1","READ"].includes(v);}
-async function toggleNotifications(force){
-  const panel=$("notificationsPopover"),open=typeof force==="boolean"?force:panel.classList.contains("hidden");panel.classList.toggle("hidden",!open);if(!open)return;
-  const list=$("notificationsList");list.innerHTML='<p class="muted">Loading...</p>';
-  try{const items=payload(await api("getNotifications")).notifications||[],unread=items.filter(n=>!isRead(n.is_read)).length;$("notificationCount").textContent=String(unread);$("notificationCount").classList.toggle("hidden",unread===0);
-    list.innerHTML=items.length?items.slice(0,15).map(n=>`<div class="notification-item"><strong>${escapeHtml(n.title||"Notification")}</strong><p class="muted small">${escapeHtml(n.message||"")}</p><div class="row"><span class="muted small">${escapeHtml(n.created_at||"")}</span>${!isRead(n.is_read)?`<button class="btn btn-outline btn-small" onclick="markNotificationRead('${escapeHtml(n.notification_id||"")}')">Mark read</button>`:""}</div></div>`).join(""):'<p class="muted">No notifications yet.</p>';
-  }catch(e){list.innerHTML=`<p class="muted">${escapeHtml(e.message)}</p>`;}
-}
-async function refreshNotificationCount(){if(!currentToken)return;try{const items=payload(await api("getNotifications")).notifications||[],n=items.filter(x=>!isRead(x.is_read)).length;$("notificationCount").textContent=String(n);$("notificationCount").classList.toggle("hidden",n===0);}catch(e){}}
-async function markNotificationRead(id){try{await api("markNotificationRead",{notification_id:id});await toggleNotifications(true);await refreshNotificationCount();}catch(e){alert(e.message);}}
+    <!-- USER DASHBOARD -->
+    <section id="dashboardPage" class="hidden">
+      <div class="hero">
+        <h1 id="welcomeName">My dashboard</h1>
+        <p>Manage your profile, explore services, and track your requests.</p>
+      </div>
 
-$("passwordForm").addEventListener("submit",async e=>{
-  e.preventDefault();const current_password=$("currentPassword").value,new_password=$("newPassword").value;
-  if(new_password!==$("confirmNewPassword").value){showMessage("passwordMessage","New passwords do not match.","error");return;}
-  try{const r=await api("changePassword",{current_password,new_password});showMessage("passwordMessage",r.message||"Password changed successfully.","success");$("passwordForm").reset();}
-  catch(e){showMessage("passwordMessage",e.message,"error");}
-});
-async function logout(){try{await api("logout");}catch(e){}saveSession(null,"");showPage("home");showMessage("globalMessage","You have been logged out.","success");}
-async function validateSavedSession(){
-  if(!restoreSession())return;
-  try{const r=await api("me"),u=normalizeUser(r);if(u&&(u.email||u.full_name||u.name)){saveSession(u,currentToken);await showDashboard();}else{saveSession(null,"");showPage("home");}}
-  catch(e){saveSession(null,"");showPage("home");}
-}
-loadServices();
-validateSavedSession();
-</script>
+      <div class="grid">
+        <div class="card">
+          <p class="muted">Account</p>
+          <h3 id="accountName">-</h3>
+          <p id="accountEmail" class="muted">-</p>
+          <span id="accountRole" class="badge">User</span>
+        </div>
+        <div class="card">
+          <p class="muted">My requests</p>
+          <h2 id="requestCount">0</h2>
+          <button class="btn btn-outline btn-small"
+                  onclick="loadMyRequests()">Refresh requests</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Request a service</h2>
+        <div id="requestMessage" aria-live="polite"></div>
+        <form id="requestForm">
+          <div class="field">
+            <label for="serviceSelect">Select service</label>
+            <select id="serviceSelect" required>
+              <option value="">Loading services...</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="requestDescription">Describe your request</label>
+            <textarea id="requestDescription" required minlength="3"
+              placeholder="Explain the service you need..."></textarea>
+          </div>
+          <div class="field">
+            <label for="requestDocument">Attach document (optional)</label>
+            <input id="requestDocument" type="file"
+              accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">
+            <p class="muted small">Allowed: PDF, Word, Excel, text, JPG or PNG. Maximum size: 5 MB.</p>
+            <div id="documentPreview" class="small muted" aria-live="polite"></div>
+          </div>
+          <button class="btn" id="requestButton" type="submit">
+            Submit request
+          </button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <h2>My requests</h2>
+          <button class="btn btn-outline btn-small"
+                  onclick="loadMyRequests()">Refresh</button>
+        </div>
+        <div id="myRequests"><div class="empty">No requests loaded.</div></div>
+      </div>
+
+      <div class="card">
+        <h2>Account settings</h2>
+        <div id="passwordMessage" aria-live="polite"></div>
+        <form id="passwordForm">
+          <div class="field">
+            <label for="currentPassword">Current password</label>
+            <input id="currentPassword" type="password"
+                   autocomplete="current-password" required>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="newPassword">New password</label>
+              <input id="newPassword" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+            <div class="field">
+              <label for="confirmNewPassword">Confirm new password</label>
+              <input id="confirmNewPassword" type="password"
+                     autocomplete="new-password" minlength="8" required>
+            </div>
+          </div>
+          <button class="btn btn-outline" type="submit">Change password</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>SOBANUKIRWA SERVICES</strong>
+    <p>Services and support in one place.</p>
+    <span id="footerYear"></span>
+  </footer>
+
+  <script>
+    /*
+      IMPORTANT:
+      Replace this value with your deployed Google Apps Script Web App URL.
+      It must normally end in /exec.
+    */
+    const API_URL = "https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
+
+    const SESSION_KEY = "sobanukirwa_services_session";
+    let currentUser = null;
+    let currentToken = "";
+
+    const $ = id => document.getElementById(id);
+
+    $("footerYear").textContent = "© " + new Date().getFullYear();
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, ch => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[ch]);
+    }
+
+    function showMessage(elementId, message, type = "info") {
+      const element = $(elementId);
+      if (!element) return;
+      element.innerHTML =
+        '<div class="notice ' + type + '">' + escapeHtml(message) + '</div>';
+    }
+
+    function clearMessage(elementId) {
+      if ($(elementId)) $(elementId).innerHTML = "";
+    }
+
+    function setBusy(buttonId, busy, busyText = "Please wait...") {
+      const button = $(buttonId);
+      if (!button) return;
+
+      if (busy) {
+        button.dataset.originalText = button.textContent;
+        button.textContent = busyText;
+        button.disabled = true;
+      } else {
+        button.textContent = button.dataset.originalText || button.textContent;
+        button.disabled = false;
+      }
+    }
+
+    /*
+      All requests are sent as JSON text using text/plain.
+      This avoids triggering a CORS preflight in common Apps Script setups.
+      The Apps Script deployment must still allow the web app to be reached.
+    */
+    async function api(action, data = {}) {
+      if (!API_URL || API_URL.includes("PASTE_YOUR")) {
+        throw new Error("Banza ushyiremo URL nyayo ya Google Apps Script /exec muri index.html.");
+      }
+
+      let response;
+      try {
+        response = await fetch(API_URL, {
+          method: "POST",
+          redirect: "follow",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify({
+            action: action,
+            token: currentToken,
+            ...data
+          })
+        });
+      } catch (error) {
+        throw new Error(
+          "Ntibyashobotse kugera kuri API. Genza URL ya Apps Script /exec, deployment na internet."
+        );
+      }
+
+      const raw = await response.text();
+      let result;
+
+      try {
+        result = JSON.parse(raw);
+      } catch {
+        throw new Error(
+          "Server ntiyagaruye JSON iteganyijwe. Reba Apps Script deployment na doPost()."
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error(result.message || result.error ||
+          ("Server error: " + response.status));
+      }
+
+      if (result.success === false || result.ok === false) {
+        throw new Error(result.message || result.error || "Igikorwa nticyakunze.");
+      }
+
+      return result;
+    }
+
+    function getPayload(result) {
+      return result?.data ?? result?.result ?? result;
+    }
+
+    function getArray(result) {
+      const payload = getPayload(result);
+      if (Array.isArray(payload)) return payload;
+      if (Array.isArray(payload?.services)) return payload.services;
+      if (Array.isArray(payload?.requests)) return payload.requests;
+      if (Array.isArray(payload?.items)) return payload.items;
+      if (Array.isArray(result?.services)) return result.services;
+      if (Array.isArray(result?.requests)) return result.requests;
+      return [];
+    }
+
+    function showPage(page) {
+      ["homePage", "authPage", "dashboardPage"].forEach(id => {
+        $(id).classList.add("hidden");
+      });
+
+      const target = {
+        home: "homePage",
+        auth: "authPage",
+        dashboard: "dashboardPage"
+      }[page];
+
+      if (target) $(target).classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showAuth(mode) {
+      showPage("auth");
+      const login = mode === "login";
+
+      $("loginForm").classList.toggle("hidden", !login);
+      $("registerForm").classList.toggle("hidden", login);
+      $("loginTab").classList.toggle("active", login);
+      $("registerTab").classList.toggle("active", !login);
+
+      clearMessage("authMessage");
+    }
+
+    function updateHeader() {
+      const loggedIn = Boolean(currentUser && currentToken);
+
+      $("headerLogin").classList.toggle("hidden", loggedIn);
+      $("headerRegister").classList.toggle("hidden", loggedIn);
+      $("headerDashboard").classList.toggle("hidden", !loggedIn);
+      $("headerLogout").classList.toggle("hidden", !loggedIn);
+    }
+
+    function saveSession(user, token) {
+      currentUser = user || null;
+      currentToken = token || "";
+
+      if (currentUser && currentToken) {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+          user: currentUser,
+          token: currentToken
+        }));
+      } else {
+        sessionStorage.removeItem(SESSION_KEY);
+      }
+
+      updateHeader();
+    }
+
+    function restoreSession() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+        if (saved?.user && saved?.token) {
+          currentUser = saved.user;
+          currentToken = saved.token;
+          updateHeader();
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    function normalizeUser(result) {
+      const payload = getPayload(result);
+      return payload.user || payload.account || payload;
+    }
+
+    function getToken(result) {
+      const payload = getPayload(result);
+      return payload.token || payload.sessionToken || result.token || "";
+    }
+
+    async function loadServices() {
+      const publicContainer = $("publicServices");
+      publicContainer.innerHTML = '<div class="empty">Loading services...</div>';
+
+      try {
+        const result = await api("services");
+        const services = getArray(result);
+        renderPublicServices(services);
+        renderServiceOptions(services);
+      } catch (error) {
+        publicContainer.innerHTML =
+          '<div class="empty">Serivisi ntizashoboye kuzanwa. ' +
+          escapeHtml(error.message) + '</div>';
+      }
+    }
+
+    function serviceName(service) {
+      return service.name || service.service_name ||
+        service.title || service.service || "Service";
+    }
+
+    function serviceDescription(service) {
+      return service.description || service.details ||
+        service.summary || "Contact us for more information about this service.";
+    }
+
+    function serviceId(service) {
+      return service.id ?? service.service_id ?? service.name ??
+        service.service_name ?? "";
+    }
+
+    function renderPublicServices(services) {
+      const container = $("publicServices");
+
+      if (!services.length) {
+        container.innerHTML =
+          '<div class="empty">Nta serivisi zigaragaye ubu.</div>';
+        return;
+      }
+
+      const search = $("serviceSearch");
+      const suggestions = $("serviceSuggestions");
+      if (suggestions) {
+        suggestions.innerHTML = services.map(service =>
+          `<option value="${escapeHtml(serviceName(service))}"></option>`
+        ).join("");
+      }
+      if (search && !search.dataset.bound) {
+        search.dataset.bound = "1";
+        search.addEventListener("input", () => filterPublicServices(services, search.value));
+        search.addEventListener("change", () => {
+          const chosen = services.find(service =>
+            serviceName(service).toLowerCase() === search.value.trim().toLowerCase()
+          );
+          if (chosen && $("serviceSelect")) {
+            const option = Array.from($("serviceSelect").options).find(o => o.value === String(serviceId(chosen)));
+            if (option) $("serviceSelect").value = option.value;
+          }
+        });
+      }
+
+      container.innerHTML = services.map(service => `
+        <article class="service-card" data-service-search="${escapeHtml((serviceName(service) + " " + serviceDescription(service)).toLowerCase())}">
+          <div class="service-icon">✦</div>
+          <h3>${escapeHtml(serviceName(service))}</h3>
+          <p class="muted">${escapeHtml(serviceDescription(service))}</p>
+          <button class="btn btn-small" onclick="startServiceRequest()">
+            Request service
+          </button>
+        </article>
+      `).join("");
+    }
+
+    function filterPublicServices(services, query) {
+      const container = $("publicServices");
+      const q = String(query || "").trim().toLowerCase();
+      let visible = 0;
+      container.querySelectorAll(".service-card").forEach(card => {
+        const match = !q || (card.dataset.serviceSearch || "").includes(q);
+        card.style.display = match ? "" : "none";
+        if (match) visible++;
+      });
+      let empty = $("serviceSearchEmpty");
+      if (!empty) {
+        empty = document.createElement("div");
+        empty.id = "serviceSearchEmpty";
+        empty.className = "empty";
+        container.appendChild(empty);
+      }
+      empty.textContent = visible ? "" : "No matching services found. Try another name.";
+      empty.style.display = visible ? "none" : "block";
+    }
+
+    function renderServiceOptions(services) {
+      const select = $("serviceSelect");
+      if (!select) return;
+
+      if (!services.length) {
+        select.innerHTML = '<option value="">No services available</option>';
+        return;
+      }
+
+      select.innerHTML =
+        '<option value="">Choose a service</option>' +
+        services.map(service => `
+          <option value="${escapeHtml(serviceId(service))}">
+            ${escapeHtml(serviceName(service))}
+          </option>
+        `).join("");
+    }
+
+    function startServiceRequest() {
+      if (!currentUser || !currentToken) {
+        showAuth("login");
+        showMessage("authMessage",
+          "Injira muri konti yawe kugira ngo usabe serivisi.", "info");
+        return;
+      }
+      showPage("dashboard");
+      $("requestForm").scrollIntoView({ behavior: "smooth" });
+    }
+
+    $("registerForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("authMessage");
+
+      const full_name = $("regName").value.trim();
+      const email = $("regEmail").value.trim().toLowerCase();
+      const password = $("regPassword").value;
+      const confirmation = $("regPasswordConfirm").value;
+      const preferred_language = $("regLanguage").value;
+
+      if (password !== confirmation) {
+        showMessage("authMessage", "Passwords ntizihuye.", "error");
+        return;
+      }
+
+      if (password.length < 8) {
+        showMessage("authMessage",
+          "Password igomba kuba nibura inyuguti 8.", "error");
+        return;
+      }
+
+      setBusy("registerButton", true);
+
+      try {
+        const result = await api("register", {
+          full_name,
+          email,
+          password,
+          preferred_language
+        });
+
+        const payload = getPayload(result);
+        const user = normalizeUser(result);
+        const token = getToken(result);
+
+        if (token && user && (user.email || user.full_name || user.name)) {
+          saveSession(user, token);
+          showDashboard();
+          showMessage("globalMessage",
+            result.message || "Konti yawe yakozwe neza.", "success");
+        } else {
+          $("registerForm").reset();
+          showAuth("login");
+          $("loginEmail").value = email;
+          showMessage("authMessage",
+            result.message || payload.message ||
+            "Kwiyandikisha byagenze neza. Injira ukoresheje email na password byawe.",
+            "success");
+        }
+      } catch (error) {
+        showMessage("authMessage", error.message, "error");
+      } finally {
+        setBusy("registerButton", false);
+      }
+    });
+
+    $("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("authMessage");
+      setBusy("loginButton", true);
+
+      try {
+        const result = await api("login", {
+          email: $("loginEmail").value.trim().toLowerCase(),
+          password: $("loginPassword").value
+        });
+
+        const user = normalizeUser(result);
+        const token = getToken(result);
+
+        if (!token) {
+          throw new Error(
+            "Login response nta token irimo. Reba format ya response muri Code.gs."
+          );
+        }
+
+        saveSession(user, token);
+        showDashboard();
+        showMessage("globalMessage",
+          result.message || "Winjiye neza.", "success");
+      } catch (error) {
+        showMessage("authMessage", error.message, "error");
+      } finally {
+        setBusy("loginButton", false);
+      }
+    });
+
+    async function showDashboard() {
+      showPage("dashboard");
+
+      const name = currentUser?.full_name ||
+        currentUser?.name || currentUser?.email || "My dashboard";
+
+      $("welcomeName").textContent = "Welcome, " + name;
+      $("accountName").textContent = name;
+      $("accountEmail").textContent = currentUser?.email || "";
+      $("accountRole").textContent = currentUser?.role || "User";
+
+      await loadServices();
+      await loadMyRequests();
+    }
+
+    async function loadMyRequests() {
+      const container = $("myRequests");
+      container.innerHTML = '<div class="empty">Loading requests...</div>';
+
+      try {
+        const result = await api("requests");
+        const requests = getArray(result);
+        $("requestCount").textContent = String(requests.length);
+
+        if (!requests.length) {
+          container.innerHTML =
+            '<div class="empty">Nta requests urasaba kugeza ubu.</div>';
+          return;
+        }
+
+        container.innerHTML = requests.map(request => {
+          const name = request.service_name || request.service ||
+            request.title || "Service request";
+          const status = request.status || "Pending";
+          const normalizedStatus = String(status).toLowerCase();
+          const badgeClass = ["approved", "completed", "rejected", "pending"]
+            .includes(normalizedStatus) ? normalizedStatus : "";
+
+          return `
+            <article class="request-item">
+              <div class="row">
+                <strong>${escapeHtml(name)}</strong>
+                <span class="badge ${badgeClass}">
+                  ${escapeHtml(status)}
+                </span>
+              </div>
+              <p class="muted">
+                ${escapeHtml(request.description || request.details || "")}
+              </p>
+              <p class="small muted">
+                ${escapeHtml(request.created_at || request.date || "")}
+              </p>
+              ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "Open attached document")}</a></p>` : ""}
+              ${request.response_text || request.admin_response ? `<hr class="divider"><strong>Response from SOBANUKIRWA SERVICES</strong><p>${escapeHtml(request.response_text || request.admin_response)}</p>` : ""}
+              ${request.response_attachment_url ? `<p><a href="${escapeHtml(request.response_attachment_url)}" target="_blank" rel="noopener">📄 Open response document</a></p>` : ""}
+            </article>
+          `;
+        }).join("");
+      } catch (error) {
+        container.innerHTML =
+          '<div class="notice error">' + escapeHtml(error.message) + '</div>';
+      }
+    }
+
+    // Convert an optional attachment to the object expected by Apps Script.
+    // Code.gs must save the file and return its URL for it to appear in the admin portal.
+    async function fileToAttachment(file) {
+      if (!file) return null;
+      const allowed = /\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
+      if (!allowed.test(file.name)) {
+        throw new Error("Ubwoko bwa document ntibwemerewe. Koresha PDF, Word, Excel, TXT, JPG cyangwa PNG.");
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("Document igomba kuba itarengeje 5 MB.");
+      }
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Document ntiyasomwe. Ongera ugerageze."));
+        reader.readAsDataURL(file);
+      });
+      return {
+        name: file.name,
+        mime_type: file.type || "application/octet-stream",
+        data: String(dataUrl).split(",")[1]
+      };
+    }
+
+    $("requestDocument").addEventListener("change", () => {
+      const file = $("requestDocument").files[0];
+      $("documentPreview").textContent = file
+        ? `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`
+        : "";
+    });
+
+    $("requestForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("requestMessage");
+
+      const selected = $("serviceSelect").value;
+      const description = $("requestDescription").value.trim();
+
+      if (!selected) {
+        showMessage("requestMessage", "Hitamo serivisi ubanze.", "error");
+        return;
+      }
+
+      setBusy("requestButton", true);
+
+      try {
+        /*
+          Verify this action name and field structure against Code.gs.
+          If your backend uses another action, change it here.
+        */
+        const attachment = await fileToAttachment($("requestDocument").files[0]);
+        const result = await api("createRequest", {
+          service_id: selected,
+          service: selected,
+          description,
+          message: description,
+          attachment: attachment || undefined
+        });
+
+        showMessage("requestMessage",
+          result.message || "Request yawe yoherejwe.", "success");
+        $("requestForm").reset();
+        $("documentPreview").textContent = "";
+        await loadMyRequests();
+      } catch (error) {
+        showMessage("requestMessage", error.message, "error");
+      } finally {
+        setBusy("requestButton", false);
+      }
+    });
+
+    $("passwordForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage("passwordMessage");
+
+      const current_password = $("currentPassword").value;
+      const new_password = $("newPassword").value;
+      const confirmation = $("confirmNewPassword").value;
+
+      if (new_password !== confirmation) {
+        showMessage("passwordMessage",
+          "Password nshya ntizihuye.", "error");
+        return;
+      }
+
+      if (new_password.length < 8) {
+        showMessage("passwordMessage",
+          "Password nshya igomba kuba nibura inyuguti 8.", "error");
+        return;
+      }
+
+      try {
+        const result = await api("changePassword", {
+          current_password,
+          new_password
+        });
+
+        showMessage("passwordMessage",
+          result.message || "Password yahinduwe.", "success");
+        $("passwordForm").reset();
+      } catch (error) {
+        showMessage("passwordMessage", error.message, "error");
+      }
+    });
+
+    async function logout() {
+      try {
+        await api("logout");
+      } catch (_) {
+        // Clear the local session even if the server logout request fails.
+      }
+
+      saveSession(null, "");
+      currentUser = null;
+      currentToken = "";
+      showPage("home");
+      showMessage("globalMessage", "Wasohotse muri konti yawe.", "success");
+    }
+
+    async function validateSavedSession() {
+      if (!restoreSession()) return;
+
+      try {
+        const result = await api("me");
+        const payload = getPayload(result);
+        const user = payload.user || payload.account || payload;
+
+        if (user && (user.email || user.full_name || user.name)) {
+          saveSession(user, currentToken);
+          await showDashboard();
+        } else {
+          saveSession(null, "");
+          showPage("home");
+        }
+      } catch (_) {
+        saveSession(null, "");
+        showPage("home");
+      }
+    }
+
+    // Initial page
+    loadServices();
+    validateSavedSession();
+  </script>
 </body>
 </html>

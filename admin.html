@@ -152,6 +152,7 @@ footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-ali
  <button class="nav" data-page="analysis">▥ Analysis</button>
  <button class="nav" data-page="users">♙ Users</button>
  <button class="nav" data-page="announcements">✉ Announcements</button>
+ <button class="nav" data-page="payments">💳 Payments</button>
 </aside>
 
 <main>
@@ -173,15 +174,6 @@ footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-ali
  <div class="panel">
   <div class="panelhead"><h3>Recent customer requests</h3><button class="btn lightbtn" data-goto="requests">View requests</button></div>
   <div id="dashboardRequests" class="tablewrap"><div class="loading">Loading…</div></div>
- </div>
- <div class="panel">
-  <div class="panelhead"><h3>Payment Methods</h3><span class="muted">SOBANUKIRWA SERVICES</span></div>
-  <div style="padding:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
-   <div class="analysis-card" style="margin:0"><div class="muted">MTN Mobile Money</div><h3 style="margin:10px 0;font-size:22px">0787126902</h3><button class="btn primary" type="button" onclick="copyPayment('0787126902')">Copy number</button></div>
-   <div class="analysis-card" style="margin:0"><div class="muted">Airtel Money</div><h3 style="margin:10px 0;font-size:22px">0727022663</h3><button class="btn primary" type="button" onclick="copyPayment('0727022663')">Copy number</button></div>
-   <div class="analysis-card" style="margin:0"><div class="muted">MoMo Pay</div><h3 style="margin:10px 0;font-size:22px">297640</h3><button class="btn primary" type="button" onclick="copyPayment('297640')">Copy code</button></div>
-  </div>
-  <div style="padding:0 18px 18px"><div class="analysis-note">Before confirming a payment, verify the amount and recipient details. This section displays payment details only; it does not automatically verify or process transactions.</div></div>
  </div>
 </section>
 
@@ -236,6 +228,13 @@ footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-ali
  </div>
 </section>
 
+<section id="page-payments" class="hidden">
+ <div class="pagehead"><div><h2>Payments & Payment Methods</h2><p class="muted">Review customer payment proofs and manage the official payment numbers.</p></div><button class="btn primary" id="refreshPayments">↻ Refresh</button></div>
+ <div class="panel"><div class="panelhead"><h3>Payment methods shown to customers</h3></div><div id="paymentMethodsTable" class="tablewrap"><div class="loading">Loading…</div></div></div>
+ <div class="panel"><div class="panelhead"><h3>Submitted payments</h3><div class="tools"><select class="field" id="paymentFilter"><option value="">All statuses</option><option>PENDING</option><option>CONFIRMED</option><option>REJECTED</option></select></div></div><div id="paymentsTable" class="tablewrap"><div class="loading">Loading…</div></div></div>
+ <div class="analysis-note">Admin must verify the transaction in the official MTN/Airtel/bank account before confirming. This system records the decision; it does not automatically debit or verify mobile money.</div>
+</section>
+
 <section id="page-announcements" class="hidden">
  <div class="pagehead"><div><h2>Announcements</h2><p class="muted">Send a message to all active users.</p></div></div>
  <div class="panel"><div class="panelhead"><h3>Create announcement</h3></div>
@@ -265,20 +264,10 @@ let session = null;
 let services = [];
 let requests = [];
 let users = [];
+let payments = [];
+let paymentMethods = [];
 
 const $ = id => document.getElementById(id);
-
-async function copyPayment(value) {
- try {
-  await navigator.clipboard.writeText(value);
-  toast("Copied: " + value);
- } catch (e) {
-  const input = document.createElement("textarea");
-  input.value = value; document.body.appendChild(input); input.select();
-  const ok = document.execCommand("copy"); input.remove();
-  toast(ok ? "Copied: " + value : "Copy failed. Please copy manually: " + value);
- }
-}
 
 function esc(value) {
  return String(value ?? "").replace(/[&<>"']/g, ch => ({
@@ -380,10 +369,13 @@ function requestRow(r, compact=false) {
  const responseText = pick(r,["response_text"],"");
  const responseState = responseText && responseText !== "—" ? `<div class="muted" style="margin-top:5px;color:#087647">✓ Admin response sent</div>` : `<div class="muted" style="margin-top:5px">Awaiting response</div>`;
  const actions = compact
-  ? `<button class="smallbtn" data-action="request-view-detail" data-id="${esc(id)}">View Detail</button>`
+  ? `<button class="smallbtn primary" data-action="request-view-respond" data-id="${esc(id)}">View &amp; Respond</button>`
   : `<div class="actions">
-      <button class="smallbtn" data-action="request-view-detail" data-id="${esc(id)}">View Detail</button>
-      <button class="smallbtn primary" data-action="request-respond" data-id="${esc(id)}">Respond</button>
+      <button class="smallbtn primary" data-action="request-view-respond" data-id="${esc(id)}">View &amp; Respond</button>
+      <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="ACCEPTED">Accept</button>
+      <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>
+      <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
+      <button class="smallbtn red" data-action="request-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
      </div>`;
  return `<tr>
   <td><b>${esc(title)}</b><div class="muted">${esc(id)}</div><div class="request-desc">${esc(description)}</div>${attachmentUrl ? `<a class="doclink" href="${esc(attachmentUrl)}" target="_blank" rel="noopener">📎 ${esc(attachmentName)}</a>` : `<div class="muted">No attachment</div>`}${responseState}</td>
@@ -458,6 +450,24 @@ function renderAnalysis(){
  const rec=[];if(awaiting)rec.push(`<li><b>${awaiting}</b> request(s) are awaiting an admin response. Prioritize the oldest pending requests.</li>`);if(services.some(s=>norm(s.status)==='PENDING'))rec.push(`<li>Review and approve or reject pending service listings.</li>`);if(!requests.length)rec.push('<li>No requests have been returned by the backend yet. Check the connection and refresh.</li>');if(requests.length&&completed===requests.length)rec.push('<li>All recorded requests are completed. Continue monitoring new submissions.</li>');if(!rec.length)rec.push('<li>Review request statuses regularly and keep customers informed with a response for each request.</li>');$('analysisRecommendations').innerHTML='<ul>'+rec.join('')+'</ul>';
 }
 
+function renderPaymentMethods(){
+ const rows=paymentMethods.map(m=>`<tr><td><b>${esc(m.name)}</b><div class="muted">${esc(m.methodId)}</div></td><td>${esc(m.accountName||'—')}</td><td><b>${esc(m.accountNumber||'—')}</b></td><td>${esc(m.instructions||'—')}</td><td>${statusHTML(String(m.enabled)==='true'?'ACTIVE':'INACTIVE')}</td><td><button class="smallbtn" data-action="payment-method-edit" data-id="${esc(m.methodId)}">Edit</button></td></tr>`);
+ renderTable('paymentMethodsTable',['Method','Account name','Payment number / account','Instructions','Status','Action'],rows,'No payment methods configured.');
+}
+function renderPayments(){
+ const f=$('paymentFilter')?.value||'';
+ const rows=payments.filter(p=>!f||String(p.status).toUpperCase()===f).map(p=>`<tr><td><b>${esc(p.paymentId)}</b><div class="muted">Request: ${esc(p.requestId)}</div></td><td>${esc(p.userName||'—')}<div class="muted">${esc(p.userEmail||'')}</div></td><td>${esc(p.methodName||'—')}<div class="muted">Ref: ${esc(p.reference||'—')}</div></td><td>${Number(p.amount||0).toLocaleString()} RWF</td><td>${esc(p.receiptFileName||'—')}<div><button class="smallbtn" data-action="payment-receipt" data-id="${esc(p.paymentId)}">Open receipt</button></div></td><td>${statusHTML(p.status)}</td><td><div class="actions"><button class="smallbtn green" data-action="payment-review" data-id="${esc(p.paymentId)}" data-status="CONFIRMED">Approve</button><button class="smallbtn red" data-action="payment-review" data-id="${esc(p.paymentId)}" data-status="REJECTED">Reject</button></div></td></tr>`);
+ renderTable('paymentsTable',['Payment / Request','Customer','Method / Reference','Amount','Proof','Status','Review'],rows,'No payments submitted yet.');
+}
+async function loadPayments(){
+ const [pm,pp]=await Promise.all([api('adminListPaymentMethods'),api('adminListPayments')]);
+ paymentMethods=arrayFrom(pm,'paymentMethods'); payments=arrayFrom(pp,'payments');
+ renderPaymentMethods(); renderPayments();
+}
+function editPaymentMethod(m){
+ openModal('Edit payment method',`<label>Payment method</label><input class="field" name="name" readonly value="${esc(m.name)}"><label>Account / recipient name</label><input class="field" name="accountName" value="${esc(m.accountName||'')}"><label>Payment number / bank account</label><input class="field" name="accountNumber" required value="${esc(m.accountNumber||'')}"><label>Instructions</label><textarea class="field" name="instructions">${esc(m.instructions||'')}</textarea><label><input type="checkbox" name="enabled" value="true" ${String(m.enabled)==='true'?'checked':''}> Enabled for customers</label>`,async d=>{d.methodId=m.methodId;d.enabled=!!document.querySelector('#modalForm [name="enabled"]')?.checked;await api('adminSavePaymentMethod',d);});
+}
+
 async function loadServices() {
  const result=await api("listServices");
  services=arrayFrom(result,"services");
@@ -483,7 +493,7 @@ async function loadDashboard() {
 }
 async function refreshAll() {
  try {
-  await Promise.all([loadServices(),loadRequests(),loadUsers()]);
+  await Promise.all([loadServices(),loadRequests(),loadUsers(),loadPayments()]);
   await loadDashboard();
   renderAnalysis();
  } catch(e) { toast(e.message); }
@@ -492,17 +502,22 @@ async function refreshAll() {
 /* Every action below maps to a route in the supplied Code.gs. */
 async function handleAction(button) {
  const action=button.dataset.action, id=button.dataset.id, status=button.dataset.status;
+ if(action==="payment-method-edit") {
+  const m=paymentMethods.find(x=>String(x.methodId)===String(id)); if(!m) throw new Error('Payment method not found.'); editPaymentMethod(m);
+ }
+ if(action==="payment-review") {
+  const note=prompt('Optional note for the customer:',''); if(note===null)return;
+  await api('adminReviewPayment',{paymentId:id,status,adminNote:note}); toast('Payment review saved.'); await loadPayments();
+ }
+ if(action==="payment-receipt") {
+  const r=await api('adminGetReceipt',{paymentId:id}); if(!r.url)throw new Error('Receipt URL not returned.'); window.open(r.url,'_blank','noopener');
+ }
  if(action==="service-status") {
   await api("approveService",{service_id:id,status});
   toast("Service status updated.");
   await refreshAll();
  }
- if(action==="request-view-detail") {
-  const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
-  if(!r) throw new Error("Request not found.");
-  openRequestDetail(r);
- }
- if(action==="request-respond") {
+ if(action==="request-view-respond") {
   const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
   if(!r) throw new Error("Request not found.");
   openRequestWorkspace(r);
@@ -542,7 +557,7 @@ function openModal(title,fields,onSave) {
 
 async function fileToAttachment(file) {
  if(!file) return null;
- const allowed=/\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
+ const allowed=/\\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
  if(!allowed.test(file.name)) throw new Error("Allowed files: PDF, PNG, JPG, DOC, DOCX, XLS, XLSX, TXT.");
  if(file.size>5*1024*1024) throw new Error("Document must be 5 MB or smaller.");
  const dataUrl=await new Promise((resolve,reject)=>{
@@ -550,43 +565,6 @@ async function fileToAttachment(file) {
  });
  return {name:file.name,mime_type:file.type||"application/octet-stream",data:String(dataUrl).split(",")[1]};
 }
-function openRequestDetail(r){
- const id=pick(r,["order_id","request_id","id"],"");
- const service=services.find(x=>String(x.service_id)===String(r.service_id));
- const title=pick(r,["service_name"],service?pick(service,["title","service_name","name"],"Service"):"Service");
- const customer=users.find(x=>String(x.user_id)===String(r.requester_id));
- const customerName=pick(r,["requester_name"],customer?customer.full_name:pick(r,["requester_id"],"—"));
- const customerEmail=pick(r,["requester_email","email"],customer?pick(customer,["email"],"—"):"—");
- const description=pick(r,["message","description","request_description","details"],"No description provided.");
- const attachment=pick(r,["attachment_url"],"");
- const attachmentName=pick(r,["attachment_name"],"Open customer attachment");
- const response=pick(r,["response_text","admin_response","response"],"");
- const responseAttachment=pick(r,["response_attachment_url"],"");
- const responseAttachmentName=pick(r,["response_attachment_name"],"Open admin attachment");
- $("modalHost").innerHTML=`<div class="modalbg" id="detailBackdrop"><div class="modal" style="width:min(900px,100%);padding:22px">
-  <div class="pagehead"><div><h3 style="margin:0">Request Details</h3><p class="muted">${esc(id)}</p></div>${statusHTML(r.status)}</div>
-  <div class="request-split">
-   <section class="detailbox"><h3>REQUEST DETAILS</h3>
-    <div class="detailrow"><b>Service name</b><span>${esc(title)}</span></div>
-    <div class="detailrow"><b>Request ID</b><span>${esc(id)}</span></div>
-    <div class="detailrow"><b>Requester</b><span>${esc(customerName)}</span></div>
-    <div class="detailrow"><b>Email</b><span>${esc(customerEmail)}</span></div>
-    <div class="detailrow"><b>Created date</b><span>${esc(pick(r,["created_at"],"—"))}</span></div>
-    <div class="detailrow"><b>Status</b><span>${statusHTML(r.status)}</span></div>
-    <p><b>Request description</b></p><div class="detailtext">${esc(description)}</div>
-    <p><b>Attached document</b></p>${attachment?`<a class="doclink" href="${esc(attachment)}" target="_blank" rel="noopener">📎 ${esc(attachmentName)}</a>`:`<div class="muted">No attachment provided.</div>`}
-   </section>
-   <section class="detailbox"><h3>ADMIN RESPONSE</h3>
-    <p><b>Response to customer</b></p><div class="detailtext">${esc(response||"No response has been sent yet.")}</div>
-    <p><b>Response attachment</b></p>${responseAttachment?`<a class="doclink" href="${esc(responseAttachment)}" target="_blank" rel="noopener">📎 ${esc(responseAttachmentName)}</a>`:`<div class="muted">No response attachment.</div>`}
-   </section>
-  </div>
-  <div class="modalactions"><button type="button" class="btn lightbtn" id="detailClose">Close</button><button type="button" class="btn primary" id="detailRespond">Respond</button></div>
- </div></div>`;
- $("detailClose").onclick=()=>$("modalHost").innerHTML="";
- $("detailRespond").onclick=()=>{$("modalHost").innerHTML="";openRequestWorkspace(r);};
-}
-
 function openRequestWorkspace(r){
  const id=pick(r,['order_id','request_id','id'],'');
  const service=services.find(x=>String(x.service_id)===String(r.service_id));
@@ -683,6 +661,8 @@ $("logoutBtn").onclick=async()=>{
 $("refreshBtn").onclick=refreshAll;
 $("reloadDashboard").onclick=refreshAll;
 $("refreshAnalysis").onclick=refreshAll;
+$("refreshPayments").onclick=loadPayments;
+$("paymentFilter").onchange=renderPayments;
 ["serviceSearch","serviceFilter"].forEach(id=>$(id).addEventListener("input",renderServices));
 ["requestSearch","requestFilter"].forEach(id=>$(id).addEventListener("input",renderRequests));
 ["userSearch","userFilter"].forEach(id=>$(id).addEventListener("input",renderUsers));

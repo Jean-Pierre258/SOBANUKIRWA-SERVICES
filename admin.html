@@ -4,61 +4,143 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SOBANUKIRWA SERVICES — Admin Dashboard</title>
+<title>SOBANUKIRWA SERVICES — Admin</title>
 <style>
-:root{--navy:#102c52;--blue:#2463a8;--light:#eaf3ff;--bg:#f4f7fc;--ink:#172b4d;--muted:#718096;--border:#e1e9f3;--green:#16865b;--red:#c53d4b}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
-header{background:linear-gradient(120deg,#102746,#174477,#2368a7);color:white;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.brand{display:flex;align-items:center;gap:12px}.logo{background:white;color:var(--navy);border-radius:12px;padding:12px;font-weight:900}.brand h1{font-size:17px;margin:0}.brand p{font-size:12px;color:#d9e9ff;margin:5px 0 0}
-.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:bold}.primary{background:var(--blue);color:white}.lightbtn{background:white;color:var(--navy)}.danger{background:#fff0f1;color:var(--red)}
-.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 75px)}aside{background:white;border-right:1px solid var(--border);padding:20px 12px}.nav{display:block;width:100%;text-align:left;background:transparent;color:#53657d;padding:13px;border-radius:10px;margin:4px 0;border:0;font-weight:bold}.nav.active,.nav:hover{background:var(--light);color:#174c86}main{padding:25px;min-width:0}
-.pagehead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}h2{margin:0;font-size:25px}.muted{color:var(--muted);font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}.stat,.panel{background:white;border:1px solid var(--border);border-radius:15px;box-shadow:0 5px 18px #102c5209}.stat{padding:19px}.stat span{display:block;color:var(--muted);font-size:13px}.stat strong{display:block;font-size:29px;margin-top:12px}
-.panel{margin-bottom:20px;overflow:hidden}.panelhead{padding:17px 19px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.panelhead h3{margin:0;font-size:16px}.tools{display:flex;gap:8px;flex-wrap:wrap}.field{padding:10px 12px;border:1px solid #d6e0ed;border-radius:9px;background:white;min-width:130px;max-width:100%;color:var(--ink)}
-.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:780px}th,td{text-align:left;padding:13px 15px;border-bottom:1px solid #edf1f6;font-size:13px}th{font-size:11px;color:#77879b;text-transform:uppercase;background:#fbfcfe}
-.status{display:inline-block;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:bold;background:#edf2f7;color:#52647a;text-transform:capitalize}.status.approved,.status.active,.status.completed,.status.confirmed{background:#e5f8ee;color:#087647}.status.pending,.status.accepted,.status.in_progress{background:#fff4dc;color:#946315}.status.rejected,.status.suspended,.status.cancelled,.status.inactive{background:#ffedef;color:#b52d3b}
-.actions{display:flex;gap:6px;flex-wrap:wrap}.smallbtn{border:0;border-radius:7px;padding:7px 9px;background:#eaf3ff;color:#205b97;font-weight:bold;font-size:11px}.smallbtn.green{background:#e5f8ee;color:#087647}.smallbtn.red{background:#ffedef;color:#b52d3b}.doclink{display:inline-block;margin-top:6px;color:#205b97;font-weight:bold;font-size:12px;text-decoration:none}.empty,.loading{padding:27px;text-align:center;color:var(--muted)}
-footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-align:center;padding:20px;font-size:12px}.loginpage{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(140deg,#edf5ff,#f7f9ff)}.loginbox{width:min(420px,100%);background:white;padding:30px;border-radius:20px;border:1px solid var(--border);box-shadow:0 16px 45px #102c5218}.loginbox h2{margin:24px 0 8px}.loginbox label,.modal label{display:block;font-size:12px;font-weight:bold;margin:14px 0 6px}.loginbox .field{width:100%}.loginbox .primary{width:100%;margin-top:18px;padding:12px}
-.message{font-size:13px;padding:11px;border-radius:8px;margin-top:12px}.error{background:#ffedef;color:#b52d3b}.success{background:#e5f8ee;color:#087647}.modalbg{position:fixed;inset:0;background:#0c1e35aa;display:grid;place-items:center;padding:20px;z-index:10}.modal{background:white;width:min(600px,100%);padding:23px;border-radius:17px;max-height:90vh;overflow:auto}.modal h3{margin-top:0}.modal .field{width:100%}.modal textarea{min-height:90px}.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}#toast{position:fixed;right:18px;bottom:18px;background:#102c52;color:white;padding:14px 18px;border-radius:10px;z-index:30;max-width:360px}
-.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.analysis-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:16px}.barrow{display:grid;grid-template-columns:minmax(90px,1fr) 3fr 42px;gap:10px;align-items:center;margin:13px 0;font-size:13px}.bartrack{height:12px;background:#edf3fb;border-radius:20px;overflow:hidden}.barfill{height:100%;background:linear-gradient(90deg,#2463a8,#4b91df);border-radius:20px}.analysis-note{padding:12px 14px;border-radius:10px;background:#edf6ff;color:#31577f;font-size:13px;margin-top:12px}
-@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:800px){.analysis-grid{grid-template-columns:1fr}}@media(max-width:650px){.layout{display:block}aside{display:flex;overflow:auto;padding:8px;border-right:0}.nav{white-space:nowrap;width:auto;margin:0 3px;padding:11px}main{padding:14px}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:24px}header{padding:14px}}
+:root {
+  --navy:#102c52;
+  --blue:#2463a8;
+  --light:#eaf3ff;
+  --bg:#f4f7fc;
+  --ink:#172b4d;
+  --muted:#718096;
+  --border:#e1e9f3;
+  --green:#16865b;
+  --red:#c53d4b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial, sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+header{
+  background:linear-gradient(120deg,#102746,#174477,#2368a7);
+  color:white;padding:18px 24px;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;flex-wrap:wrap
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{background:white;color:var(--navy);border-radius:12px;padding:12px;font-weight:900}
+.brand h1{font-size:17px;margin:0}
+.brand p{font-size:12px;color:#d9e9ff;margin:5px 0 0}
+.btn{border:0;border-radius:9px;padding:10px 13px;font-weight:bold}
+.primary{background:var(--blue);color:white}
+.lightbtn{background:white;color:var(--navy)}
+.danger{background:#fff0f1;color:var(--red)}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 75px)}
+aside{background:white;border-right:1px solid var(--border);padding:20px 12px}
+.nav{display:block;width:100%;text-align:left;background:transparent;color:#53657d;padding:13px;border-radius:10px;margin:4px 0;border:0;font-weight:bold}
+.nav.active,.nav:hover{background:var(--light);color:#174c86}
+main{padding:25px;min-width:0}
+.pagehead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+h2{margin:0;font-size:25px}
+.muted{color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.analysis-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:18px;margin-bottom:16px}
+.barrow{display:grid;grid-template-columns:minmax(90px,1fr) 3fr 42px;gap:10px;align-items:center;margin:13px 0;font-size:13px}
+.bartrack{height:12px;background:#edf3fb;border-radius:20px;overflow:hidden}.barfill{height:100%;background:linear-gradient(90deg,#2463a8,#4b91df);border-radius:20px}
+.analysis-note{padding:12px 14px;border-radius:10px;background:#edf6ff;color:#31577f;font-size:13px;margin-top:12px}
+.request-split{display:grid;grid-template-columns:1fr 1.1fr;gap:16px}
+.detailbox{border:1px solid var(--border);border-radius:12px;padding:17px;min-width:0}
+.detailbox h3{margin:0 0 16px;font-size:15px}.detailrow{display:grid;grid-template-columns:120px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid #edf1f6;font-size:13px}.detailrow b{color:#31577f}.detailtext{white-space:pre-wrap;background:#f5f8fd;border-radius:8px;padding:12px;font-size:13px;line-height:1.5}
+@media(max-width:800px){.analysis-grid,.request-split{grid-template-columns:1fr}.detailrow{grid-template-columns:100px 1fr}}
+.stat,.panel{background:white;border:1px solid var(--border);border-radius:15px;box-shadow:0 5px 18px #102c5209}
+.stat{padding:19px}
+.stat span{display:block;color:var(--muted);font-size:13px}
+.stat strong{display:block;font-size:29px;margin-top:12px}
+.panel{margin-bottom:20px;overflow:hidden}
+.panelhead{padding:17px 19px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.panelhead h3{margin:0;font-size:16px}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.field{padding:10px 12px;border:1px solid #d6e0ed;border-radius:9px;background:white;min-width:130px;max-width:100%;color:var(--ink)}
+.tablewrap{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:780px}
+th,td{text-align:left;padding:13px 15px;border-bottom:1px solid #edf1f6;font-size:13px}
+th{font-size:11px;color:#77879b;text-transform:uppercase;background:#fbfcfe}
+.status{display:inline-block;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:bold;background:#edf2f7;color:#52647a;text-transform:capitalize}
+.status.approved,.status.active,.status.completed{background:#e5f8ee;color:#087647}
+.status.pending,.status.accepted,.status.in_progress{background:#fff4dc;color:#946315}
+.status.rejected,.status.suspended,.status.cancelled,.status.inactive{background:#ffedef;color:#b52d3b}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.request-desc{max-width:300px;white-space:normal;line-height:1.45;color:#53657d;margin-top:5px}
+.doclink{display:inline-block;margin-top:6px;color:#205b97;font-weight:bold;font-size:12px;text-decoration:none}
+.doclink:hover{text-decoration:underline}
+.smallbtn{border:0;border-radius:7px;padding:7px 9px;background:#eaf3ff;color:#205b97;font-weight:bold;font-size:11px}
+.smallbtn.green{background:#e5f8ee;color:#087647}
+.smallbtn.red{background:#ffedef;color:#b52d3b}
+.empty,.loading{padding:27px;text-align:center;color:var(--muted)}
+footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-align:center;padding:20px;font-size:12px}
+.loginpage{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(140deg,#edf5ff,#f7f9ff)}
+.loginbox{width:min(420px,100%);background:white;padding:30px;border-radius:20px;border:1px solid var(--border);box-shadow:0 16px 45px #102c5218}
+.loginbox h2{margin:24px 0 8px}
+.loginbox label,.modal label{display:block;font-size:12px;font-weight:bold;margin:14px 0 6px}
+.loginbox .field{width:100%}
+.loginbox .primary{width:100%;margin-top:18px;padding:12px}
+.message{font-size:13px;padding:11px;border-radius:8px;margin-top:12px}
+.error{background:#ffedef;color:#b52d3b}
+.success{background:#e5f8ee;color:#087647}
+.modalbg{position:fixed;inset:0;background:#0c1e35aa;display:grid;place-items:center;padding:20px;z-index:10}
+.modal{background:white;width:min(520px,100%);padding:23px;border-radius:17px;max-height:90vh;overflow:auto}
+.modal h3{margin-top:0}
+.modal .field{width:100%}
+.modal textarea{min-height:90px}
+.modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+#toast{position:fixed;right:18px;bottom:18px;background:#102c52;color:white;padding:14px 18px;border-radius:10px;z-index:30;max-width:360px}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){
+ .layout{display:block}aside{display:flex;overflow:auto;padding:8px;border-right:0}
+ .nav{white-space:nowrap;width:auto;margin:0 3px;padding:11px}
+ main{padding:14px}.stats{gap:9px}.stat{padding:13px}
+ .stat strong{font-size:24px}header{padding:14px}
+}
 </style>
 </head>
 <body>
 
+<!-- ADMIN LOGIN -->
 <section id="loginPage" class="loginpage">
-<form id="loginForm" class="loginbox">
- <div class="brand">
-  <div class="logo">S</div>
-  <div>
-   <h1 style="font-size:16px">SOBANUKIRWA SERVICES</h1>
-   <p class="muted">Administration Portal</p>
+ <form id="loginForm" class="loginbox">
+  <div class="brand">
+   <div class="logo">S</div>
+   <div>
+    <h1 style="font-size:16px">SOBANUKIRWA SERVICES</h1>
+    <p class="muted">Administration portal</p>
+   </div>
   </div>
- </div>
- <h2>Administrator Login</h2>
- <p class="muted">Sign in using your authorized administrator account.</p>
- <div id="loginMessage"></div>
- <label for="email">Email Address</label>
- <input class="field" id="email" type="email" autocomplete="username" required>
- <label for="password">Password</label>
- <input class="field" id="password" type="password" autocomplete="current-password" required>
- <button class="btn primary" id="loginBtn" type="submit">Sign In</button>
-</form>
+  <h2>Admin sign in</h2>
+  <p class="muted">Injira ukoresheje konti ya administrator yemewe.</p>
+  <div id="loginMessage"></div>
+  <label for="email">Email address</label>
+  <input class="field" id="email" type="email" autocomplete="username" required>
+  <label for="password">Password</label>
+  <input class="field" id="password" type="password" autocomplete="current-password" required>
+  <button class="btn primary" id="loginBtn" type="submit">Sign in</button>
+ </form>
 </section>
 
+<!-- ADMIN APPLICATION -->
 <div id="adminApp" class="hidden">
 <header>
  <div class="brand">
   <div class="logo">S</div>
   <div>
    <h1>SOBANUKIRWA SERVICES</h1>
-   <p>System Administration Portal</p>
+   <p>Admin control centre</p>
   </div>
  </div>
  <div class="tools">
-  <span id="adminName" style="color:white;align-self:center"></span>
+  <span id="adminName" class="muted" style="color:white;align-self:center"></span>
   <button class="btn lightbtn" id="refreshBtn">↻ Refresh</button>
-  <button class="btn lightbtn" id="logoutBtn">Sign Out</button>
+  <button class="btn lightbtn" id="logoutBtn">Log out</button>
  </div>
 </header>
 
@@ -66,980 +148,573 @@ footer{background:linear-gradient(120deg,#102746,#174477);color:#d8e7fa;text-ali
 <aside>
  <button class="nav active" data-page="dashboard">▦ Dashboard</button>
  <button class="nav" data-page="services">◇ Services</button>
- <button class="nav" data-page="requests">▤ Customer Requests</button>
- <button class="nav" data-page="analysis">▥ Analytics</button>
+ <button class="nav" data-page="requests">▤ Requests</button>
+ <button class="nav" data-page="analysis">▥ Analysis</button>
  <button class="nav" data-page="users">♙ Users</button>
- <button class="nav" data-page="payments">💳 Payments</button>
  <button class="nav" data-page="announcements">✉ Announcements</button>
 </aside>
 
 <main>
-
 <section id="page-dashboard">
  <div class="pagehead">
-  <div>
-   <h2>Dashboard Overview</h2>
-   <p class="muted">System statistics and recent activities.</p>
-  </div>
-  <button class="btn primary" id="reloadDashboard">Refresh Data</button>
+  <div><h2>Dashboard</h2><p class="muted">Platform overview and activity.</p></div>
+  <button class="btn primary" id="reloadDashboard">Refresh data</button>
  </div>
-
  <div class="stats">
-  <div class="stat"><span>Total Users</span><strong id="totalUsers">—</strong></div>
-  <div class="stat"><span>Total Services</span><strong id="totalServices">—</strong></div>
-  <div class="stat"><span>Pending Services</span><strong id="pendingServicesCount">—</strong></div>
-  <div class="stat"><span>Total Requests</span><strong id="totalRequests">—</strong></div>
+  <div class="stat"><span>Total users</span><strong id="totalUsers">—</strong></div>
+  <div class="stat"><span>Total services</span><strong id="totalServices">—</strong></div>
+  <div class="stat"><span>Pending services</span><strong id="pendingServicesCount">—</strong></div>
+  <div class="stat"><span>Total requests</span><strong id="totalRequests">—</strong></div>
  </div>
-
  <div class="panel">
-  <div class="panelhead">
-   <h3>Services Awaiting Approval</h3>
-   <button class="btn lightbtn" data-goto="services">View Services</button>
-  </div>
-  <div id="dashboardPending" class="tablewrap">
-   <div class="loading">Loading...</div>
-  </div>
+  <div class="panelhead"><h3>Services awaiting approval</h3><button class="btn lightbtn" data-goto="services">View services</button></div>
+  <div id="dashboardPending" class="tablewrap"><div class="loading">Loading…</div></div>
  </div>
-
  <div class="panel">
-  <div class="panelhead">
-   <h3>Recent Customer Requests</h3>
-   <button class="btn lightbtn" data-goto="requests">View Requests</button>
+  <div class="panelhead"><h3>Recent customer requests</h3><button class="btn lightbtn" data-goto="requests">View requests</button></div>
+  <div id="dashboardRequests" class="tablewrap"><div class="loading">Loading…</div></div>
+ </div>
+ <div class="panel">
+  <div class="panelhead"><h3>Payment Methods</h3><span class="muted">SOBANUKIRWA SERVICES</span></div>
+  <div style="padding:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
+   <div class="analysis-card" style="margin:0"><div class="muted">MTN Mobile Money</div><h3 style="margin:10px 0;font-size:22px">0787126902</h3><button class="btn primary" type="button" onclick="copyPayment('0787126902')">Copy number</button></div>
+   <div class="analysis-card" style="margin:0"><div class="muted">Airtel Money</div><h3 style="margin:10px 0;font-size:22px">0727022663</h3><button class="btn primary" type="button" onclick="copyPayment('0727022663')">Copy number</button></div>
+   <div class="analysis-card" style="margin:0"><div class="muted">MoMo Pay</div><h3 style="margin:10px 0;font-size:22px">297640</h3><button class="btn primary" type="button" onclick="copyPayment('297640')">Copy code</button></div>
   </div>
-  <div id="dashboardRequests" class="tablewrap">
-   <div class="loading">Loading...</div>
-  </div>
+  <div style="padding:0 18px 18px"><div class="analysis-note">Before confirming a payment, verify the amount and recipient details. This section displays payment details only; it does not automatically verify or process transactions.</div></div>
  </div>
 </section>
 
 <section id="page-services" class="hidden">
- <div class="pagehead">
-  <div>
-   <h2>Services Management</h2>
-   <p class="muted">Review and manage submitted services.</p>
-  </div>
-  <button class="btn primary" id="addServiceBtn">+ Add Service</button>
- </div>
+ <div class="pagehead"><div><h2>Services</h2><p class="muted">Review and manage service listings.</p></div>
+ <button class="btn primary" id="addServiceBtn">+ Add service</button></div>
  <div class="panel">
-  <div class="panelhead">
-   <h3>All Services</h3>
-   <div class="tools">
-    <input class="field" id="serviceSearch" placeholder="Search services...">
-    <select class="field" id="serviceFilter">
-     <option value="">All Statuses</option>
-     <option>PENDING</option>
-     <option>APPROVED</option>
-     <option>REJECTED</option>
-     <option>INACTIVE</option>
-    </select>
-   </div>
-  </div>
-  <div id="servicesTable" class="tablewrap"></div>
+  <div class="panelhead"><h3>All services</h3><div class="tools">
+   <input class="field" id="serviceSearch" placeholder="Search services…">
+   <select class="field" id="serviceFilter"><option value="">All statuses</option><option>PENDING</option><option>APPROVED</option><option>REJECTED</option><option>INACTIVE</option></select>
+  </div></div>
+  <div id="servicesTable" class="tablewrap"><div class="loading">Loading…</div></div>
  </div>
 </section>
 
 <section id="page-requests" class="hidden">
- <div class="pagehead">
-  <div>
-   <h2>Customer Requests</h2>
-   <p class="muted">Track customer requests and their progress.</p>
-  </div>
- </div>
+ <div class="pagehead"><div><h2>Customer requests</h2><p class="muted">Manage service requests and progress.</p></div></div>
  <div class="panel">
-  <div class="panelhead">
-   <h3>All Requests</h3>
-   <div class="tools">
-    <input class="field" id="requestSearch" placeholder="Search requests...">
-    <select class="field" id="requestFilter">
-     <option value="">All Statuses</option>
-     <option>PENDING</option>
-     <option>ACCEPTED</option>
-     <option>IN_PROGRESS</option>
-     <option>COMPLETED</option>
-     <option>REJECTED</option>
-     <option>CANCELLED</option>
-    </select>
-   </div>
-  </div>
-  <div id="requestsTable" class="tablewrap"></div>
+  <div class="panelhead"><h3>All requests</h3><div class="tools">
+   <input class="field" id="requestSearch" placeholder="Search requests…">
+   <select class="field" id="requestFilter"><option value="">All statuses</option><option>PENDING</option><option>ACCEPTED</option><option>IN_PROGRESS</option><option>COMPLETED</option><option>REJECTED</option><option>CANCELLED</option></select>
+  </div></div>
+  <div id="requestsTable" class="tablewrap"><div class="loading">Loading…</div></div>
  </div>
 </section>
 
 <section id="page-analysis" class="hidden">
- <div class="pagehead">
-  <div>
-   <h2>Analytics and Reports</h2>
-   <p class="muted">Overview of requests, services and users.</p>
-  </div>
-  <button class="btn primary" id="refreshAnalysis">↻ Refresh Analytics</button>
- </div>
-
+ <div class="pagehead"><div><h2>Analysis & Reports</h2><p class="muted">Live summary of requests, services, users and response performance.</p></div><button class="btn primary" id="refreshAnalysis" type="button">↻ Refresh analysis</button></div>
  <div class="stats">
-  <div class="stat"><span>Total Requests Received</span><strong id="aTotalRequests">0</strong></div>
-  <div class="stat"><span>Awaiting Response</span><strong id="aAwaiting">0</strong></div>
-  <div class="stat"><span>Requests Responded To</span><strong id="aResponded">0</strong></div>
-  <div class="stat"><span>Completion Rate</span><strong id="aCompletion">0%</strong></div>
+  <div class="stat"><span>Requests received</span><strong id="aTotalRequests">0</strong></div>
+  <div class="stat"><span>Awaiting response</span><strong id="aAwaiting">0</strong></div>
+  <div class="stat"><span>Responses sent</span><strong id="aResponded">0</strong></div>
+  <div class="stat"><span>Completion rate</span><strong id="aCompletion">0%</strong></div>
  </div>
-
  <div class="analysis-grid">
-  <div class="analysis-card">
-   <h3>Requests by Status</h3>
-   <div id="analysisStatuses"></div>
-  </div>
-  <div class="analysis-card">
-   <h3>Service Status Overview</h3>
-   <div id="analysisServices"></div>
-  </div>
-  <div class="analysis-card">
-   <h3>Requests by Service</h3>
-   <div id="analysisByService"></div>
-  </div>
-  <div class="analysis-card">
-   <h3>System Overview</h3>
-   <div id="analysisOverview"></div>
-   <div class="analysis-note">Analytics are based on the data returned by the system. Refresh to view the latest information.</div>
-  </div>
+  <div class="analysis-card"><h3>Requests by status</h3><div id="analysisStatuses"></div></div>
+  <div class="analysis-card"><h3>Service listing status</h3><div id="analysisServices"></div></div>
+  <div class="analysis-card"><h3>Requests by service</h3><div id="analysisByService"></div></div>
+  <div class="analysis-card"><h3>Platform overview</h3><div id="analysisOverview"></div><div class="analysis-note">Analysis is calculated from records currently returned by the backend. Refresh to load the latest data.</div></div>
  </div>
-
- <div class="panel">
-  <div class="panelhead">
-   <h3>Performance Recommendations</h3>
-  </div>
-  <div id="analysisRecommendations" style="padding:18px;line-height:1.8;font-size:14px"></div>
- </div>
+ <div class="panel"><div class="panelhead"><h3>Operational recommendations</h3></div><div id="analysisRecommendations" style="padding:18px;line-height:1.8;font-size:14px"></div></div>
 </section>
 
 <section id="page-users" class="hidden">
- <div class="pagehead">
-  <div>
-   <h2>User Management</h2>
-   <p class="muted">Manage user accounts and access permissions.</p>
-  </div>
- </div>
+ <div class="pagehead"><div><h2>Users</h2><p class="muted">Manage user accounts and access.</p></div></div>
  <div class="panel">
-  <div class="panelhead">
-   <h3>Registered Accounts</h3>
-   <div class="tools">
-    <input class="field" id="userSearch" placeholder="Search users...">
-    <select class="field" id="userFilter">
-     <option value="">All Statuses</option>
-     <option>ACTIVE</option>
-     <option>INACTIVE</option>
-     <option>SUSPENDED</option>
-    </select>
-   </div>
-  </div>
-  <div id="usersTable" class="tablewrap"></div>
- </div>
-</section>
-
-<section id="page-payments" class="hidden">
- <div class="pagehead">
-  <div>
-   <h2>Payment Management</h2>
-   <p class="muted">Configure payment methods, review receipts, and approve or reject payments.</p>
-  </div>
-  <button class="btn primary" id="refreshPaymentsBtn">↻ Refresh Payments</button>
- </div>
-
- <div class="stats">
-  <div class="stat"><span>Total Payments</span><strong id="paymentTotal">0</strong></div>
-  <div class="stat"><span>Pending Review</span><strong id="paymentPending">0</strong></div>
-  <div class="stat"><span>Confirmed Payments</span><strong id="paymentConfirmed">0</strong></div>
-  <div class="stat"><span>Rejected Payments</span><strong id="paymentRejected">0</strong></div>
- </div>
-
- <div class="panel">
-  <div class="panelhead">
-   <div>
-    <h3>Payment Methods and Account Details</h3>
-    <p class="muted">MTN Mobile Money, Airtel Money and Bank Transfer only.</p>
-   </div>
-  </div>
-  <div id="paymentMethodsTable" class="tablewrap">
-   <div class="loading">Loading...</div>
-  </div>
- </div>
-
- <div class="panel">
-  <div class="panelhead">
-   <h3>Customer Payments</h3>
-   <div class="tools">
-    <input class="field" id="paymentSearch" placeholder="Search payments or customers...">
-    <select class="field" id="paymentStatusFilter">
-     <option value="">All Statuses</option>
-     <option value="PENDING">Pending</option>
-     <option value="CONFIRMED">Confirmed</option>
-     <option value="REJECTED">Rejected</option>
-    </select>
-   </div>
-  </div>
-  <div id="paymentsTable" class="tablewrap">
-   <div class="loading">Loading...</div>
-  </div>
+  <div class="panelhead"><h3>Registered accounts</h3><div class="tools">
+   <input class="field" id="userSearch" placeholder="Search users…">
+   <select class="field" id="userFilter"><option value="">All statuses</option><option>ACTIVE</option><option>INACTIVE</option><option>SUSPENDED</option></select>
+  </div></div>
+  <div id="usersTable" class="tablewrap"><div class="loading">Loading…</div></div>
  </div>
 </section>
 
 <section id="page-announcements" class="hidden">
- <div class="pagehead">
-  <div>
-   <h2>Announcements</h2>
-   <p class="muted">Send messages to all active users.</p>
-  </div>
- </div>
- <div class="panel">
-  <div class="panelhead">
-   <h3>Create Announcement</h3>
-  </div>
+ <div class="pagehead"><div><h2>Announcements</h2><p class="muted">Send a message to all active users.</p></div></div>
+ <div class="panel"><div class="panelhead"><h3>Create announcement</h3></div>
   <div style="padding:20px;max-width:700px">
    <form id="announcementForm">
-    <label>Announcement Title</label>
-    <input class="field" style="width:100%" name="title" required>
+    <label>Announcement title</label><input class="field" style="width:100%" name="title" required>
     <label style="display:block;margin:15px 0 6px;font-weight:bold;font-size:12px">Message</label>
     <textarea class="field" style="width:100%;min-height:130px" name="message" required></textarea>
-    <button class="btn primary" style="margin-top:15px" type="submit">Send Announcement</button>
+    <button class="btn primary" style="margin-top:15px" type="submit">Send announcement</button>
    </form>
   </div>
  </div>
 </section>
-
 </main>
 </div>
-
-<footer>© <span id="year"></span> SOBANUKIRWA SERVICES · Administration Portal</footer>
+<footer>© <span id="year"></span> SOBANUKIRWA SERVICES · Administration portal</footer>
 </div>
 
-<div id="modalHost"></div>
-<div id="toast" class="hidden"></div>
+<div id="modalHost"></div><div id="toast"></div>
 
 <script>
-/* Enter your Google Apps Script Web App URL here. */
-const API_URL="https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
-const SESSION_KEY="sobanukirwa_admin_session";
-let session=null,services=[],requests=[],users=[],paymentMethods=[],payments=[];
+/* IMPORTANT: replace with your deployed Apps Script /exec URL */
+const API_URL = "https://script.google.com/macros/s/AKfycbxSxng7B2qcsHnn7SE3NnYDoIeXEuH1lph7qiTvKbzpsZPrv907mrWNHFhwpdAApy3sGA/exec";
+const SESSION_KEY = "sobanukirwa_admin_session";
 
-const $=id=>document.getElementById(id);
+let session = null;
+let services = [];
+let requests = [];
+let users = [];
 
-function esc(v){
- return String(v??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- }[c]));
+const $ = id => document.getElementById(id);
+
+async function copyPayment(value) {
+ try {
+  await navigator.clipboard.writeText(value);
+  toast("Copied: " + value);
+ } catch (e) {
+  const input = document.createElement("textarea");
+  input.value = value; document.body.appendChild(input); input.select();
+  const ok = document.execCommand("copy"); input.remove();
+  toast(ok ? "Copied: " + value : "Copy failed. Please copy manually: " + value);
+ }
 }
 
-function pick(o,keys,fallback="—"){
- for(const k of keys)
-  if(o&&o[k]!==undefined&&o[k]!==null&&o[k]!=="")return o[k];
+function esc(value) {
+ return String(value ?? "").replace(/[&<>"']/g, ch => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[ch]));
+}
+function pick(obj, keys, fallback="—") {
+ for (const key of keys) {
+  if (obj && obj[key] !== undefined && obj[key] !== null && obj[key] !== "") return obj[key];
+ }
  return fallback;
 }
-
-function arrayFrom(r,k){
- if(Array.isArray(r))return r;
- return r&&Array.isArray(r[k])?r[k]:[];
+function arrayFrom(result, key) {
+ if (Array.isArray(result)) return result;
+ return result && Array.isArray(result[key]) ? result[key] : [];
 }
-
-function toast(m){
- $("toast").textContent=m;
+function toast(message) {
+ $("toast").textContent = message;
  $("toast").classList.remove("hidden");
- setTimeout(()=>$("toast").classList.add("hidden"),4000);
+ setTimeout(() => $("toast").classList.add("hidden"), 4000);
 }
-
-function statusHTML(v){
- const s=String(v||"UNKNOWN").toLowerCase();
+function statusHTML(value) {
+ const s = String(value || "UNKNOWN").toLowerCase();
  return `<span class="status ${esc(s)}">${esc(s.replaceAll("_"," "))}</span>`;
 }
 
-async function api(action,fields={}){
- const payload={action,...fields};
- if(session?.token)payload.token=session.token;
+/* Backend response format: {success:true, services:[...]} */
+async function api(action, fields={}) {
+ if (API_URL.includes("PASTE_YOUR")) {
+  throw new Error("Shyira URL ya Apps Script Web App muri API_URL.");
+ }
+ const payload = {action, ...fields};
+ if (session && session.token) payload.token = session.token;
 
- const res=await fetch(API_URL,{
+ const response = await fetch(API_URL, {
   method:"POST",
   headers:{"Content-Type":"text/plain;charset=utf-8"},
   body:JSON.stringify(payload),
   redirect:"follow"
  });
-
- const txt=await res.text();
- let r;
-
- try{
-  r=JSON.parse(txt);
- }catch{
-  throw new Error("Apps Script did not return valid JSON. Check your deployment.");
+ const text = await response.text();
+ let result;
+ try { result = JSON.parse(text); }
+ catch {
+  throw new Error("Backend ntiyagaruye JSON. Reba Apps Script deployment.");
  }
-
- if(!res.ok||r.success===false||r.error)
-  throw new Error(r.message||r.error||"The operation failed.");
-
- return r;
+ if (!response.ok || result.success === false || result.error) {
+  throw new Error(result.message || result.error || "Request yanze.");
+ }
+ return result;
 }
 
-function showPage(name){
- document.querySelectorAll("main section").forEach(e=>e.classList.add("hidden"));
+function showPage(name) {
+ document.querySelectorAll("main section").forEach(el => el.classList.add("hidden"));
  $("page-"+name).classList.remove("hidden");
-
- document.querySelectorAll(".nav").forEach(e=>
-  e.classList.toggle("active",e.dataset.page===name)
- );
-
- if(name==="payments")refreshPayments();
+ document.querySelectorAll(".nav").forEach(el => el.classList.toggle("active",el.dataset.page===name));
 }
-
-document.addEventListener("click",e=>{
- const n=e.target.closest("[data-page]");
- if(n)showPage(n.dataset.page);
-
- const g=e.target.closest("[data-goto]");
- if(g)showPage(g.dataset.goto);
-
- const a=e.target.closest("[data-action]");
- if(a)handleAction(a).catch(x=>toast(x.message));
+document.addEventListener("click", e => {
+ const nav = e.target.closest("[data-page]");
+ if (nav) showPage(nav.dataset.page);
+ const goto = e.target.closest("[data-goto]");
+ if (goto) showPage(goto.dataset.goto);
+ const action = e.target.closest("[data-action]");
+ if (action) handleAction(action).catch(err => toast(err.message));
 });
 
-function renderTable(id,headers,rows,empty="No data available."){
- $(id).innerHTML=rows.length?
- `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table>`:
- `<div class="empty">${esc(empty)}</div>`;
+function renderTable(id, headers, rows, emptyText="No records found.") {
+ $(id).innerHTML = rows.length
+  ? `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table>`
+  : `<div class="empty">${esc(emptyText)}</div>`;
 }
 
-function serviceRow(s,compact=false){
- const id=pick(s,["service_id","id"],"");
- const title=pick(s,["title","service_name","name"],"Untitled Service");
- const cat=pick(s,["category"]);
- const provider=pick(s,["provider_id","provider_name"]);
- const st=String(pick(s,["status"],"PENDING")).toUpperCase();
-
- const actions=compact?
- `<button class="smallbtn green" data-action="service-status" data-id="${esc(id)}" data-status="APPROVED">Approve</button>`:
- `<div class="actions">
- ${st!=="APPROVED"?`<button class="smallbtn green" data-action="service-status" data-id="${esc(id)}" data-status="APPROVED">Approve</button>`:""}
- <button class="smallbtn" data-action="service-edit" data-id="${esc(id)}">Edit</button>
- <button class="smallbtn red" data-action="service-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
- </div>`;
-
+function serviceRow(s, compact=false) {
+ const id = pick(s,["service_id","id"],"");
+ const title = pick(s,["title","service_name","name"],"Untitled service");
+ const category = pick(s,["category"],"—");
+ const provider = pick(s,["provider_id","provider_name"],"—");
+ const status = String(pick(s,["status"],"PENDING")).toUpperCase();
+ const actions = compact
+  ? `<button class="smallbtn green" data-action="service-status" data-id="${esc(id)}" data-status="APPROVED">Approve</button>`
+  : `<div class="actions">
+      ${status!=="APPROVED"?`<button class="smallbtn green" data-action="service-status" data-id="${esc(id)}" data-status="APPROVED">Approve</button>`:""}
+      <button class="smallbtn" data-action="service-edit" data-id="${esc(id)}">Edit</button>
+      <button class="smallbtn red" data-action="service-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
+     </div>`;
+ return `<tr><td><b>${esc(title)}</b><div class="muted">${esc(id)}</div></td><td>${esc(category)}</td><td>${esc(provider)}</td><td>${statusHTML(status)}</td><td>${actions}</td></tr>`;
+}
+function requestRow(r, compact=false) {
+ const id = pick(r,["order_id","request_id","id"],"");
+ const service = services.find(s=>String(s.service_id)===String(r.service_id));
+ const title = pick(r,["service_name"], service ? pick(service,["title","service_name","name"],"Service") : `Service ${pick(r,["service_id"],"")}`);
+ const customer = users.find(u=>String(u.user_id)===String(r.requester_id));
+ const customerName = customer ? customer.full_name : pick(r,["requester_name","requester_id"],"—");
+ const date = pick(r,["created_at"],"—");
+ const status = String(pick(r,["status"],"PENDING")).toUpperCase();
+ const description = pick(r,["message","description","request_description","details"],"No description provided.");
+ const attachmentUrl = pick(r,["attachment_url"],"");
+ const attachmentName = pick(r,["attachment_name"],"Attached document");
+ const responseText = pick(r,["response_text"],"");
+ const responseState = responseText && responseText !== "—" ? `<div class="muted" style="margin-top:5px;color:#087647">✓ Admin response sent</div>` : `<div class="muted" style="margin-top:5px">Awaiting response</div>`;
+ const actions = compact
+  ? `<button class="smallbtn" data-action="request-view-detail" data-id="${esc(id)}">View Detail</button>`
+  : `<div class="actions">
+      <button class="smallbtn" data-action="request-view-detail" data-id="${esc(id)}">View Detail</button>
+      <button class="smallbtn primary" data-action="request-respond" data-id="${esc(id)}">Respond</button>
+     </div>`;
  return `<tr>
- <td><b>${esc(title)}</b><div class="muted">${esc(id)}</div></td>
- <td>${esc(cat)}</td>
- <td>${esc(provider)}</td>
- <td>${statusHTML(st)}</td>
- <td>${actions}</td>
+  <td><b>${esc(title)}</b><div class="muted">${esc(id)}</div><div class="request-desc">${esc(description)}</div>${attachmentUrl ? `<a class="doclink" href="${esc(attachmentUrl)}" target="_blank" rel="noopener">📎 ${esc(attachmentName)}</a>` : `<div class="muted">No attachment</div>`}${responseState}</td>
+  <td>${esc(customerName)}</td><td>${esc(date)}</td><td>${statusHTML(status)}</td><td>${actions}</td>
  </tr>`;
 }
-
-function requestRow(r,compact=false){
- const id=pick(r,["order_id","request_id","id"],"");
- const s=services.find(x=>String(x.service_id)===String(r.service_id));
- const u=users.find(x=>String(x.user_id)===String(r.requester_id));
-
- const title=pick(r,["service_name"],s?pick(s,["title","service_name","name"],"Service"):"Service");
- const customer=u?u.full_name:pick(r,["requester_name","requester_id"]);
- const st=String(pick(r,["status"],"PENDING")).toUpperCase();
- const desc=pick(r,["message","description","request_description","details"],"No description provided.");
- const url=pick(r,["attachment_url"],"");
-
- const acts=compact?
- `<button class="smallbtn" data-action="request-view" data-id="${esc(id)}">View</button>`:
- `<div class="actions">
- <button class="smallbtn" data-action="request-view" data-id="${esc(id)}">View Details</button>
- <button class="smallbtn green" data-action="request-status" data-id="${esc(id)}" data-status="ACCEPTED">Accept</button>
- <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>
- <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
- <button class="smallbtn red" data-action="request-status" data-id="${esc(id)}" data-status="REJECTED">Reject</button>
- </div>`;
-
- return `<tr>
- <td><b>${esc(title)}</b><div class="muted">${esc(id)}</div><div>${esc(desc)}</div>
- ${url?`<a class="doclink" href="${esc(url)}" target="_blank" rel="noopener">📎 View Attachment</a>`:""}
- </td>
- <td>${esc(customer)}</td>
- <td>${esc(pick(r,["created_at"]))}</td>
- <td>${statusHTML(st)}</td>
- <td>${acts}</td>
- </tr>`;
+function userRow(u) {
+ const id = pick(u,["user_id"],"");
+ const name = pick(u,["full_name"],"—");
+ const email = pick(u,["email"],"—");
+ const role = pick(u,["role"],"USER");
+ const status = String(pick(u,["status"],"ACTIVE")).toUpperCase();
+ const button = status==="ACTIVE"
+  ? `<button class="smallbtn red" data-action="user-status" data-id="${esc(id)}" data-status="SUSPENDED">Suspend</button>`
+  : `<button class="smallbtn green" data-action="user-status" data-id="${esc(id)}" data-status="ACTIVE">Activate</button>`;
+ return `<tr><td><b>${esc(name)}</b><div class="muted">${esc(id)}</div></td><td>${esc(email)}</td><td>${esc(role)}</td><td>${statusHTML(status)}</td><td>${button}</td></tr>`;
 }
 
-function userRow(u){
- const id=pick(u,["user_id"],"");
- const st=String(pick(u,["status"],"ACTIVE")).toUpperCase();
-
- return `<tr>
- <td><b>${esc(pick(u,["full_name"]))}</b><div class="muted">${esc(id)}</div></td>
- <td>${esc(pick(u,["email"]))}</td>
- <td>${esc(pick(u,["role"],"USER"))}</td>
- <td>${statusHTML(st)}</td>
- <td>
- <button class="smallbtn ${st==="ACTIVE"?"red":"green"}"
- data-action="user-status" data-id="${esc(id)}"
- data-status="${st==="ACTIVE"?"SUSPENDED":"ACTIVE"}">
- ${st==="ACTIVE"?"Suspend":"Reactivate"}
- </button>
- </td>
- </tr>`;
-}
-
-function renderServices(){
+function renderServices() {
  const q=$("serviceSearch").value.toLowerCase();
- const st=$("serviceFilter").value;
-
+ const status=$("serviceFilter").value.toUpperCase();
  const rows=services.filter(s=>
-  (!q||[s.title,s.category,s.description,s.location,s.provider_id].some(v=>String(v||"").toLowerCase().includes(q)))&&
-  (!st||String(s.status||"").toUpperCase()===st)
+  (!q||[s.title,s.category,s.description,s.location,s.provider_id].some(v=>String(v||"").toLowerCase().includes(q))) &&
+  (!status||String(s.status||"").toUpperCase()===status)
  );
-
- renderTable("servicesTable",
-  ["Service","Category","Service Provider","Status","Actions"],
-  rows.map(s=>serviceRow(s))
- );
-
- const p=services.filter(s=>String(s.status).toUpperCase()==="PENDING");
-
- renderTable("dashboardPending",
-  ["Service","Category","Service Provider","Status","Action"],
-  p.slice(0,5).map(s=>serviceRow(s,true)),
-  "No services are awaiting approval."
- );
-
+ renderTable("servicesTable",["Service","Category","Provider ID","Status","Actions"],rows.map(s=>serviceRow(s)));
+ const pending=services.filter(s=>String(s.status||"").toUpperCase()==="PENDING");
+ renderTable("dashboardPending",["Service","Category","Provider ID","Status","Action"],pending.slice(0,5).map(s=>serviceRow(s,true)),"No pending services.");
  $("totalServices").textContent=services.length;
- $("pendingServicesCount").textContent=p.length;
+ $("pendingServicesCount").textContent=pending.length;
 }
-
-function renderRequests(){
+function renderRequests() {
  const q=$("requestSearch").value.toLowerCase();
- const st=$("requestFilter").value;
-
- const rows=requests.filter(r=>
-  (!q||[r.order_id,r.requester_id,r.service_id,r.message].some(v=>String(v||"").toLowerCase().includes(q)))&&
-  (!st||String(r.status||"").toUpperCase()===st)
- );
-
- renderTable("requestsTable",
-  ["Service / Request","Requester","Date","Status","Actions"],
-  rows.map(r=>requestRow(r))
- );
-
- renderTable("dashboardRequests",
-  ["Service / Request","Requester","Date","Status","Action"],
-  requests.slice(0,5).map(r=>requestRow(r,true)),
-  "No customer requests available."
- );
-
+ const status=$("requestFilter").value.toUpperCase();
+ const rows=requests.filter(r=>{
+  const s=services.find(x=>String(x.service_id)===String(r.service_id));
+  const u=users.find(x=>String(x.user_id)===String(r.requester_id));
+  return (!q||[r.order_id,r.requester_id,r.service_id,r.message,s?.title,u?.full_name].some(v=>String(v||"").toLowerCase().includes(q)))&&
+  (!status||String(r.status||"").toUpperCase()===status);
+ });
+ renderTable("requestsTable",["Service / Request","Requester","Created","Status","Update status"],rows.map(r=>requestRow(r)));
+ renderTable("dashboardRequests",["Service / Request","Requester","Created","Status","Action"],requests.slice(0,5).map(r=>requestRow(r,true)),"No customer requests.");
  $("totalRequests").textContent=requests.length;
 }
-
-function renderUsers(){
+function renderUsers() {
  const q=$("userSearch").value.toLowerCase();
- const st=$("userFilter").value;
-
- renderTable("usersTable",
-  ["Name","Email","Role","Status","Action"],
-  users.filter(u=>
-   (!q||[u.full_name,u.email,u.role,u.user_id].some(v=>String(v||"").toLowerCase().includes(q)))&&
-   (!st||String(u.status||"").toUpperCase()===st)
-  ).map(userRow)
+ const status=$("userFilter").value.toUpperCase();
+ const rows=users.filter(u=>
+  (!q||[u.full_name,u.email,u.role,u.user_id].some(v=>String(v||"").toLowerCase().includes(q)))&&
+  (!status||String(u.status||"").toUpperCase()===status)
  );
-
+ renderTable("usersTable",["Name","Email","Role","Status","Action"],rows.map(userRow));
  $("totalUsers").textContent=users.length;
 }
 
-function renderBars(id,entries,total){
- const el=$(id);
-
- if(!entries.length){
-  el.innerHTML='<div class="empty">No data available.</div>';
-  return;
- }
-
- el.innerHTML=entries.map(([label,v])=>
- `<div class="barrow">
- <span>${esc(label)}</span>
- <div class="bartrack"><div class="barfill" style="width:${total?Math.round(v/total*100):0}%"></div></div>
- <b>${v}</b>
- </div>`
- ).join("");
+function renderBars(containerId, entries, total) {
+ const el=$(containerId); if(!entries.length){el.innerHTML='<div class="empty">No data available yet.</div>';return;}
+ el.innerHTML=entries.map(([label,value])=>{const pct=total?Math.round(value/total*100):0;return `<div class="barrow"><span>${esc(label)}</span><div class="bartrack"><div class="barfill" style="width:${pct}%"></div></div><b>${value}</b></div>`}).join('');
 }
-
 function renderAnalysis(){
- const norm=v=>String(v||"PENDING").toUpperCase().replaceAll(" ","_");
- const counts={};
-
- requests.forEach(r=>{
-  const k=norm(r.status);
-  counts[k]=(counts[k]||0)+1;
- });
-
- const responded=requests.filter(r=>
-  pick(r,["response_text","admin_response","response"],"")!==""
- ).length;
-
- const done=requests.filter(r=>norm(r.status)==="COMPLETED").length;
- const awaiting=Math.max(0,requests.length-responded);
-
- $("aTotalRequests").textContent=requests.length;
- $("aAwaiting").textContent=awaiting;
- $("aResponded").textContent=responded;
- $("aCompletion").textContent=(requests.length?Math.round(done/requests.length*100):0)+"%";
-
- renderBars("analysisStatuses",Object.entries(counts),requests.length);
-
- const sc={};
- services.forEach(s=>{
-  const k=norm(s.status);
-  sc[k]=(sc[k]||0)+1;
- });
-
- renderBars("analysisServices",Object.entries(sc),services.length);
-
- const by={};
- requests.forEach(r=>{
-  const s=services.find(x=>String(x.service_id)===String(r.service_id));
-  const n=pick(r,["service_name"],s?pick(s,["title","name"],"Service"):"Unknown Service");
-  by[n]=(by[n]||0)+1;
- });
-
- renderBars("analysisByService",
-  Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,8),
-  Math.max(1,...Object.values(by))
- );
-
- $("analysisOverview").innerHTML=[
-  ["Total Users",users.length],
-  ["Total Services",services.length],
-  ["Approved Services",services.filter(s=>norm(s.status)==="APPROVED").length],
-  ["Pending Services",services.filter(s=>norm(s.status)==="PENDING").length],
-  ["Rejected Requests",requests.filter(r=>norm(r.status)==="REJECTED").length]
- ].map(([k,v])=>
-  `<div style="padding:9px;border-bottom:1px solid #edf1f6">${esc(k)}: <b>${v}</b></div>`
- ).join("");
-
- $("analysisRecommendations").innerHTML=
- `<ul>
- <li>There are ${awaiting} requests awaiting a response.</li>
- <li>Review services that have not yet received a decision and keep customers informed about the progress of their requests.</li>
- </ul>`;
+ const norm=v=>String(v||'PENDING').toUpperCase().replaceAll(' ','_');
+ const statusCounts={};requests.forEach(r=>{const k=norm(r.status);statusCounts[k]=(statusCounts[k]||0)+1;});
+ const responded=requests.filter(r=>{const t=pick(r,['response_text','admin_response','response'],'');return t&&t!=='—';}).length;
+ const awaiting=Math.max(0,requests.length-responded);const completed=requests.filter(r=>norm(r.status)==='COMPLETED').length;
+ $('aTotalRequests').textContent=requests.length;$('aAwaiting').textContent=awaiting;$('aResponded').textContent=responded;$('aCompletion').textContent=(requests.length?Math.round(completed/requests.length*100):0)+'%';
+ renderBars('analysisStatuses',Object.entries(statusCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k.replaceAll('_',' '),v]),requests.length);
+ const serviceCounts={};services.forEach(s=>{const k=norm(s.status);serviceCounts[k]=(serviceCounts[k]||0)+1;});
+ renderBars('analysisServices',Object.entries(serviceCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k.replaceAll('_',' '),v]),services.length);
+ const byService={};requests.forEach(r=>{const s=services.find(x=>String(x.service_id)===String(r.service_id));const name=pick(r,['service_name'],s?pick(s,['title','service_name','name'],'Unknown service'):'Unknown service');byService[name]=(byService[name]||0)+1;});
+ renderBars('analysisByService',Object.entries(byService).sort((a,b)=>b[1]-a[1]).slice(0,8),Math.max(1,...Object.values(byService)));
+ $('analysisOverview').innerHTML=[['Registered users',users.length],['Listed services',services.length],['Approved services',services.filter(s=>norm(s.status)==='APPROVED').length],['Pending service approvals',services.filter(s=>norm(s.status)==='PENDING').length],['Requests rejected',requests.filter(r=>norm(r.status)==='REJECTED').length]].map(([k,v])=>`<div class="detailrow"><b>${esc(k)}</b><span>${v}</span></div>`).join('');
+ const rec=[];if(awaiting)rec.push(`<li><b>${awaiting}</b> request(s) are awaiting an admin response. Prioritize the oldest pending requests.</li>`);if(services.some(s=>norm(s.status)==='PENDING'))rec.push(`<li>Review and approve or reject pending service listings.</li>`);if(!requests.length)rec.push('<li>No requests have been returned by the backend yet. Check the connection and refresh.</li>');if(requests.length&&completed===requests.length)rec.push('<li>All recorded requests are completed. Continue monitoring new submissions.</li>');if(!rec.length)rec.push('<li>Review request statuses regularly and keep customers informed with a response for each request.</li>');$('analysisRecommendations').innerHTML='<ul>'+rec.join('')+'</ul>';
 }
 
-async function loadServices(){
- services=arrayFrom(await api("listServices"),"services");
+async function loadServices() {
+ const result=await api("listServices");
+ services=arrayFrom(result,"services");
  renderServices();
 }
-
-async function loadRequests(){
- requests=arrayFrom(await api("listRequests"),"requests");
+async function loadRequests() {
+ const result=await api("listRequests");
+ requests=arrayFrom(result,"requests");
  renderRequests();
 }
-
-async function loadUsers(){
- users=arrayFrom(await api("listUsers"),"users");
+async function loadUsers() {
+ const result=await api("listUsers");
+ users=arrayFrom(result,"users");
  renderUsers();
 }
-
-async function loadDashboard(){
- const r=await api("getDashboard");
- const d=r.dashboard||{};
-
+async function loadDashboard() {
+ const result=await api("getDashboard");
+ const d=result.dashboard||{};
  $("totalUsers").textContent=d.total_users??users.length;
  $("totalServices").textContent=d.total_services??services.length;
  $("pendingServicesCount").textContent=d.pending_services??services.filter(s=>String(s.status).toUpperCase()==="PENDING").length;
  $("totalRequests").textContent=d.total_requests??requests.length;
 }
-
-function openModal(title,fields,onSave){
- $("modalHost").innerHTML=`
- <div class="modalbg">
- <form class="modal" id="modalForm">
- <h3>${esc(title)}</h3>
- ${fields}
- <div class="modalactions">
- <button type="button" class="btn lightbtn" id="modalCancel">Cancel</button>
- <button class="btn primary">Save</button>
- </div>
- </form>
- </div>`;
-
- $("modalCancel").onclick=()=>$("modalHost").innerHTML="";
-
- $("modalForm").onsubmit=async e=>{
-  e.preventDefault();
-  const data=Object.fromEntries(new FormData(e.target).entries());
-
-  try{
-   await onSave(data);
-   $("modalHost").innerHTML="";
-   toast("Information saved successfully.");
-   await refreshAll();
-  }catch(err){
-   toast(err.message);
-  }
- };
+async function refreshAll() {
+ try {
+  await Promise.all([loadServices(),loadRequests(),loadUsers()]);
+  await loadDashboard();
+  renderAnalysis();
+ } catch(e) { toast(e.message); }
 }
 
-async function handleAction(b){
- const a=b.dataset.action;
- const id=b.dataset.id;
- const st=b.dataset.status;
-
- if(a==="service-status"){
-  await api("approveService",{service_id:id,status:st});
+/* Every action below maps to a route in the supplied Code.gs. */
+async function handleAction(button) {
+ const action=button.dataset.action, id=button.dataset.id, status=button.dataset.status;
+ if(action==="service-status") {
+  await api("approveService",{service_id:id,status});
   toast("Service status updated.");
   await refreshAll();
  }
-
- if(a==="request-status"){
-  await api("updateRequestStatus",{order_id:id,status:st});
+ if(action==="request-view-detail") {
+  const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
+  if(!r) throw new Error("Request not found.");
+  openRequestDetail(r);
+ }
+ if(action==="request-respond") {
+  const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
+  if(!r) throw new Error("Request not found.");
+  openRequestWorkspace(r);
+ }
+ if(action==="request-status") {
+  await api("updateRequestStatus",{order_id:id,status});
   toast("Request status updated.");
   await refreshAll();
  }
-
- if(a==="user-status"){
-  await api("updateUserStatus",{user_id:id,status:st});
-  toast("User account updated.");
+ if(action==="user-status") {
+  await api("updateUserStatus",{user_id:id,status});
+  toast("User status updated.");
   await refreshAll();
  }
-
- if(a==="request-view"){
-  const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
-
-  if(r)openModal("Request Details",
-   `<p><b>Service:</b> ${esc(pick(r,["service_name","service_id"]))}</p>
-   <p><b>Requester:</b> ${esc(pick(r,["requester_name","requester_id"]))}</p>
-   <p><b>Description:</b></p>
-   <div>${esc(pick(r,["message","description","details"],"No description provided."))}</div>`,
-   async()=>{}
-  );
- }
-
- if(a==="service-edit"){
+ if(action==="service-edit") {
   const s=services.find(x=>String(x.service_id)===String(id));
-
-  if(s)openModal("Edit Service",
-   `<label>Service Name</label>
-   <input class="field" name="title" required value="${esc(s.title||"")}">
-   <label>Category</label>
-   <input class="field" name="category" required value="${esc(s.category||"")}">
-   <label>Description</label>
-   <textarea class="field" name="description">${esc(s.description||"")}</textarea>
-   <label>Price (RWF)</label>
-   <input class="field" name="price" type="number" min="0" value="${esc(s.price||0)}">
-   <label>Location</label>
-   <input class="field" name="location" value="${esc(s.location||"")}">`,
-   async d=>api("updateService",{service_id:id,...d})
-  );
+  if(!s) throw new Error("Service not found.");
+  openModal("Edit service",`
+   <label>Title</label><input class="field" name="title" required value="${esc(s.title||"")}">
+   <label>Category</label><input class="field" name="category" required value="${esc(s.category||"")}">
+   <label>Description</label><textarea class="field" name="description">${esc(s.description||"")}</textarea>
+   <label>Price (RWF)</label><input class="field" name="price" type="number" min="0" step="any" value="${esc(s.price||0)}">
+   <label>Location</label><input class="field" name="location" value="${esc(s.location||"")}">
+  `,async data=>{await api("updateService",{service_id:id,...data});});
  }
 }
-
-async function loadPaymentMethods(){
- paymentMethods=arrayFrom(await api("adminListPaymentMethods"),"paymentMethods");
- renderPaymentMethods();
+function openModal(title,fields,onSave) {
+ $("modalHost").innerHTML=`<div class="modalbg" id="modalBackdrop"><form class="modal" id="modalForm"><h3>${esc(title)}</h3>${fields}<div class="modalactions"><button type="button" class="btn lightbtn" id="modalCancel">Cancel</button><button class="btn primary">Save</button></div></form></div>`;
+ $("modalCancel").onclick=()=>$("modalHost").innerHTML="";
+ $("modalForm").onsubmit=async e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(e.target).entries());
+  try{await onSave(data);$("modalHost").innerHTML="";toast("Saved successfully.");await refreshAll()}
+  catch(err){toast(err.message)}
+ };
 }
 
-async function loadPayments(){
- payments=arrayFrom(await api("adminListPayments"),"payments");
- renderPayments();
-}
-
-async function refreshPayments(){
- try{
-  $("paymentMethodsTable").innerHTML='<div class="loading">Loading...</div>';
-  $("paymentsTable").innerHTML='<div class="loading">Loading...</div>';
-
-  await Promise.all([loadPaymentMethods(),loadPayments()]);
- }catch(e){
-  toast("Unable to load payments: "+e.message);
- }
-}
-
-function renderPaymentMethods(){
- const rows=paymentMethods.map(m=>{
-  const code=pick(m,["method_code"],"");
-  const name=pick(m,["method_name"],code);
-  const st=String(pick(m,["status"],"INACTIVE")).toUpperCase();
-  const active=st==="ACTIVE";
-
-  return `<tr>
-   <td><b>${esc(name)}</b><div class="muted">${esc(code)}</div></td>
-   <td>${esc(pick(m,["account_name"]))}</td>
-   <td>${esc(pick(m,["account_number"]))}</td>
-   <td>${esc(pick(m,["bank_name"]))}</td>
-   <td>${statusHTML(st)}</td>
-   <td>
-    <div class="actions">
-     <button class="smallbtn" data-payaction="edit-method" data-code="${esc(code)}">Edit</button>
-     <button class="smallbtn ${active?"red":"green"}" data-payaction="toggle-method" data-code="${esc(code)}" data-status="${active?"INACTIVE":"ACTIVE"}">${active?"Deactivate":"Activate"}</button>
-    </div>
-   </td>
-  </tr>`;
+async function fileToAttachment(file) {
+ if(!file) return null;
+ const allowed=/\.(pdf|png|jpe?g|docx?|xlsx?|txt)$/i;
+ if(!allowed.test(file.name)) throw new Error("Allowed files: PDF, PNG, JPG, DOC, DOCX, XLS, XLSX, TXT.");
+ if(file.size>5*1024*1024) throw new Error("Document must be 5 MB or smaller.");
+ const dataUrl=await new Promise((resolve,reject)=>{
+  const reader=new FileReader(); reader.onload=()=>resolve(reader.result); reader.onerror=()=>reject(new Error("Could not read the selected document.")); reader.readAsDataURL(file);
  });
-
- renderTable("paymentMethodsTable",
-  ["Payment Method","Account Name","Account Number","Bank","Status","Actions"],
-  rows,
-  "No payment methods found."
- );
+ return {name:file.name,mime_type:file.type||"application/octet-stream",data:String(dataUrl).split(",")[1]};
+}
+function openRequestDetail(r){
+ const id=pick(r,["order_id","request_id","id"],"");
+ const service=services.find(x=>String(x.service_id)===String(r.service_id));
+ const title=pick(r,["service_name"],service?pick(service,["title","service_name","name"],"Service"):"Service");
+ const customer=users.find(x=>String(x.user_id)===String(r.requester_id));
+ const customerName=pick(r,["requester_name"],customer?customer.full_name:pick(r,["requester_id"],"—"));
+ const customerEmail=pick(r,["requester_email","email"],customer?pick(customer,["email"],"—"):"—");
+ const description=pick(r,["message","description","request_description","details"],"No description provided.");
+ const attachment=pick(r,["attachment_url"],"");
+ const attachmentName=pick(r,["attachment_name"],"Open customer attachment");
+ const response=pick(r,["response_text","admin_response","response"],"");
+ const responseAttachment=pick(r,["response_attachment_url"],"");
+ const responseAttachmentName=pick(r,["response_attachment_name"],"Open admin attachment");
+ $("modalHost").innerHTML=`<div class="modalbg" id="detailBackdrop"><div class="modal" style="width:min(900px,100%);padding:22px">
+  <div class="pagehead"><div><h3 style="margin:0">Request Details</h3><p class="muted">${esc(id)}</p></div>${statusHTML(r.status)}</div>
+  <div class="request-split">
+   <section class="detailbox"><h3>REQUEST DETAILS</h3>
+    <div class="detailrow"><b>Service name</b><span>${esc(title)}</span></div>
+    <div class="detailrow"><b>Request ID</b><span>${esc(id)}</span></div>
+    <div class="detailrow"><b>Requester</b><span>${esc(customerName)}</span></div>
+    <div class="detailrow"><b>Email</b><span>${esc(customerEmail)}</span></div>
+    <div class="detailrow"><b>Created date</b><span>${esc(pick(r,["created_at"],"—"))}</span></div>
+    <div class="detailrow"><b>Status</b><span>${statusHTML(r.status)}</span></div>
+    <p><b>Request description</b></p><div class="detailtext">${esc(description)}</div>
+    <p><b>Attached document</b></p>${attachment?`<a class="doclink" href="${esc(attachment)}" target="_blank" rel="noopener">📎 ${esc(attachmentName)}</a>`:`<div class="muted">No attachment provided.</div>`}
+   </section>
+   <section class="detailbox"><h3>ADMIN RESPONSE</h3>
+    <p><b>Response to customer</b></p><div class="detailtext">${esc(response||"No response has been sent yet.")}</div>
+    <p><b>Response attachment</b></p>${responseAttachment?`<a class="doclink" href="${esc(responseAttachment)}" target="_blank" rel="noopener">📎 ${esc(responseAttachmentName)}</a>`:`<div class="muted">No response attachment.</div>`}
+   </section>
+  </div>
+  <div class="modalactions"><button type="button" class="btn lightbtn" id="detailClose">Close</button><button type="button" class="btn primary" id="detailRespond">Respond</button></div>
+ </div></div>`;
+ $("detailClose").onclick=()=>$("modalHost").innerHTML="";
+ $("detailRespond").onclick=()=>{$("modalHost").innerHTML="";openRequestWorkspace(r);};
 }
 
-function renderPayments(){
- const q=$("paymentSearch").value.toLowerCase();
- const filter=$("paymentStatusFilter").value;
-
- const list=payments.filter(p=>
-  (!q||[p.payment_id,p.order_id,p.user_id,p.customer_name,p.customer_email,p.method_name,p.method_code,p.payer_reference].join(" ").toLowerCase().includes(q))&&
-  (!filter||String(p.status).toUpperCase()===filter)
- );
-
- const rows=list.map(p=>{
-  const st=String(p.status||"PENDING").toUpperCase();
-  const url=p.receipt_file_url||"";
-
-  return `<tr>
-   <td><b>${esc(p.payment_id)}</b><div class="muted">Request: ${esc(p.order_id)}</div></td>
-   <td>${esc(p.customer_name||p.user_id||"—")}<div class="muted">${esc(p.customer_email||"")}</div></td>
-   <td>${esc(p.method_name||p.method_code||"—")}<div class="muted">Reference: ${esc(p.payer_reference||"—")}</div></td>
-   <td><b>${esc(p.currency||"RWF")} ${esc(p.amount??"—")}</b></td>
-   <td>${url?`<a class="doclink" href="${esc(url)}" target="_blank" rel="noopener noreferrer">📎 View Receipt</a>`:"<span class='muted'>No receipt link</span>"}</td>
-   <td>${statusHTML(st)}</td>
-   <td>
-    ${st==="PENDING"?
-     `<div class="actions">
-      <button class="smallbtn green" data-payaction="review" data-id="${esc(p.payment_id)}" data-status="CONFIRMED">Confirm</button>
-      <button class="smallbtn red" data-payaction="review" data-id="${esc(p.payment_id)}" data-status="REJECTED">Reject</button>
-     </div>`:
-     `<button class="smallbtn" data-payaction="view" data-id="${esc(p.payment_id)}">Details</button>`
-    }
-   </td>
-  </tr>`;
- });
-
- renderTable("paymentsTable",
-  ["Payment / Request","Customer","Method / Reference","Amount","Receipt","Status","Actions"],
-  rows,
-  "No payments found."
- );
-
- $("paymentTotal").textContent=payments.length;
- $("paymentPending").textContent=payments.filter(p=>String(p.status).toUpperCase()==="PENDING").length;
- $("paymentConfirmed").textContent=payments.filter(p=>String(p.status).toUpperCase()==="CONFIRMED").length;
- $("paymentRejected").textContent=payments.filter(p=>String(p.status).toUpperCase()==="REJECTED").length;
+function openRequestWorkspace(r){
+ const id=pick(r,['order_id','request_id','id'],'');
+ const service=services.find(x=>String(x.service_id)===String(r.service_id));
+ const title=pick(r,['service_name'],service?pick(service,['title','service_name','name'],'Service'):'Service');
+ const customer=users.find(x=>String(x.user_id)===String(r.requester_id));
+ const customerName=pick(r,['requester_name'],customer?customer.full_name:pick(r,['requester_id'],'—'));
+ const description=pick(r,['message','description','request_description','details'],'No description provided.');
+ const attachment=pick(r,['attachment_url'],'');const response=pick(r,['response_text','admin_response','response'],'');
+ $('modalHost').innerHTML=`<div class="modalbg" id="modalBackdrop"><div class="modal" style="width:min(1120px,100%);padding:20px"><div class="pagehead"><div><h3 style="margin:0">View &amp; Respond to Request</h3><p class="muted">${esc(id)}</p></div>${statusHTML(r.status)}</div><div class="request-split">
+ <section class="detailbox"><h3>▤ REQUEST DETAILS</h3>
+ <div class="detailrow"><b>Service name</b><span>${esc(title)}</span></div><div class="detailrow"><b>Request ID</b><span>${esc(id)}</span></div><div class="detailrow"><b>Requester</b><span>${esc(customerName)}</span></div><div class="detailrow"><b>Created date</b><span>${esc(pick(r,['created_at'],'—'))}</span></div><div class="detailrow"><b>Status</b><span>${statusHTML(r.status)}</span></div>
+ <p><b>Request description</b></p><div class="detailtext">${esc(description)}</div><p><b>Attached document</b></p>${attachment?`<a class="doclink" href="${esc(attachment)}" target="_blank" rel="noopener">📎 ${esc(pick(r,['attachment_name'],'Open customer attachment'))}</a>`:'<div class="muted">No attachment provided.</div>'}
+ </section><section class="detailbox"><h3>↩ ADMIN RESPONSE</h3><form id="workspaceResponseForm"><label>Response to customer *</label><textarea class="field" id="workspaceResponseText" required placeholder="Write your response to the customer…" style="min-height:130px">${esc(response==='—'?'':response)}</textarea>
+ <label>Attach document (optional, max 5 MB)</label><input class="field" id="workspaceResponseFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">${pick(r,['response_attachment_url'],'')?`<p class="muted">Current attachment: <a class="doclink" href="${esc(r.response_attachment_url)}" target="_blank" rel="noopener">${esc(pick(r,['response_attachment_name'],'Open document'))}</a></p>`:''}
+ <label>Update request status</label><div class="tools"><button type="button" class="smallbtn green" data-work-status="ACCEPTED">Accept</button><button type="button" class="smallbtn" data-work-status="IN_PROGRESS">Start</button><button type="button" class="smallbtn" data-work-status="COMPLETED">Complete</button><button type="button" class="smallbtn red" data-work-status="REJECTED">Reject</button></div><input type="hidden" id="workspaceStatus" value="${esc(normWorkspaceStatus(r.status))}"><div id="workspaceError" class="message error hidden"></div><div class="modalactions"><button type="button" class="btn lightbtn" id="modalCancel">Close</button><button class="btn primary" id="workspaceSend">Send response</button></div></form></section></div></div></div>`;
+ $('modalCancel').onclick=()=>$('modalHost').innerHTML='';
+ document.querySelectorAll('[data-work-status]').forEach(b=>b.onclick=()=>{ $('workspaceStatus').value=b.dataset.workStatus;toast('Status selected: '+b.dataset.workStatus.replaceAll('_',' ')); });
+ $('workspaceResponseForm').onsubmit=async e=>{e.preventDefault();const btn=$('workspaceSend'),err=$('workspaceError');btn.disabled=true;btn.textContent='Sending…';err.classList.add('hidden');try{const attachmentData=await fileToAttachment($('workspaceResponseFile').files[0]);const fields={order_id:id,response_text:$('workspaceResponseText').value.trim(),status:$('workspaceStatus').value};if(attachmentData)fields.attachment=attachmentData;const result=await api('adminRespondRequest',fields);if(result.success===false)throw new Error(result.message||'Could not send response.');$('modalHost').innerHTML='';toast(result.message||'Response sent to customer.');await refreshAll();}catch(e2){err.textContent=e2.message;err.classList.remove('hidden');}finally{btn.disabled=false;btn.textContent='Send response';}};
 }
+function normWorkspaceStatus(v){const s=String(v||'PENDING').toUpperCase();return ['ACCEPTED','IN_PROGRESS','COMPLETED','REJECTED'].includes(s)?s:'ACCEPTED';}
 
-function editPaymentMethod(m){
- const code=pick(m,["method_code"],"");
- const name=pick(m,["method_name"],code);
-
- openModal("Edit Payment Method: "+name,
-  `<label>Payment Method</label>
-  <input class="field" value="${esc(name)}" disabled>
-  <label>Account Holder Name</label>
-  <input class="field" name="account_name" required value="${esc(m.account_name||"")}">
-  <label>Account Number / Phone Number</label>
-  <input class="field" name="account_number" required value="${esc(m.account_number||"")}">
-  <label>Bank Name</label>
-  <input class="field" name="bank_name" value="${esc(m.bank_name||"")}">
-  <label>Bank Branch</label>
-  <input class="field" name="branch" value="${esc(m.branch||"")}">
-  <label>Instructions for Customers</label>
-  <textarea class="field" name="instructions">${esc(m.instructions||"")}</textarea>
-  <label>Status</label>
-  <select class="field" name="status">
-   <option value="ACTIVE" ${String(m.status).toUpperCase()==="ACTIVE"?"selected":""}>Active</option>
-   <option value="INACTIVE" ${String(m.status).toUpperCase()!=="ACTIVE"?"selected":""}>Inactive</option>
-  </select>`,
-  async d=>{
-   await api("adminSavePaymentMethod",{method_code:code,method_name:name,...d});
-   await refreshPayments();
-  }
- );
+function openResponseModal(r) {
+ const id=pick(r,["order_id","request_id","id"],"");
+ const service=services.find(x=>String(x.service_id)===String(r.service_id));
+ const title=pick(r,["service_name"],service?pick(service,["title","name"],"Service"):"Service");
+ $("modalHost").innerHTML=`<div class="modalbg" id="modalBackdrop"><form class="modal" id="responseForm">
+  <h3>Respond to customer request</h3>
+  <p class="muted"><b>Service:</b> ${esc(title)} · <b>Request ID:</b> ${esc(id)}</p>
+  <label>Customer's request</label><textarea class="field" readonly>${esc(pick(r,["message","description","request_description","details"],"No description provided."))}</textarea>
+  ${r.attachment_url?`<p><a class="doclink" href="${esc(r.attachment_url)}" target="_blank" rel="noopener">📎 Open ${esc(pick(r,["attachment_name"],"customer document"))}</a></p>`:"<p class='muted'>Customer did not attach a document.</p>"}
+  <label for="adminResponseText">Your response *</label>
+  <textarea class="field" id="adminResponseText" required placeholder="Write a clear response to the customer…">${esc(pick(r,["response_text"],""))}</textarea>
+  <label for="responseStatus">Request status</label>
+  <select class="field" id="responseStatus"><option value="ACCEPTED">Accepted</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option><option value="REJECTED">Rejected</option></select>
+  <label for="responseFile">Attach document (optional, max 5 MB)</label>
+  <input class="field" id="responseFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx,.txt">
+  ${r.response_attachment_url?`<p class="muted">Existing attachment: <a class="doclink" href="${esc(r.response_attachment_url)}" target="_blank" rel="noopener">${esc(pick(r,["response_attachment_name"],"Open document"))}</a>. Uploading a new file will replace it.</p>`:""}
+  <div id="responseError" class="message error hidden"></div>
+  <div class="modalactions"><button type="button" class="btn lightbtn" id="modalCancel">Cancel</button><button class="btn primary" id="sendResponseBtn">Send response</button></div>
+ </form></div>`;
+ $("responseStatus").value=String(r.status||"ACCEPTED").toUpperCase();
+ $("modalCancel").onclick=()=>$("modalHost").innerHTML="";
+ $("responseForm").onsubmit=async e=>{
+  e.preventDefault();
+  const btn=$("sendResponseBtn"), err=$("responseError");
+  btn.disabled=true;btn.textContent="Sending…";err.classList.add("hidden");
+  try {
+   const attachment=await fileToAttachment($("responseFile").files[0]);
+   const fields={order_id:id,response_text:$("adminResponseText").value.trim(),status:$("responseStatus").value};
+   if(attachment) fields.attachment=attachment;
+   const result=await api("adminRespondRequest",fields);
+   if(result.success===false) throw new Error(result.message||"Could not send response.");
+   $("modalHost").innerHTML="";toast(result.message||"Response sent to customer.");
+   await refreshAll();
+  } catch(err2) {err.textContent=err2.message;err.classList.remove("hidden");}
+  finally {btn.disabled=false;btn.textContent="Send response";}
+ };
 }
-
-document.addEventListener("click",async e=>{
- const b=e.target.closest("[data-payaction]");
- if(!b)return;
-
- try{
-  const a=b.dataset.payaction;
-  const code=b.dataset.code;
-  const id=b.dataset.id;
-  const st=b.dataset.status;
-
-  if(a==="edit-method"){
-   const m=paymentMethods.find(x=>String(x.method_code)===String(code));
-   if(!m)throw Error("Payment method not found.");
-   editPaymentMethod(m);
-
-  }else if(a==="toggle-method"){
-   const m=paymentMethods.find(x=>String(x.method_code)===String(code));
-   if(!m)throw Error("Payment method not found.");
-
-   await api("adminSavePaymentMethod",{...m,status:st});
-   toast("Payment method updated.");
-   await refreshPayments();
-
-  }else if(a==="review"){
-   const note=prompt(st==="CONFIRMED"?"Enter a note (optional):":"Enter the reason for rejecting this payment:");
-
-   if(note===null)return;
-   if(st==="REJECTED"&&!note.trim())
-    throw Error("Please enter a reason for rejecting the payment.");
-
-   await api("adminReviewPayment",{
-    payment_id:id,
-    status:st,
-    admin_note:note.trim()
-   });
-
-   toast(st==="CONFIRMED"?"Payment confirmed.":"Payment rejected.");
-   await refreshPayments();
-
-  }else if(a==="view"){
-   const p=payments.find(x=>String(x.payment_id)===String(id));
-
-   if(p)openModal("Payment Details",
-    `<p><b>Payment ID:</b> ${esc(p.payment_id)}</p>
-    <p><b>Request ID:</b> ${esc(p.order_id)}</p>
-    <p><b>Payment Method:</b> ${esc(p.method_name||p.method_code)}</p>
-    <p><b>Amount:</b> ${esc(p.currency||"RWF")} ${esc(p.amount)}</p>
-    <p><b>Status:</b> ${esc(p.status)}</p>
-    <p><b>Admin Note:</b> ${esc(p.admin_note||"None")}</p>
-    <p><b>Review Date:</b> ${esc(p.reviewed_at||"—")}</p>`,
-    async()=>{}
-   );
-  }
- }catch(err){
-  toast(err.message);
- }
-});
-
-$("refreshPaymentsBtn").addEventListener("click",refreshPayments);
-$("paymentSearch").addEventListener("input",renderPayments);
-$("paymentStatusFilter").addEventListener("change",renderPayments);
 
 $("loginForm").addEventListener("submit",async e=>{
  e.preventDefault();
-
  $("loginMessage").innerHTML="";
  $("loginBtn").disabled=true;
- $("loginBtn").textContent="Signing In...";
-
+ $("loginBtn").textContent="Signing in…";
  try{
-  const r=await api("login",{
-   email:$("email").value.trim(),
-   password:$("password").value
-  });
-
-  const u=r.user||{};
-
-  if(String(u.role||"").toUpperCase()!=="ADMIN")
-   throw Error("This account does not have ADMIN privileges.");
-
-  session={token:r.token,user:u};
+  const result=await api("login",{email:$("email").value.trim(),password:$("password").value});
+  const user=result.user||{};
+  if(String(user.role||"").toUpperCase()!=="ADMIN")throw new Error("Iyi konti ntabwo ifite uburenganzira bwa ADMIN.");
+  session={token:result.token,user};
   sessionStorage.setItem(SESSION_KEY,JSON.stringify(session));
-
   startApp();
-
  }catch(err){
   $("loginMessage").innerHTML=`<div class="message error">${esc(err.message)}</div>`;
  }finally{
   $("loginBtn").disabled=false;
-  $("loginBtn").textContent="Sign In";
+  $("loginBtn").textContent="Sign in";
  }
 });
-
 function startApp(){
  if(!session)return;
-
  $("loginPage").classList.add("hidden");
  $("adminApp").classList.remove("hidden");
  $("adminName").textContent=pick(session.user,["full_name","email"],"Administrator");
  $("year").textContent=new Date().getFullYear();
-
  refreshAll();
 }
-
-async function refreshAll(){
- try{
-  await Promise.all([loadServices(),loadRequests(),loadUsers()]);
-  await loadDashboard();
-  renderAnalysis();
- }catch(e){
-  toast(e.message);
- }
-}
-
 $("logoutBtn").onclick=async()=>{
- try{
-  await api("logout");
- }catch(e){}
-
- session=null;
- sessionStorage.removeItem(SESSION_KEY);
+ try{await api("logout")}catch(e){}
+ session=null;sessionStorage.removeItem(SESSION_KEY);
  $("adminApp").classList.add("hidden");
  $("loginPage").classList.remove("hidden");
  $("password").value="";
 };
-
 $("refreshBtn").onclick=refreshAll;
 $("reloadDashboard").onclick=refreshAll;
 $("refreshAnalysis").onclick=refreshAll;
+["serviceSearch","serviceFilter"].forEach(id=>$(id).addEventListener("input",renderServices));
+["requestSearch","requestFilter"].forEach(id=>$(id).addEventListener("input",renderRequests));
+["userSearch","userFilter"].forEach(id=>$(id).addEventListener("input",renderUsers));
 
-["serviceSearch","serviceFilter"].forEach(id=>
- $(id).addEventListener("input",renderServices)
-);
-
-["requestSearch","requestFilter"].forEach(id=>
- $(id).addEventListener("input",renderRequests)
-);
-
-["userSearch","userFilter"].forEach(id=>
- $(id).addEventListener("input",renderUsers)
-);
-
-$("addServiceBtn").onclick=()=>openModal("Add New Service",
- `<label>Service Name</label>
- <input class="field" name="title" required>
- <label>Category</label>
- <input class="field" name="category" required>
- <label>Description</label>
- <textarea class="field" name="description" required></textarea>
- <label>Price (RWF)</label>
- <input class="field" name="price" type="number" min="0" value="0">
- <label>Location</label>
- <input class="field" name="location">`,
- async d=>api("createService",d)
-);
+$("addServiceBtn").onclick=()=>openModal("Add service",`
+ <label>Title</label><input class="field" name="title" required>
+ <label>Category</label><input class="field" name="category" required>
+ <label>Description</label><textarea class="field" name="description" required></textarea>
+ <label>Price (RWF)</label><input class="field" name="price" type="number" min="0" step="any" value="0">
+ <label>Location</label><input class="field" name="location">
+`,async data=>{await api("createService",data)});
 
 $("announcementForm").addEventListener("submit",async e=>{
  e.preventDefault();
-
- const d=Object.fromEntries(new FormData(e.target).entries());
-
- try{
-  const r=await api("createAnnouncement",d);
-  toast(r.message||"Announcement sent successfully.");
-  e.target.reset();
- }catch(err){
-  toast(err.message);
- }
+ const data=Object.fromEntries(new FormData(e.target).entries());
+ try{const result=await api("createAnnouncement",data);toast(result.message||"Announcement sent.");e.target.reset()}
+ catch(err){toast(err.message)}
 });
 
 try{
  const saved=sessionStorage.getItem(SESSION_KEY);
  if(saved)session=JSON.parse(saved);
-}catch(e){
- session=null;
-}
-
+}catch(e){session=null}
 $("year").textContent=new Date().getFullYear();
-
 if(session){
+ // Verify that the saved session is still valid and belongs to an admin.
  api("me").then(r=>{
-  if(String((r.user||{}).role||"").toUpperCase()!=="ADMIN")
-   throw Error("This account is not an administrator.");
-
+  if(String((r.user||{}).role||"").toUpperCase()!=="ADMIN")throw new Error("Not an admin");
   session.user=r.user;
   startApp();
-
  }).catch(()=>{
-  session=null;
-  sessionStorage.removeItem(SESSION_KEY);
+  session=null;sessionStorage.removeItem(SESSION_KEY);
   $("loginPage").classList.remove("hidden");
   $("adminApp").classList.add("hidden");
  });

@@ -995,23 +995,63 @@
       container.innerHTML = '<div class="empty">Loading requests...</div>';
       try {
         const result = await api("listMyRequests");
-        const requests = getArray(result).filter(r => String(r.requester_id) === String(currentUser?.user_id || currentUser?.id || ""));
+        const requests = getArray(result);
         $("requestCount").textContent = String(requests.length);
         if (!requests.length) { container.innerHTML = '<div class="empty">Nta requests urasaba kugeza ubu.</div>'; return; }
         container.innerHTML = requests.map(request => {
           const name = request.service_name || request.service_title || "Service request";
           const status = request.status || "PENDING";
-          const hasResponse = Boolean(String(request.response_text || "").trim());
-          const viewButton = hasResponse
-            ? `<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">🟢 View service / payment</button>`
-            : `<button class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">View service status</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
+          const pay = String(request.payment_status || "NOT_REQUESTED").toUpperCase();
+          const price = Number(request.price || 0);
+          let paymentAction = "";
+          if (status === "READY_FOR_PAYMENT" || pay === "PENDING_PAYMENT" || pay === "REJECTED" || pay === "UNDER_REVIEW") {
+            if (pay === "APPROVED") paymentAction = `<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">🟢 Response now available</button>`;
+            else if (pay === "UNDER_REVIEW") paymentAction = `<div class="notice info">Ubwishyu bwawe buri kugenzurwa na Admin. Tegereza kwemezwa.</div>`;
+            else paymentAction = `<div class="notice info"><b>Serivisi yabonetse!</b><br>Igiciro: <b>${escapeHtml(new Intl.NumberFormat("en-RW").format(price))} RWF</b><p>Nyamuneka wishyure kugira ngo uhabwe igisubizo cya serivisi wasabye.</p><button class="btn btn-small" onclick="openRequestPayment('${escapeHtml(request.order_id)}','${escapeHtml(name)}',${price})">💳 Request to Pay / Ishyura</button></div>`;
+          } else if (pay === "APPROVED") {
+            paymentAction = `<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">🟢 Response now available</button>`;
+          } else {
+            paymentAction = `<p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe.</p>`;
+          }
           return `<article class="request-item"><div class="row"><strong>${escapeHtml(name)}</strong><span class="badge">${escapeHtml(status)}</span></div>
             <p>${escapeHtml(request.message || "Nta bisobanuro byongeweho.")}</p>
             <p class="small muted">${escapeHtml(request.created_at || "")}</p>
             ${request.attachment_url ? `<p><a href="${escapeHtml(request.attachment_url)}" target="_blank" rel="noopener">📎 ${escapeHtml(request.attachment_name || "Document wohereje")}</a></p>` : ""}
-            ${viewButton}<div id="response-${escapeHtml(request.order_id)}" class="response-panel" style="margin-top:10px"></div></article>`;
+            ${paymentAction}<div id="response-${escapeHtml(request.order_id)}" class="response-panel" style="margin-top:10px"></div></article>`;
         }).join("");
       } catch (error) { container.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
+    }
+
+    async function openRequestPayment(orderId, serviceName, amount) {
+      try {
+        const r = await api("listPaymentMethods");
+        const methods = getPayload(r).payment_methods || getPayload(r).methods || [];
+        if (!methods.length) throw new Error("Uburyo bwo kwishyura ntiburashyirwaho. Hamagara ubuyobozi.");
+        const modal = document.createElement("div");
+        modal.className = "modal-backdrop"; modal.id = "customerPayModal";
+        modal.innerHTML = `<div class="modal-box"><div class="row"><h2>💳 Kwishyura serivisi</h2><button class="btn btn-outline btn-small" onclick="closeCustomerPay()">✕</button></div>
+          <p><b>${escapeHtml(serviceName)}</b></p><p>Igiciro: <b>${escapeHtml(new Intl.NumberFormat("en-RW").format(amount))} RWF</b></p>
+          <label>Hitamo uburyo bwo kwishyura</label><select id="customerPayMethod" required>${methods.map(m=>`<option value="${escapeHtml(m.method_id||m.method_code)}">${escapeHtml(m.method_name||m.name)} — ${escapeHtml(m.account_number||"")} ${escapeHtml(m.account_name||"")}</option>`).join("")}</select>
+          <div id="customerPayDetails" class="notice info"></div>
+          <label>Transaction reference / nimero y'ubwishyu</label><input id="customerPayReference" placeholder="Andika transaction ID" required>
+          <p class="muted small">Banza wohereze amafaranga kuri nimero iri hejuru, hanyuma wandike transaction reference. Admin azagenzura ubwishyu.</p>
+          <button class="btn" onclick="submitCustomerPayment('${escapeHtml(orderId)}')">Nohereza icyemezo cy'ubwishyu</button></div>`;
+        document.body.appendChild(modal);
+        window.customerPaymentMethods = methods;
+        $("customerPayMethod").onchange = renderCustomerPayDetails;
+        renderCustomerPayDetails();
+      } catch(e) { alert(e.message); }
+    }
+    function renderCustomerPayDetails() {
+      const m=(window.customerPaymentMethods||[]).find(x=>String(x.method_id||x.method_code)===String($("customerPayMethod").value));
+      $("customerPayDetails").innerHTML=m?`<b>${escapeHtml(m.method_name||m.name)}</b><br>Nomero: <b>${escapeHtml(m.account_number||"")}</b><br>Konti: ${escapeHtml(m.account_name||"")}<br>${escapeHtml(m.instructions||"")}`:"";
+    }
+    function closeCustomerPay(){const m=$("customerPayModal");if(m)m.remove();}
+    async function submitCustomerPayment(orderId){
+      const method=$("customerPayMethod").value, reference=$("customerPayReference").value.trim();
+      if(!reference){alert("Andika transaction reference.");return;}
+      try{const r=await api("submitPayment",{order_id:orderId,payment_method:method,payment_reference:reference});alert(r.message||"Ubwishyu bwoherejwe.");closeCustomerPay();await loadMyRequests();}
+      catch(e){alert(e.message);}
     }
 
     async function viewResponse(requestId) {

@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -774,18 +773,40 @@
       renderDashboardServices(filtered);
     }
 
-    function openPayments() {
+    // Payment methods are loaded from the Apps Script Settings sheet.
+    async function openPayments(orderId) {
       const modal = document.createElement("div");
-      modal.className = "modal-backdrop";
-      modal.id = "paymentsModal";
-      modal.innerHTML = `<div class="modal-box"><div class="row"><h2 style="margin:0">💳 Payment methods</h2><button class="btn btn-outline btn-small" onclick="closePayments()">✕</button></div>
-        <p class="muted">Choose a payment method after your service request is reviewed. Do not send money to an unverified number.</p>
-        <div class="payment-method"><span class="pay-icon">📱</span><div><strong>MTN MoMo</strong><div class="muted small">Mobile Money — payment details confirmed by administrator.</div></div></div>
-        <div class="payment-method"><span class="pay-icon">📲</span><div><strong>Airtel Money</strong><div class="muted small">Mobile Money — payment details confirmed by administrator.</div></div></div>
-        <div class="payment-method"><span class="pay-icon">🏦</span><div><strong>Bank transfer</strong><div class="muted small">Request official bank details from support.</div></div></div>
-        <div class="notice info">Online payment processing is not connected yet. This panel displays methods only; it does not collect or process payments.</div>
-        <button class="btn" onclick="closePayments()">Close</button></div>`;
+      modal.className = "modal-backdrop"; modal.id = "paymentsModal";
+      modal.innerHTML = `<div class="modal-box"><div class="row"><h2 style="margin:0">💳 Pay for your service</h2><button class="btn btn-outline btn-small" onclick="closePayments()">✕</button></div><div id="paymentModalContent"><p class="muted">Loading official payment instructions...</p></div></div>`;
       document.body.appendChild(modal);
+      try {
+        const [methodsResult, statusResult] = await Promise.all([
+          api("listPaymentMethods"), api("getPaymentStatus", {order_id: orderId})
+        ]);
+        const methods = getPayload(methodsResult).payment_methods || [];
+        const payment = getPayload(statusResult).payment || {};
+        const price = Number(payment.price || 0);
+        const fmt = Number.isFinite(price) ? new Intl.NumberFormat("en-RW").format(price) + " RWF" : escapeHtml(payment.price || "As quoted by admin");
+        const content = $("paymentModalContent");
+        if (payment.payment_status === "APPROVED") {
+          content.innerHTML = `<div class="notice success">Payment approved. Your service response is now available.</div><button class="btn" onclick="closePayments();viewResponse('${escapeHtml(orderId)}')">View service response</button>`; return;
+        }
+        if (!methods.length) {
+          content.innerHTML = `<div class="notice error">Admin has not configured an active payment method yet. Please wait or contact support.</div>`; return;
+        }
+        content.innerHTML = `<div class="notice info"><strong>Service amount: ${fmt}</strong><br>Pay using one of the official accounts below, then enter the transaction reference (MTCN / transaction ID).</div>` +
+          methods.map(m => `<div class="payment-method"><span class="pay-icon">${m.method_id === "MTN_MOMO" ? "📱" : m.method_id === "AIRTEL_MONEY" ? "📲" : "🏦"}</span><div><strong>${escapeHtml(m.name)}</strong><div>${escapeHtml(m.account_name || "")}</div><div><strong>${escapeHtml(m.account_number || "")}</strong></div><div class="muted small">${escapeHtml(m.instructions || "")}</div></div></div>`).join("") +
+          `<form id="paymentSubmitForm"><div class="field"><label>Payment method</label><select id="paymentMethodSelect" required>${methods.map(m=>`<option value="${escapeHtml(m.method_id)}">${escapeHtml(m.name)}</option>`).join("")}</select></div><div class="field"><label>Transaction reference / ID</label><input id="paymentReferenceInput" required minlength="4" maxlength="150" placeholder="Enter transaction ID after paying"></div><button class="btn" id="submitPaymentButton" type="submit">I have paid — submit for verification</button></form><p class="muted small">Your response stays locked until Admin confirms that the money has been received. Do not submit a false transaction reference.</p>`;
+        $("paymentSubmitForm").addEventListener("submit", async ev => {
+          ev.preventDefault(); setBusy("submitPaymentButton", true, "Submitting...");
+          try {
+            const r = await api("submitPayment", {order_id:orderId, payment_method:$("paymentMethodSelect").value, payment_reference:$("paymentReferenceInput").value.trim()});
+            content.innerHTML = `<div class="notice success">${escapeHtml(r.message || "Payment submitted for verification.")}</div><p class="muted">You will receive your service response after Admin verifies the payment.</p>`;
+            await loadMyRequests();
+          } catch(err) { showMessage("paymentModalContent", err.message, "error"); }
+          finally { setBusy("submitPaymentButton", false); }
+        });
+      } catch (error) { $("paymentModalContent").innerHTML = `<div class="notice error">${escapeHtml(error.message)}</div>`; }
     }
     function closePayments() { const modal = $("paymentsModal"); if (modal) modal.remove(); }
 
@@ -982,8 +1003,8 @@
           const status = request.status || "PENDING";
           const hasResponse = Boolean(String(request.response_text || "").trim());
           const viewButton = hasResponse
-            ? `<button type="button" class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}'); return false;">🟢 View response</button>`
-            : `<button type="button" class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}'); return false;">View response</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
+            ? `<button class="btn btn-success btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">🟢 View service / payment</button>`
+            : `<button class="btn btn-outline btn-small" onclick="viewResponse('${escapeHtml(request.order_id)}')">View service status</button><p class="muted small">Turagusaba kwihangana. Ubuyobozi buracyasuzuma ubusabe bwawe kandi buzagusubiza vuba bishoboka.</p>`;
           return `<article class="request-item"><div class="row"><strong>${escapeHtml(name)}</strong><span class="badge">${escapeHtml(status)}</span></div>
             <p>${escapeHtml(request.message || "Nta bisobanuro byongeweho.")}</p>
             <p class="small muted">${escapeHtml(request.created_at || "")}</p>
@@ -994,18 +1015,25 @@
     }
 
     async function viewResponse(requestId) {
-      const panel = $("response-" + requestId);
-      if (!panel) return;
-      panel.innerHTML = '<div class="notice">Turimo gushaka igisubizo cya Admin...</div>';
+      const panel = $("response-" + requestId); if (!panel) return;
+      panel.innerHTML = '<div class="notice info">Turimo kugenzura uko ubwishyu buhagaze...</div>';
       try {
-        const result = await api("viewRequestResponse", {order_id:requestId});
-        const data = getPayload(result);
-        if (!data.response_text) {
-          panel.innerHTML = '<div class="notice">Turagusaba kwihangana. Admin ntaragusubiza; uzamenyeshwa igihe igisubizo kizaba cyabonetse.</div>';
+        const result = await api("getRequestResult", {order_id:requestId});
+        const data = getPayload(result).request || getPayload(result);
+        if (result.locked || getPayload(result).locked) {
+          const status = getPayload(result).payment_status || "PENDING_PAYMENT";
+          panel.innerHTML = `<div class="notice info"><strong>Serivisi wabonye kandi yiteguye guhabwa.</strong><br>Igisubizo cya Admin kirafunze kugeza wishyuye. Nyamuneka wishyure amafaranga ya serivisi, hanyuma wohereze transaction reference kugira ngo Admin yemeze ubwishyu.</div><button class="btn btn-success btn-small" onclick="openPayments('${escapeHtml(requestId)}')">💳 Ishyura serivisi</button><p class="muted small">Payment status: ${escapeHtml(status)}</p>`;
           return;
         }
-        panel.innerHTML = `<div class="notice success"><strong>Igisubizo cya Admin</strong><p>${escapeHtml(data.response_text).replace(/\n/g,"<br>")}</p><p class="small muted">${escapeHtml(data.response_at || "")}</p>${data.response_attachment_url ? `<p><a target="_blank" rel="noopener" href="${escapeHtml(data.response_attachment_url)}">📎 ${escapeHtml(data.response_attachment_name || "Document ya Admin")}</a></p>` : ""}</div>`;
-      } catch (error) { panel.innerHTML = '<div class="notice error">' + escapeHtml(error.message) + '</div>'; }
+        if (data.payment_status === "APPROVED") {
+          panel.innerHTML = `<div class="notice success"><strong>Payment yemejwe — serivisi yawe irafunguye.</strong><p>${escapeHtml(data.response_text || "") .replace(/\n/g,"<br>")}</p>${data.response_url ? `<p><a class="btn btn-success btn-small" target="_blank" rel="noopener" href="${escapeHtml(data.response_url)}">📄 Fungura / Kuramo igisubizo</a></p>` : ""}<p class="small muted">${escapeHtml(data.delivered_at || "")}</p></div>`;
+          return;
+        }
+        panel.innerHTML = '<div class="notice">Admin ntarashyira serivisi yawe ku rwego rwo kwishyura. Uzabona ubutumwa igihe izaba yabonetse.</div>';
+      } catch (error) {
+        // If payment is not yet ready, show a clear waiting message rather than exposing a response.
+        panel.innerHTML = `<div class="notice info">${escapeHtml(error.message)}<br>Iyo Admin amaze gutegura serivisi, uzahabwa ubutumwa burimo igiciro n'amabwiriza yo kwishyura.</div>`;
+      }
     }
 
     function readAttachmentAsBase64(file) {

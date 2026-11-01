@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SOBANUKIRWA SERVICES — Admin</title>
+<title>SOBANUKIRWA SERVICES — Admin Dashboard 3.2</title>
 <style>
 :root {
   --navy:#102c52;
@@ -372,6 +372,7 @@ function requestRow(r, compact=false) {
   ? `<button class="smallbtn primary" data-action="request-view-respond" data-id="${esc(id)}">View &amp; Respond</button>`
   : `<div class="actions">
       <button class="smallbtn primary" data-action="request-view-respond" data-id="${esc(id)}">View &amp; Respond</button>
+      <button class="smallbtn green" data-action="request-ready-payment" data-id="${esc(id)}">Notify payment</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="ACCEPTED">Accept</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="IN_PROGRESS">Start</button>
       <button class="smallbtn" data-action="request-status" data-id="${esc(id)}" data-status="COMPLETED">Complete</button>
@@ -520,10 +521,13 @@ async function handleAction(button) {
  }
  if(action==="payment-review") {
   const note=prompt('Optional note for the customer:',''); if(note===null)return;
-  await api('adminReviewPayment',{order_id:id,status:status==='CONFIRMED'?'APPROVED':status,adminNote:note}); toast('Payment review saved.'); await loadPayments();
+  await api('verifyPayment',{order_id:id,status:status==='CONFIRMED'?'APPROVED':status,admin_note:note}); toast('Payment review saved.'); await loadPayments();
  }
  if(action==="payment-receipt") {
-  const r=await api('adminGetReceipt',{paymentId:id}); if(!r.url)throw new Error('Receipt URL not returned.'); window.open(r.url,'_blank','noopener');
+  const p=payments.find(x=>String(x.order_id||x.payment_id||"")===String(id));
+  const url=p&&(p.receipt_url||p.payment_proof_url||p.receipt_file_url);
+  if(!url) throw new Error("Receipt URL is not available in the payment record.");
+  window.open(url,'_blank','noopener');
  }
  if(action==="service-status") {
   await api("approveService",{service_id:id,status});
@@ -534,6 +538,17 @@ async function handleAction(button) {
   const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
   if(!r) throw new Error("Request not found.");
   openRequestWorkspace(r);
+ }
+ if(action==="request-ready-payment") {
+  const r=requests.find(x=>String(pick(x,["order_id","request_id","id"],""))===String(id));
+  if(!r) throw new Error("Request not found.");
+  const service=services.find(x=>String(x.service_id)===String(r.service_id));
+  const price=Number(pick(r,["price"],pick(service||{},["price"],0)))||0;
+  openModal("Notify customer: payment required",`
+   <p class="muted">This sends an in-app notification and email asking the customer to pay for this request.</p>
+   <label>Amount (RWF)</label><input class="field" value="${esc(price)}" readonly>
+   <label>Response / payment instructions</label><textarea class="field" name="response_text" required placeholder="Your service is ready. Please pay using the available payment methods."></textarea>
+  `,async data=>{await api("markServiceReady",{order_id:id,response_text:data.response_text});toast("Customer notified that payment is required.");});
  }
  if(action==="request-status") {
   await api("updateRequestStatus",{order_id:id,status});
